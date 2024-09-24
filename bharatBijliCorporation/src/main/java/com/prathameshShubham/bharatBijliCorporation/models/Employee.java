@@ -1,6 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
-import com.prathameshShubham.bharatBijliCorporation.enums.Employee.Status;
+import com.prathameshShubham.bharatBijliCorporation.enums.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +19,5 @@ public class Employee {
     private PersonalDetails personalDetails;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private EmployeeStatus employeeStatus;
 }

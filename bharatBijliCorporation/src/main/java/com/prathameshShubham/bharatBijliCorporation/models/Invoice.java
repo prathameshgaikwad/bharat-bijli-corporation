@@ -1,7 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
 
-import com.prathameshShubham.bharatBijliCorporation.enums.Invoice.Status;
+import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class Invoice {
     private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private InvoiceStatus invoiceStatus;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;           // make it non updatable

@@ -1,6 +1,6 @@
-package com.prathameshShubham.bharatBijliCorporation.enums.Invoice;
+package com.prathameshShubham.bharatBijliCorporation.enums;
 
-public enum Status {
+public enum InvoiceStatus {
     PENDING,                   // invoice generated and yet to be paid
     PAID,                      // invoice that has been paid
     PARTIALLY_PAID,            // partial payment of invoice completed

@@ -1,6 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
-import com.prathameshShubham.bharatBijliCorporation.enums.Customer.ConnectionStatus;
+import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class Customer {
   private Long id;
 
   @Enumerated(EnumType.STRING)
-  private ConnectionStatus connectionStatus;     // can be "active" or "inactive"
+  private ServiceConnectionStatus serviceConnectionStatus;     // can be "active" or "inactive"
 
   @OneToOne
   private PersonalDetails personalDetails;
