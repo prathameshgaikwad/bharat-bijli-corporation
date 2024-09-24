@@ -18,10 +18,10 @@ public class Invoice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
+    @ManyToOne
     private Customer customerId;
 
-    @OneToOne
+    @ManyToOne
     private Employee generatedByEmployeeId;
 
     private Double unitsConsumed;
