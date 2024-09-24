@@ -1,0 +1,49 @@
+# Ignore node_modules in Angular frontend
+bharatBijliCorporation-ui/node_modules
+
+# Ignore build files in Angular frontend
+bharatBijliCorporation-ui/dist/
+bharatBijliCorporation-ui/.angular/
+
+# Ignore environment files in Angular frontend
+bharatBijliCorporation-ui/src/environments/*.ts
+
+# Ignore IDE/editor configurations
+.idea/
+.vscode/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+bharatBijliCorporation/logs/
+*.log
+
+# Ignore build and Maven output in Spring Boot API
+bharatBijliCorporation/target/
+bharatBijliCorporation/.mvn/
+bharatBijliCorporation/.idea/
+
+# Ignore temporary files
+*.tmp
+*.swp
+
+# Ignore compiled classes and generated files in Spring Boot API
+bharatBijliCorporation/bin/
+bharatBijliCorporation/build/
+bharatBijliCorporation/.classpath
+bharatBijliCorporation/.project
+
+# Ignore compiled files
+*.class
+*.jar
+*.war
+
+# Ignore coverage reports
+bharatBijliCorporation-ui/coverage/
+bharatBijliCorporation/coverage/
+
+# Ignore generated test results
+bharatBijliCorporation-ui/test-results/
+bharatBijliCorporation/target/test-classes/
