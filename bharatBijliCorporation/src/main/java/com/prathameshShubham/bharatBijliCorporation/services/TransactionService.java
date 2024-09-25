@@ -4,6 +4,7 @@ import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.TransactionRepo;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class TransactionService {
         return transactionRepo
                 .findById(transactionId)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("Transaction not found for the ID:" + transactionId)
+                        () -> new EntityNotFoundException("Transaction not found for the ID:" + transactionId)
                 );
     }
 
