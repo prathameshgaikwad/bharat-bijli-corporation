@@ -16,15 +16,12 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping
-    public ResponseEntity<Employee> saveEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        PersonalDetails personalDetails = employeeRequest.getPersonalDetails();;
-        Employee employee = employeeRequest.getEmployee();
-
-        return ResponseEntity.ok(employeeService.saveEmployee(employee, personalDetails));
+    public ResponseEntity<Employee> saveEmployee(@RequestBody PersonalDetails personalDetails) {
+        return ResponseEntity.ok(employeeService.saveEmployee(personalDetails));
     }
 
     @GetMapping("/{employeeId}")
-    public ResponseEntity<Employee> getEmployee(@PathVariable Long employeeId) {
+    public ResponseEntity<Employee> getEmployee(@PathVariable String employeeId) {
         return ResponseEntity.ok(employeeService.getEmployee(employeeId));
     }
 }

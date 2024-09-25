@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class InvoiceRequest {
     public Invoice invoice;
-    public Long employeeId;
+    public String employeeId;
 }
