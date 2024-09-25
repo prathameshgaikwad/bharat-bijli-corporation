@@ -18,8 +18,8 @@ public class TransactionController {
         return ResponseEntity.ok(transactionService.saveTransaction(transaction));
     }
 
-    @GetMapping("{transaction-id}")
-    public ResponseEntity<Transaction> getTransaction(@PathVariable("transaction-id") Long transactionId) {
+    @GetMapping("{transactionId}")
+    public ResponseEntity<Transaction> getTransaction(@PathVariable Long transactionId) {
         return ResponseEntity.ok(transactionService.getTransaction(transactionId));
     }
 
