@@ -3,7 +3,6 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
-import com.prathameshShubham.bharatBijliCorporation.repositories.EmployeeRepo;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
