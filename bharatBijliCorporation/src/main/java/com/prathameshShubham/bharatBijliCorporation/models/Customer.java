@@ -19,7 +19,7 @@ public class Customer {
     @Column(nullable = false)
     private ServiceConnectionStatus serviceConnectionStatus;     // can be "active" or "inactive"
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)                           // personal details would also be loaded instantly
     @JoinColumn(name = "personal_details_id", nullable = false)
     private PersonalDetails personalDetails;
 }

@@ -15,7 +15,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)                         // personal details would also be loaded instantly
     @JoinColumn(name = "personal_details_id",nullable = false)
     private PersonalDetails personalDetails;
 
