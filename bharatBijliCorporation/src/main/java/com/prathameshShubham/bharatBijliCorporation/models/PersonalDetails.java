@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,12 +18,21 @@ public class PersonalDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Email
+    @Column(nullable = false, unique = true)
     private String emailId;
-    private Integer phoneNumber;
+
+    @Column(nullable = false)
+    private String phoneNumber;      // store as string to account for leading '+' or '0'
 
     @Lob
+    @Column(nullable = false)
     private String address;    // marked as large object
 
     private String city;

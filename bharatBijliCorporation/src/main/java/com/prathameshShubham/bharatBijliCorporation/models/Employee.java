@@ -16,8 +16,10 @@ public class Employee {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "personal_details_id",nullable = false)
     private PersonalDetails personalDetails;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EmployeeStatus employeeStatus;
 }

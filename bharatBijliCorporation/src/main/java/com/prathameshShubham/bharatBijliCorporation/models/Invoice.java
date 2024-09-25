@@ -19,18 +19,30 @@ public class Invoice {
     private Long id;
 
     @ManyToOne
-    private Customer customerId;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @ManyToOne
-    private Employee generatedByEmployeeId;
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee generatedByEmployee;
 
+    @Column(nullable = false)
     private Double unitsConsumed;
+
+    @Column(nullable = false)
     private Double tariff;
+
+    @Column(nullable = false)
     private LocalDateTime periodStartDate;
+
+    @Column(nullable = false)
     private LocalDateTime periodEndDate;
+
+    @Column(nullable = false)
     private LocalDateTime dueDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private InvoiceStatus invoiceStatus;
 
     @Column(updatable = false)

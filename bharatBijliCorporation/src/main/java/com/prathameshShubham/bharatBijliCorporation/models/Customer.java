@@ -11,13 +11,15 @@ import lombok.Setter;
 @Table(name = "customers")
 public class Customer {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Enumerated(EnumType.STRING)
-  private ServiceConnectionStatus serviceConnectionStatus;     // can be "active" or "inactive"
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ServiceConnectionStatus serviceConnectionStatus;     // can be "active" or "inactive"
 
-  @OneToOne
-  private PersonalDetails personalDetails;
+    @OneToOne
+    @JoinColumn(name = "personal_details_id", nullable = false)
+    private PersonalDetails personalDetails;
 }

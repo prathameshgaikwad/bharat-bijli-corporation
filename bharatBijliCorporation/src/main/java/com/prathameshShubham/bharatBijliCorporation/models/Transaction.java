@@ -19,21 +19,29 @@ public class Transaction {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "invoice_id", nullable = false)
     private Invoice invoice;
 
-    @OneToMany
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @Column(nullable = false)
     private Double amount;
+
+    @Column(nullable = false)
     private TransactionMethod transactionMethod;
 
     @Lob
     private String description;
 
     private Double transactionFee;
+
+    @Column(nullable = false)
     private String transactionReference;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionStatus transactionStatus;
 
 
