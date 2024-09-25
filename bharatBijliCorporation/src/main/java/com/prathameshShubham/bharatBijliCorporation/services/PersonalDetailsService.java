@@ -15,12 +15,4 @@ public class PersonalDetailsService {
     public PersonalDetails savePersonalDetails(PersonalDetails personalDetails) {
         return personalDetailsRepo.save(personalDetails);
     }
-
-    public PersonalDetails getPersonalDetails(Long personalDetailsId) {
-        return personalDetailsRepo
-                .findById(personalDetailsId)
-                .orElseThrow(
-                        () -> new EntityNotFoundException("Personal details not found for ID: " + personalDetailsId)
-                );
-    }
 }
