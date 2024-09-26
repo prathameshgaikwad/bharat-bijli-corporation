@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("customers")
 public class CustomerController {
@@ -25,6 +27,12 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<Customer> saveCustomer(@RequestBody PersonalDetails personalDetails) {
         return ResponseEntity.ok(customerService.saveCustomer(personalDetails));
+    }
+
+    // Endpoint to save a bulk list of customers
+    @PostMapping("/bulk")
+    public ResponseEntity<List<Customer>> saveCustomers(@RequestBody List<PersonalDetails> personalDetailsList) {
+        return ResponseEntity.ok(customerService.saveCustomers(personalDetailsList));
     }
 
     @GetMapping("/{customerId}")

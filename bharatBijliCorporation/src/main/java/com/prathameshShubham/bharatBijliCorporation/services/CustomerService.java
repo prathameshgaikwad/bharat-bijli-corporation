@@ -8,6 +8,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CustomerService {
 
@@ -29,9 +32,15 @@ public class CustomerService {
         return customerRepo.save(newCustomer);
     }
 
-    private String generateCustomerId() {
-        long count = customerRepo.count() + 1; // Get the count of employees and increment
-        return String.format("CUST%06d", count);
+    // Service to save a batch of customers
+    public List<Customer> saveCustomers(List<PersonalDetails> personalDetailsList) {
+        List<Customer> customers = new ArrayList<>();
+
+        for(PersonalDetails individualPersonalDetails: personalDetailsList) {
+            Customer savedCustomer = saveCustomer(individualPersonalDetails);
+            customers.add(savedCustomer);
+        }
+        return customers;
     }
 
     public Customer getCustomer(String customerId) {
@@ -40,5 +49,10 @@ public class CustomerService {
                 .orElseThrow(
                         () -> new EntityNotFoundException("Customer not found for ID: " + customerId)
                 );
+    }
+
+    private String generateCustomerId() {
+        long count = customerRepo.count() + 1; // Get the count of employees and increment
+        return String.format("CUST%010d", count);
     }
 }
