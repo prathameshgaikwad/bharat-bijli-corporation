@@ -1,5 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
+import com.prathameshShubham.bharatBijliCorporation.enums.EmployeeStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.repositories.EmployeeRepo;
@@ -16,13 +17,26 @@ public class EmployeeService {
     @Autowired
     private PersonalDetailsService personalDetailsService;
 
-    public Employee saveEmployee(Employee employee, PersonalDetails personalDetails) {
+    public Employee saveEmployee(PersonalDetails personalDetails) {
         PersonalDetails savedPersonalDetails = personalDetailsService.savePersonalDetails(personalDetails);
-        employee.setPersonalDetails(personalDetails);
-        return employeeRepo.save(employee);
+        String empId = generateEmployeeId();
+
+        // Create a new Employee
+        Employee newEmployee = new Employee();
+        newEmployee.setId(empId);
+        newEmployee.setPersonalDetails(savedPersonalDetails);
+        newEmployee.setEmployeeStatus(EmployeeStatus.ACTIVE);
+
+        // Save the new Employee to the database
+        return employeeRepo.save(newEmployee);
     }
 
-    public Employee getEmployee(Long employeeId) {
+    private String generateEmployeeId() {
+        long count = employeeRepo.count() + 1; // Get the count of employees and increment
+        return String.format("EMP%06d", count);  // Format ID with leading zeros
+    }
+
+    public Employee getEmployee(String employeeId) {
         return employeeRepo
                 .findById(employeeId)
                 .orElseThrow(

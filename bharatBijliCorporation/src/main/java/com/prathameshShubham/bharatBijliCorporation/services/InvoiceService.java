@@ -20,7 +20,7 @@ public class InvoiceService {
     @Autowired
     private EmployeeService employeeService;
 
-    public Invoice saveInvoice(Invoice invoice, Long employeeId) {
+    public Invoice saveInvoice(Invoice invoice, String employeeId) {
         Employee relatedEmployee = employeeService.getEmployee(employeeId);
         invoice.setGeneratedByEmployee(relatedEmployee);
         return invoiceRepo.save(invoice);
