@@ -1,7 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
-import com.prathameshShubham.bharatBijliCorporation.models.EmployeeRequest;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
