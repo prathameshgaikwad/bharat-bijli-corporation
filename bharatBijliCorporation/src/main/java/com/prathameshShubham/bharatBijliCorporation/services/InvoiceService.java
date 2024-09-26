@@ -6,6 +6,9 @@ import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,4 +41,9 @@ public class InvoiceService {
         return invoiceRepo.save(invoice);
     }
 
+    // get a paginated list of the latest invoices belonging to a customer
+    public Page<Invoice> getLatestInvoicesForCustomer(String customerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return invoiceRepo.findByCustomerOrderByCreatedAt(customerId, pageable);
+    }
 }
