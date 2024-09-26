@@ -1,8 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
-import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
+import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +20,21 @@ public class InvoiceService {
     @Autowired
     private EmployeeService employeeService;
 
-    public Invoice saveInvoice(Invoice invoice, String employeeId) {
-        Employee relatedEmployee = employeeService.getEmployee(employeeId);
-        invoice.setGeneratedByEmployee(relatedEmployee);
+    @Autowired
+    private CustomerService customerService;
+
+    public Invoice saveInvoice(InvoiceRequest invoiceRequest) {
+        Invoice invoice = new Invoice();
+
+        invoice.setCustomer(customerService.getCustomer(invoiceRequest.getCustomerId()));
+        invoice.setGeneratedByEmployee(employeeService.getEmployee(invoiceRequest.getEmployeeId()));
+        invoice.setUnitsConsumed(invoiceRequest.getUnitsConsumed());
+        invoice.setTariff(invoiceRequest.getTariff());
+        invoice.setPeriodStartDate(invoiceRequest.getPeriodStartDate());
+        invoice.setPeriodEndDate(invoiceRequest.getPeriodEndDate());
+        invoice.setDueDate(invoiceRequest.getDueDate());
+        invoice.setInvoiceStatus(InvoiceStatus.PENDING);
+
         return invoiceRepo.save(invoice);
     }
 

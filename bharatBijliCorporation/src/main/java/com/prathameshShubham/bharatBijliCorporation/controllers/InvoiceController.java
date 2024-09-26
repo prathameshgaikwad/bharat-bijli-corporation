@@ -31,9 +31,7 @@ public class InvoiceController {
 
     @PostMapping
     public ResponseEntity<Invoice> saveInvoice(@RequestBody InvoiceRequest invoiceRequest) {
-        Invoice invoice = invoiceRequest.getInvoice();
-        String employeeId = invoiceRequest.getEmployeeId();
-        return ResponseEntity.ok(invoiceService.saveInvoice(invoice, employeeId));
+        return ResponseEntity.ok(invoiceService.saveInvoice(invoiceRequest));
     }
 
     @PatchMapping("/{invoiceId}/status")
@@ -46,7 +44,7 @@ public class InvoiceController {
 
     @GetMapping("/{invoiceId}/pdf")
     public ResponseEntity<byte[]> getInvoicePdf(@PathVariable Long invoiceId) throws IOException {
-        Invoice invoice = invoiceService.getInvoice(invoiceId); // Fetch invoice from your service/database
+        Invoice invoice = invoiceService.getInvoice(invoiceId);
         byte[] pdfBytes = pdfService.generatePDF(invoice);
 
         HttpHeaders headers = new HttpHeaders();
