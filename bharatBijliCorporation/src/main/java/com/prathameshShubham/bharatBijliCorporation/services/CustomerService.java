@@ -19,17 +19,17 @@ public class CustomerService {
 
     public Customer saveCustomer(PersonalDetails personalDetails) {
         PersonalDetails savedPersonalDetails = personalDetailsService.savePersonalDetails(personalDetails);
-        String custId = generateCustId();
+        String customerId = generateCustomerId();
 
-        Customer cust  = new Customer();
-        cust.setId(custId);
-        cust.setPersonalDetails(savedPersonalDetails);
-        cust.setServiceConnectionStatus(ServiceConnectionStatus.ACTIVE);
+        Customer newCustomer  = new Customer();
+        newCustomer.setId(customerId);
+        newCustomer.setPersonalDetails(savedPersonalDetails);
+        newCustomer.setServiceConnectionStatus(ServiceConnectionStatus.ACTIVE);
 
-        return customerRepo.save(cust);
+        return customerRepo.save(newCustomer);
     }
 
-    private String generateCustId() {
+    private String generateCustomerId() {
         long count = customerRepo.count() + 1; // Get the count of employees and increment
         return String.format("CUST%06d", count);
     }
