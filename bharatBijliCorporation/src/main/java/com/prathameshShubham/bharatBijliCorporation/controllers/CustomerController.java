@@ -29,8 +29,8 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.saveCustomer(personalDetails));
     }
 
-    // Endpoint to save a bulk list of customers
-    @PostMapping("/bulk")
+    // Endpoint to save a bulk json array of customers
+    @PostMapping("/bulk-json")
     public ResponseEntity<List<Customer>> saveCustomers(@RequestBody List<PersonalDetails> personalDetailsList) {
         return ResponseEntity.ok(customerService.saveCustomers(personalDetailsList));
     }
