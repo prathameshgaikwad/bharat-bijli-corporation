@@ -6,6 +6,9 @@ import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.TransactionRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,5 +47,10 @@ public class TransactionService {
         transaction.setTransactionMethod(method);
         transaction.setDescription(description);
         return transactionRepo.save(transaction);
+    }
+
+    public Page<Transaction> getLatestTransactionsByCustomer(String customerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return transactionRepo.findByCustomerOrderByCreatedAt(customerId, pageable);
     }
 }

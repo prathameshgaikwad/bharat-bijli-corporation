@@ -1,11 +1,9 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
-import com.prathameshShubham.bharatBijliCorporation.models.Customer;
-import com.prathameshShubham.bharatBijliCorporation.models.CustomerRequest;
-import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
-import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
+import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
+import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +18,9 @@ public class CustomerController {
 
     @Autowired
     private InvoiceService invoiceService;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @PostMapping
     public ResponseEntity<Customer> saveCustomer(@RequestBody CustomerRequest customerRequest) {
@@ -43,5 +44,16 @@ public class CustomerController {
     ) {
         Page<Invoice> invoices = invoiceService.getLatestInvoicesForCustomer(customerId, page, size);
         return ResponseEntity.ok(invoices);
+    }
+
+    // Endpoint to fetch paginated list of latest transactions done by a customer
+    @GetMapping("/{customerId}/transactions")
+    public ResponseEntity<Page<Transaction>> getCustomerTransactions(
+            @PathVariable String customerId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<Transaction> transactions = transactionService.getLatestTransactionsByCustomer(customerId, page, size);
+        return ResponseEntity.ok(transactions);
     }
 }
