@@ -6,9 +6,12 @@ import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,10 +32,16 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.saveCustomer(personalDetails));
     }
 
-    // Endpoint to save a bulk json array of customers
-    @PostMapping("/bulk-json")
-    public ResponseEntity<List<Customer>> saveCustomers(@RequestBody List<PersonalDetails> personalDetailsList) {
-        return ResponseEntity.ok(customerService.saveCustomers(personalDetailsList));
+    // Endpoint to save a csv file of customers
+    @PostMapping("/bulk-csv-upload")
+    public ResponseEntity<String> saveCustomers(@RequestParam("file") MultipartFile file) {
+        try {
+            List<PersonalDetails> personalDetailsList = customerService.parseCsvToCustomers(file);
+            customerService.saveCustomers(personalDetailsList);
+            return ResponseEntity.ok("Customers saved successfully");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save customers: " + e.getMessage());
+        }
     }
 
     @GetMapping("/{customerId}")

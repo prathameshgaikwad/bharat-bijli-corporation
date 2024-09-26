@@ -7,7 +7,11 @@ import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +57,42 @@ public class CustomerService {
 
     private String generateCustomerId() {
         long count = customerRepo.count() + 1; // Get the count of employees and increment
-        return String.format("CUST%010d", count);
+        return String.format("CUST%06d", count);
+    }
+
+    public List<PersonalDetails> parseCsvToCustomers(MultipartFile file) throws IOException {
+        List<PersonalDetails> personalDetailsList = new ArrayList<>();
+
+        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            reader.readLine();
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                String firstName = data[0];
+                String lastName = data[1];
+                String emailId = data[2];
+                String phoneNumber = data[3];
+                String address = data[4];
+                String city = data[5];
+                String pincode = data[6];
+                String state = data[7];
+                String dateOfBirth = data[8];
+
+                PersonalDetails personalDetails = new PersonalDetails();
+                personalDetails.setFirstName(firstName);
+                personalDetails.setLastName(lastName);
+                personalDetails.setEmailId(emailId);
+                personalDetails.setPhoneNumber(phoneNumber);
+                personalDetails.setAddress(address);
+                personalDetails.setCity(city);
+                personalDetails.setPincode(Integer.valueOf(pincode));
+                personalDetails.setState(state);
+                personalDetails.setState(dateOfBirth);
+
+                personalDetailsList.add(personalDetails);
+            }
+        }
+        return personalDetailsList;
     }
 }
