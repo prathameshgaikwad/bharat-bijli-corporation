@@ -35,12 +35,16 @@ public class CustomerController {
     // Endpoint to save a csv file of customers
     @PostMapping("/bulk-csv-upload")
     public ResponseEntity<String> saveCustomers(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+        }
+
         try {
-            List<PersonalDetails> personalDetailsList = customerService.parseCsvToCustomers(file);
-            customerService.saveCustomers(personalDetailsList);
-            return ResponseEntity.ok("Customers saved successfully");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save customers: " + e.getMessage());
+            String result = customerService.uploadCsv(file);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error while processing the file: " + e.getMessage());
         }
     }
 

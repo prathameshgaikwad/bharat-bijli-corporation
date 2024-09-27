@@ -1,6 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
+import com.opencsv.CSVReader;
 import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatus;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
@@ -14,7 +16,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CustomerService {
@@ -61,39 +65,45 @@ public class CustomerService {
         return String.format("CUST%06d", count);
     }
 
-    public List<PersonalDetails> parseCsvToCustomers(MultipartFile file) throws IOException {
-        List<PersonalDetails> personalDetailsList = new ArrayList<>();
-
-        try(BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
-            String line;
-            reader.readLine();
-
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                String firstName = data[0];
-                String lastName = data[1];
-                String emailId = data[2];
-                String phoneNumber = data[3];
-                String address = data[4];
-                String city = data[5];
-                String pincode = data[6];
-                String state = data[7];
-                LocalDate dateOfBirth = LocalDate.parse(data[8]);
-
-                PersonalDetails personalDetails = new PersonalDetails();
-                personalDetails.setFirstName(firstName);
-                personalDetails.setLastName(lastName);
-                personalDetails.setEmailId(emailId);
-                personalDetails.setPhoneNumber(phoneNumber);
-                personalDetails.setAddress(address);
-                personalDetails.setCity(city);
-                personalDetails.setPincode(Integer.valueOf(pincode));
-                personalDetails.setState(state);
-                personalDetails.setDateOfBirth(dateOfBirth);
-
-                personalDetailsList.add(personalDetails);
-            }
+    public String uploadCsv(MultipartFile file) throws Exception {
+        if (!file.getOriginalFilename().endsWith(".csv")) {
+            throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
         }
-        return personalDetailsList;
+        CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()));
+
+        // Read the header row
+        String[] headers = csvReader.readNext();
+        if (headers == null) {
+            throw new Exception("CSV file is empty.");
+        }
+
+        // Dynamically map column names to values using a list of maps
+        String[] nextLine;
+        while ((nextLine = csvReader.readNext()) != null) {
+            Map<String, String> row = new HashMap<>();
+            for (int i = 0; i < headers.length; i++) {
+                row.put(headers[i], nextLine[i]);
+            }
+
+            saveToDatabase(row);
+        }
+        return "File uploaded and processed successfully.";
+    }
+
+
+    private void saveToDatabase(Map<String, String> rowData) {
+        PersonalDetails personalDetails = new PersonalDetails();
+
+        personalDetails.setDateOfBirth(LocalDate.parse(rowData.get("dateOfBirth")));
+        personalDetails.setCity(rowData.get("city"));
+        personalDetails.setAddress(rowData.get("address"));
+        personalDetails.setEmailId(rowData.get("emailId"));
+        personalDetails.setPincode(Integer.parseInt(rowData.get("pincode")));
+        personalDetails.setFirstName(rowData.get("firstName"));
+        personalDetails.setLastName(rowData.get("lastName"));
+        personalDetails.setPhoneNumber(rowData.get("phoneNumber"));
+        personalDetails.setState(rowData.get("state"));
+
+        saveCustomer(personalDetails);
     }
 }
