@@ -28,13 +28,22 @@
         Please enter your Customer ID to continue
       </p>
     </div>
-    <form>
-      <input id="username" type="text" pInputText placeholder="Customer ID" />
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input
+        id="customerId"
+        type="text"
+        pInputText
+        placeholder="Customer ID"
+        name="customerId"
+        formControlName="customerId"
+      />
       <p-button
         label="Continue"
         icon="pi pi-arrow-right"
         iconPos="right"
         [rounded]="true"
+        type="submit"
+        [disabled]="loginForm.invalid"
       />
     </form>
     <span class="sign-up">
