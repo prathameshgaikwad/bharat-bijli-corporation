@@ -8,8 +8,6 @@ import {
 
 import { AuthService } from '../../shared/services/auth.service';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { CheckboxModule } from 'primeng/checkbox';
 import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { Router } from '@angular/router';
@@ -17,14 +15,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CheckboxModule,
-    InputTextModule,
-    ButtonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    CardModule,
-  ],
+  imports: [InputTextModule, ButtonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
