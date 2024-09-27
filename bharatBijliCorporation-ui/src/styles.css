@@ -1,5 +1,46 @@
 @import "primeicons/primeicons.css";
 
-* {
+body {
+  margin: 0;
+  padding: 0;
   font-family: "Inter", sans-serif;
+  color: #323232;
+}
+
+.subtitle {
+  color: #323232;
+  font-weight: 550;
+  font-size: 1.05rem;
+  opacity: 0.8;
+}
+
+.heading {
+  font-weight: 700;
+  text-align: center;
+  line-height: 110%;
+  letter-spacing: -0.05rem;
+  /* font-size: 3.5rem; */
+  padding: 8px;
+  margin: 0;
+  color: transparent;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 20, 20, 0.9),
+    rgba(40, 40, 40, 0.8)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.separator {
+  scale: 0.35;
+  color: #444242;
+  opacity: 0.25;
+}
+
+.logo {
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.85;
 }
