@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class CustomerService {
                 String city = data[5];
                 String pincode = data[6];
                 String state = data[7];
-                String dateOfBirth = data[8];
+                LocalDate dateOfBirth = LocalDate.parse(data[8]);
 
                 PersonalDetails personalDetails = new PersonalDetails();
                 personalDetails.setFirstName(firstName);
@@ -88,7 +89,7 @@ public class CustomerService {
                 personalDetails.setCity(city);
                 personalDetails.setPincode(Integer.valueOf(pincode));
                 personalDetails.setState(state);
-                personalDetails.setState(dateOfBirth);
+                personalDetails.setDateOfBirth(dateOfBirth);
 
                 personalDetailsList.add(personalDetails);
             }
