@@ -1,14 +1,17 @@
+import { Router, RouterOutlet } from '@angular/router';
+
+import { CommonModule } from '@angular/common';
 import { CompanyLogoComponent } from './shared/components/company-logo/company-logo.component';
 import { Component } from '@angular/core';
 import { CustomerNavbarComponent } from './customer/customer-navbar/customer-navbar.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     RouterOutlet,
     LoginComponent,
     RegisterComponent,
@@ -19,5 +22,19 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'bharatBijliCorporation-ui';
+  showNavbar = true;
+
+  constructor(private router: Router) {
+    // Subscribe to route changes
+    this.router.events.subscribe((event: any) => {
+      if (event.url) {
+        // Check if the route is 'login' or 'register'
+        if (event.url === '/login' || event.url === '/register') {
+          this.showNavbar = false;
+        } else {
+          this.showNavbar = true;
+        }
+      }
+    });
+  }
 }
