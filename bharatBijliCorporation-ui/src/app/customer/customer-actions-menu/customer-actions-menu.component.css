@@ -1,0 +1,10 @@
+.username {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin: 0 0.8rem;
+}
+
+:host ::ng-deep .p-button {
+  padding: 0.7rem;
+  margin-right: 1.5rem;
+}
