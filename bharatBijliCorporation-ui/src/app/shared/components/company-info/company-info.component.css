@@ -1,0 +1,31 @@
+.company-name {
+  font-size: 3.5rem;
+  margin-top: 2rem;
+  font-weight: 800;
+}
+
+.welcome {
+  font-size: 2.5rem;
+}
+.part {
+  width: 49.5vw;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+ul {
+  width: 100%;
+  list-style-type: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
