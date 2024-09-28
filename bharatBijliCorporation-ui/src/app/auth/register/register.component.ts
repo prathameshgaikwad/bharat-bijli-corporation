@@ -12,6 +12,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +25,7 @@ import { InputTextModule } from 'primeng/inputtext';
     FloatLabelModule,
     InputGroupModule,
     InputGroupAddonModule,
+    RouterModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
