@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
 import { Component } from '@angular/core';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -28,6 +29,7 @@ import { RouterModule } from '@angular/router';
     InputGroupAddonModule,
     RouterModule,
     CompanyInfoComponent,
+    CalendarModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',

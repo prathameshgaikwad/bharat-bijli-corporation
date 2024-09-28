@@ -54,19 +54,11 @@
   gap: 1.83rem;
   padding: 0 3rem;
 
-  input {
-    border-radius: 2rem;
-    font-weight: 500;
-    font-size: 0.85rem;
-    width: 100%;
-  }
-
   p-floatLabel {
     font-size: 0.85rem;
   }
 
-  .phone-number-input,
-  #dateOfBirth {
+  .phone-number-input {
     border-radius: 0 2rem 2rem 0;
   }
 
@@ -80,16 +72,25 @@
     font-size: 0.85rem;
   }
 
-  .date-input-group {
-    p-inputgroupaddon {
-      white-space: nowrap;
-      padding: 0 8px;
-    }
-  }
-
   #address {
     grid-column: span 2;
   }
+}
+
+:host ::ng-deep .p-calendar .p-inputtext,
+.form-group input {
+  border-radius: 2rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+:host ::ng-deep .p-calendar .p-inputtext {
+  border-radius: 0 2rem 2rem 0;
+}
+
+:host ::ng-deep .p-calendar .p-datepicker {
+  scale: 0.85;
 }
 
 p-button {
