@@ -4,6 +4,7 @@ nav {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 :host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
