@@ -22,7 +22,7 @@ export class CustomerNavbarComponent implements OnInit {
         icon: 'pi pi-home',
       },
       {
-        label: 'Your Bills',
+        label: 'Invoices',
         icon: 'pi pi-receipt',
       },
       {
