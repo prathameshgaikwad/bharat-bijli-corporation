@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
