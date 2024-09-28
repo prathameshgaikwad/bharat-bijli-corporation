@@ -24,6 +24,7 @@ public class Invoice {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
+    @JsonIgnore
     private Employee generatedByEmployee;
 
     @Column(nullable = false)
