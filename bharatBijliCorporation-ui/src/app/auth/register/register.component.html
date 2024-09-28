@@ -93,7 +93,7 @@
           />
           <label for="pincode">Pincode</label>
         </p-floatLabel>
-        <p-inputGroup class="date-input-group">
+        <!-- <p-inputGroup class="date-input-group">
           <p-inputGroupAddon>DOB</p-inputGroupAddon>
           <input
             id="dateOfBirth"
@@ -102,6 +102,17 @@
             name="dateOfBirth"
             formControlName="dateOfBirth"
           />
+        </p-inputGroup> -->
+        <p-inputGroup class="date-input-group">
+          <p-inputGroupAddon>DOB</p-inputGroupAddon>
+          <p-floatLabel>
+            <p-calendar
+              name="dateOfBirth"
+              formControlName="dateOfBirth"
+              inputId="dateOfBirth"
+            />
+            <label for="dateOfBirth">dd/mm/yyyy</label>
+          </p-floatLabel>
         </p-inputGroup>
       </div>
       <div style="display: flex">
