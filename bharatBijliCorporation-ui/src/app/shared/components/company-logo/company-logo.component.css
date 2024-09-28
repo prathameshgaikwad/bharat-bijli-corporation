@@ -1,0 +1,18 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 2rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+
+  h1 {
+    font-size: 1.35rem;
+    letter-spacing: -0.05rem;
+    font-weight: 800;
+
+    span {
+      font-weight: 300;
+    }
+  }
+}

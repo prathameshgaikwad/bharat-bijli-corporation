@@ -1,3 +1,5 @@
+import { CompanyInfoComponent } from './shared/components/company-info/company-info.component';
+import { CompanyLogoComponent } from './shared/components/company-logo/company-logo.component';
 import { Component } from '@angular/core';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
@@ -6,7 +8,12 @@ import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, LoginComponent, RegisterComponent],
+  imports: [
+    RouterOutlet,
+    LoginComponent,
+    RegisterComponent,
+    CompanyLogoComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
