@@ -3,8 +3,10 @@
   severity="contrast"
   rounded="true"
   link="true"
-  routerLink="/profile"
+  (onClick)="menu.toggle($event)"
 >
   <p-avatar icon="pi pi-user" class="mr-2" size="normal" shape="circle" />
   <span class="username">{{ username }}</span>
+  <i class="pi pi-chevron-down"></i>
 </p-button>
+<p-menu #menu [model]="items" [popup]="true" />
