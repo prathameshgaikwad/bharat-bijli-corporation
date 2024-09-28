@@ -1,0 +1,13 @@
+nav {
+  display: inline-flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+:host ::ng-deep .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {
+  padding-bottom: 2rem;
+  padding-top: 2rem;
+  font-weight: 550;
+}

@@ -1,6 +1,6 @@
-import { CompanyInfoComponent } from './shared/components/company-info/company-info.component';
 import { CompanyLogoComponent } from './shared/components/company-logo/company-logo.component';
 import { Component } from '@angular/core';
+import { CustomerNavbarComponent } from './customer/customer-navbar/customer-navbar.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { RouterOutlet } from '@angular/router';
@@ -13,6 +13,7 @@ import { RouterOutlet } from '@angular/router';
     LoginComponent,
     RegisterComponent,
     CompanyLogoComponent,
+    CustomerNavbarComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
