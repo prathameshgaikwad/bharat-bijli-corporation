@@ -1,0 +1,9 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="otpForm">
+  <p-inputOtp name="otp" formControlName="otp" [length]="6"></p-inputOtp>
+  <p-button
+    label="Confirm"
+    [rounded]="true"
+    type="submit"
+    [disabled]="otpForm.invalid"
+  />
+</form>

@@ -3,11 +3,19 @@
   <div class="part right">
     <div style="text-align: center">
       <h1 class="heading welcome">Welcome back!</h1>
+      @if (showOtpComponent) {
+      <p class="subtitle small-subtitle">We've sent you an OTP</p>
+      } @else {
       <p class="subtitle small-subtitle">
         Please enter your Customer ID to continue
       </p>
+      }
     </div>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form
+      *ngIf="!showOtpComponent"
+      [formGroup]="loginForm"
+      (ngSubmit)="onSubmit()"
+    >
       <input
         id="customerId"
         type="text"
@@ -25,9 +33,16 @@
         [disabled]="loginForm.invalid"
       />
     </form>
+    <div *ngIf="showOtpComponent">
+      <app-otp-input></app-otp-input>
+    </div>
     <span class="sign-up">
+      @if (!showOtpComponent) {
       <p>Don't have an account?</p>
       <a routerLink="/register">Sign Up</a>
+      } @else {
+      <p>For your security, do not share this OTP with anyone.</p>
+      }
     </span>
   </div>
 </div>
