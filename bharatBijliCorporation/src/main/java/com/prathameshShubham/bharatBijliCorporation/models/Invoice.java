@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Invoice {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
+    @JsonIgnore
     private Employee generatedByEmployee;
 
     @Column(nullable = false)
