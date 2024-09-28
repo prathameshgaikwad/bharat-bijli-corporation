@@ -9,6 +9,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { AuthService } from '../../shared/services/auth.service';
 import { ButtonModule } from 'primeng/button';
+import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
 import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 
@@ -21,6 +22,7 @@ import { InputTextModule } from 'primeng/inputtext';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
+    CompanyInfoComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',

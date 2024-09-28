@@ -11,11 +11,6 @@
   justify-content: center;
   align-items: center;
 }
-.company-name {
-  font-size: 3.5rem;
-  margin-top: 2rem;
-  font-weight: 800;
-}
 
 .welcome {
   font-size: 2.5rem;
@@ -33,15 +28,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-}
-
-ul {
-  width: 100%;
-  list-style-type: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0;
 }
 
 .sign-up {
@@ -73,7 +59,6 @@ form {
   input {
     border-radius: 2rem;
     font-weight: 500;
-    border-width: 2px;
   }
   input::placeholder {
     font-weight: 400;

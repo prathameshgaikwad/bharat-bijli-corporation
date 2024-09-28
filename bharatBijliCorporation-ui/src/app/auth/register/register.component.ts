@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
 import { Component } from '@angular/core';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -26,6 +27,7 @@ import { RouterModule } from '@angular/router';
     InputGroupModule,
     InputGroupAddonModule,
     RouterModule,
+    CompanyInfoComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',
