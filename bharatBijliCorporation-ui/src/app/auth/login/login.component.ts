@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
-import { AuthService } from '../../shared/services/auth.service';
+import { AuthService } from '../../core/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
