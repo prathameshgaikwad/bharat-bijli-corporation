@@ -8,7 +8,7 @@ import {
 
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
-import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
+import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';
 import { Component } from '@angular/core';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -28,8 +28,8 @@ import { RouterModule } from '@angular/router';
     InputGroupModule,
     InputGroupAddonModule,
     RouterModule,
-    CompanyInfoComponent,
     CalendarModule,
+    CompanyOverviewComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css',

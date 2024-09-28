@@ -10,7 +10,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { CompanyInfoComponent } from '../../shared/components/company-info/company-info.component';
+import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';
 import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.component';
@@ -24,9 +24,9 @@ import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.c
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    CompanyInfoComponent,
     OtpInputComponent,
     CommonModule,
+    CompanyOverviewComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
