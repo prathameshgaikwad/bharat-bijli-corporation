@@ -1,8 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.jwt;
 
-import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,18 +23,30 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
+        if (request.getRequestURI().startsWith("/auth/")) {
+            filterChain.doFilter(request, response); // Proceed without processing JWT
+            return;
+        }
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwtToken = authorizationHeader.substring(7);  // Extract JWT
-            String userId = JwtUtil.extractClaims(jwtToken).getSubject();  // Extract user ID from token
+        String jwtToken = null;
+        Cookie[] cookies = request.getCookies();
 
-            if (JwtUtil.validateToken(jwtToken, userId)) {  // Validate token
-                String role = JwtUtil.extractRole(jwtToken);
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userId, null, getRoleAuth(role) );
-                SecurityContextHolder.getContext().setAuthentication(authentication);  // Set authentication
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookie.getName().equals("jwt")) {
+                    jwtToken = cookie.getValue();
+                    break;
+                }
             }
+        }
+
+        String userId = JwtUtil.extractClaims(jwtToken).getSubject();  // Extract user ID from token
+
+        if (JwtUtil.validateToken(jwtToken, userId)) {  // Validate token
+            String role = JwtUtil.extractRole(jwtToken);
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userId, null, getRoleAuth(role) );
+            SecurityContextHolder.getContext().setAuthentication(authentication);  // Set authentication
         }
 
         filterChain.doFilter(request, response);  // Continue the filter chain
