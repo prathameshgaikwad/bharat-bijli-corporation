@@ -13,9 +13,26 @@ export interface LoginRequest {
   otp: string;
 }
 
+export interface PersonalDetails {
+  firstName: string;
+  lastName: string;
+  emailId: string;
+  phoneNumber: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: number;
+  dateOfBirth: Date;
+}
+
 export interface LoginResponse {
   message: string;
   role: string;
+}
+
+export interface RegistrationResponse {
+  customerId: string;
+  firstName: string;
 }
 
 @Injectable({
@@ -35,6 +52,18 @@ export class AuthService {
     return this.http.post<LoginResponse>(
       `${this.baseUrl}/login`,
       loginRequest,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      }
+    );
+  }
+
+  register(personalDetails: PersonalDetails): Observable<RegistrationResponse> {
+    return this.http.post<RegistrationResponse>(
+      `${this.baseUrl}/register`,
+      personalDetails,
       {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
