@@ -3,12 +3,14 @@ package com.prathameshShubham.bharatBijliCorporation.controllers;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.LoginRequest;
+import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -124,6 +125,28 @@ public class AuthController {
                         "role",role
                 )
         );
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody PersonalDetails personalDetails) {
+        try {
+            Customer newCustomer = customerService.saveCustomer(personalDetails);
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("customer",newCustomer));
+        } catch (DataIntegrityViolationException exception) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    Map.of(
+                            "message",
+                            "Please use another Email Id"
+                    )
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    Map.of(
+                            "message",
+                            e.getMessage()
+                    )
+            );
+        }
     }
 
     // Helper method to retrieve user (Employee or Customer) and set role
