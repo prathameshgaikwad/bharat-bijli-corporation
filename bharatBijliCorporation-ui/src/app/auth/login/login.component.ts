@@ -50,22 +50,6 @@ export class LoginComponent {
     return this.loginForm.get('userId')?.value || '';
   }
 
-  showErrorToast(errorMessage: string) {
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: errorMessage,
-    });
-  }
-
-  showOtpToast(otp: string) {
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: `OTP received:  ${otp}`,
-    });
-  }
-
   setOtpComponentVisible() {
     this.showOtpComponent = true;
   }
@@ -76,11 +60,18 @@ export class LoginComponent {
     this.authService.getOtp(userId).subscribe({
       next: (response) => {
         this.setOtpComponentVisible();
-        this.showOtpToast(response.otp);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: `OTP received:  ${response.otp}`,
+        });
       },
       error: (error) => {
-        console.error('Failure: ', error);
-        this.showErrorToast(error.error.error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error.error,
+        });
       },
     });
   }
