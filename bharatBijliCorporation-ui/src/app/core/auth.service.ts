@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -6,6 +6,16 @@ import { Observable } from 'rxjs';
 interface OtpResponse {
   message: string;
   otp: string;
+}
+
+export interface LoginRequest {
+  userId: string;
+  otp: string;
+}
+
+export interface LoginResponse {
+  message: string;
+  role: string;
 }
 
 @Injectable({
@@ -21,7 +31,15 @@ export class AuthService {
     return this.http.get<OtpResponse>(`${this.baseUrl}/getOtp`, { params });
   }
 
-  login(customerId: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, customerId);
+  login(loginRequest: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/login`,
+      loginRequest,
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      }
+    );
   }
 }

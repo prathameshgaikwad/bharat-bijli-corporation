@@ -5,7 +5,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
 
 import { AuthService } from '../../core/auth.service';
 import { ButtonModule } from 'primeng/button';
@@ -14,6 +13,7 @@ import { CompanyOverviewComponent } from '../../shared/components/company-overvi
 import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -34,16 +34,20 @@ import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.c
 export class LoginComponent {
   showOtpComponent: boolean = false;
   protected loginForm = new FormGroup({
-    customerId: new FormControl('', [Validators.required]),
+    userId: new FormControl('', [Validators.required]),
   });
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
+
+  getUserId() {
+    return this.loginForm.get('userId')?.value || '';
+  }
 
   onSubmit() {
-    const customerId = this.loginForm.get('customerId')?.value || '';
+    const userId = this.loginForm.get('userId')?.value || '';
 
     this.showOtpComponent = true;
-    this.authService.getOtp(customerId).subscribe({
+    this.authService.getOtp(userId).subscribe({
       next: (response) => {
         alert(`OTP received:  ${response.otp}`);
       },
