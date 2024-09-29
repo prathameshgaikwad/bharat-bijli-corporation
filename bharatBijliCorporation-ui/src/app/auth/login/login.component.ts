@@ -43,14 +43,13 @@ export class LoginComponent {
     const customerId = this.loginForm.get('customerId')?.value || '';
 
     this.showOtpComponent = true;
-    // this.authService.login(customerId).subscribe({
-    //   next: (response) => {
-    //     console.log('Login successful', response);
-    //     // Optionally store user info or token and navigate to dashboard
-    //   },
-    //   error: (error) => {
-    //     console.error('Login failed', error);
-    //   },
-    // });
+    this.authService.getOtp(customerId).subscribe({
+      next: (response) => {
+        alert(`OTP received:  ${response.otp}`);
+      },
+      error: (error) => {
+        console.error('Failure: ', error);
+      },
+    });
   }
 }
