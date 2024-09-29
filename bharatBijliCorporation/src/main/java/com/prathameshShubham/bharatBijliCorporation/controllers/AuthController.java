@@ -87,11 +87,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
 
         // Verify the OTP
         if (!loginRequest.getOtp().equals(generatedOtp)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid OTP");
+            Map<String, String> JSONErrorResponse = new HashMap<>();
+            JSONErrorResponse.put("message", "Invalid OTP");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);
         }
 
         // Retrieve the user (Employee or Customer)
@@ -99,15 +101,18 @@ public class AuthController {
 
         // Check if the user exists
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User ID does not exist");
+            Map<String, String> JSONErrorResponse = new HashMap<>();
+            JSONErrorResponse.put("message", "User ID does not exist");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);
         }
-
 
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
 
         // Return the JWT token in the response
-        return ResponseEntity.ok(token);
+        Map<String, String> JSONLoginResponse = new HashMap<>();
+        JSONLoginResponse.put("token", token);
+        return ResponseEntity.ok(JSONLoginResponse);
     }
 
     // Helper method to retrieve user (Employee or Customer) and set role
