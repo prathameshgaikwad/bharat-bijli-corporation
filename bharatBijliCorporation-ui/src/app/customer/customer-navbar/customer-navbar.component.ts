@@ -20,17 +20,17 @@ export class CustomerNavbarComponent implements OnInit {
       {
         label: 'Home',
         icon: 'pi pi-home',
-        routerLink: '/dashboard',
+        routerLink: '/customer/dashboard',
       },
       {
         label: 'Invoices',
         icon: 'pi pi-receipt',
-        routerLink: '/invoices',
+        routerLink: '/customer/invoices',
       },
       {
         label: 'Payments',
         icon: 'pi pi-money-bill',
-        routerLink: '/payments',
+        routerLink: '/customer/payments',
       },
     ];
   }

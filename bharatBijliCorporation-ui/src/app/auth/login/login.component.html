@@ -17,12 +17,12 @@
       (ngSubmit)="onSubmit()"
     >
       <input
-        id="customerId"
+        id="userId"
         type="text"
         pInputText
         placeholder="Customer ID"
-        name="customerId"
-        formControlName="customerId"
+        name="userId"
+        formControlName="userId"
       />
       <p-button
         label="Continue"
@@ -34,7 +34,7 @@
       />
     </form>
     <div *ngIf="showOtpComponent">
-      <app-otp-input></app-otp-input>
+      <app-otp-input [userId]="getUserId()"></app-otp-input>
     </div>
     <span class="sign-up">
       @if (!showOtpComponent) {

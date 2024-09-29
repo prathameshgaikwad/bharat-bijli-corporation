@@ -12,21 +12,21 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'dashboard',
+    path: 'customer/dashboard',
     loadComponent: () =>
       import('./customer/customer-dashboard/customer-dashboard.component').then(
         (m) => m.CustomerDashboardComponent
       ),
   },
   {
-    path: 'invoices',
+    path: 'customer/invoices',
     loadComponent: () =>
       import('./customer/invoices/invoices.component').then(
         (m) => m.InvoicesComponent
       ),
   },
   {
-    path: 'payments',
+    path: 'customer/payments',
     loadComponent: () =>
       import('./customer/payments/payments.component').then(
         (m) => m.PaymentsComponent

@@ -1,3 +1,5 @@
+import { AuthService, LoginRequest } from '../../../core/auth.service';
+import { Component, Input } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -7,8 +9,8 @@ import {
 } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
-import { Component } from '@angular/core';
 import { InputOtpModule } from 'primeng/inputotp';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-otp-input',
@@ -19,6 +21,8 @@ import { InputOtpModule } from 'primeng/inputotp';
 })
 export class OtpInputComponent {
   length: number = 6;
+  @Input({ required: true }) userId!: string;
+
   otpForm = new FormGroup({
     otp: new FormControl(null, [
       Validators.required,
@@ -26,9 +30,27 @@ export class OtpInputComponent {
     ]),
   });
 
+  constructor(private authService: AuthService, private router: Router) {}
+
   onSubmit() {
     if (this.otpForm.valid) {
-      alert(this.otpForm.value);
+      const loginRequest: LoginRequest = {
+        userId: this.userId,
+        otp: this.otpForm.value.otp || '',
+      };
+
+      this.authService.login(loginRequest).subscribe({
+        next: (response) => {
+          if (response.role === 'CUSTOMER') {
+            this.router.navigate(['/customer/dashboard']);
+          } else {
+            this.router.navigate(['/employee/dashboard']);
+          }
+        },
+        error: (err) => {
+          console.error('Login failed: ', err);
+        },
+      });
     }
   }
 }
