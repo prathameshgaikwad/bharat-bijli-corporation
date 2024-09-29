@@ -8,10 +8,14 @@ import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
@@ -27,9 +31,6 @@ public class AuthController {
     private CustomerService customerService;
 
     @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
     private JavaMailSender javaMailSender;
 
     @GetMapping("/test")
@@ -37,19 +38,24 @@ public class AuthController {
         return ResponseEntity.ok("Testing Successful.");
     }
 
-    @GetMapping("/getOtp")
-    public ResponseEntity<String> getOtp(@RequestBody String id) {
+    @GetMapping(value = "/getOtp", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getOtp(@RequestParam String id) {
         String email;
 
         try {
             email = getEmailById(id);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(401).body(e.getMessage());  // Return error message
+            Map<String, String> JSONErrorResponse = new HashMap<>();
+            JSONErrorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);  // Return error message
         }
         
         generatedOtp = String.valueOf((int) ((Math.random() * 900000) + 100000));  // Random 6-digit OTP
 //        sendEmail(email, generatedOtp);
-        return ResponseEntity.ok("OTP sent to email: " + email + " " + generatedOtp);
+        Map<String, String> JSONResponse = new HashMap<>();
+        JSONResponse.put("message", "OTP sent to email: " + email);
+        JSONResponse.put("otp", generatedOtp);
+        return ResponseEntity.ok(JSONResponse);
     }
 
     private void sendEmail(String email, String otp) {
@@ -98,7 +104,7 @@ public class AuthController {
 
 
         // Generate a JWT token for the user with role
-        String token = jwtUtil.generateToken(loginRequest.getUserId(), role);
+        String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
 
         // Return the JWT token in the response
         return ResponseEntity.ok(token);
