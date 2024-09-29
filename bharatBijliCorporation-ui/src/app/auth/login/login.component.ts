@@ -12,8 +12,10 @@ import { CommonModule } from '@angular/common';
 import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';
 import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageService } from 'primeng/api';
 import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.component';
 import { RouterModule } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
@@ -27,9 +29,11 @@ import { RouterModule } from '@angular/router';
     OtpInputComponent,
     CommonModule,
     CompanyOverviewComponent,
+    ToastModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
+  providers: [MessageService],
 })
 export class LoginComponent {
   showOtpComponent: boolean = false;
@@ -37,22 +41,46 @@ export class LoginComponent {
     userId: new FormControl('', [Validators.required]),
   });
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private messageService: MessageService
+  ) {}
 
   getUserId() {
     return this.loginForm.get('userId')?.value || '';
   }
 
+  showErrorToast(errorMessage: string) {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: errorMessage,
+    });
+  }
+
+  showOtpToast(otp: string) {
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: `OTP received:  ${otp}`,
+    });
+  }
+
+  setOtpComponentVisible() {
+    this.showOtpComponent = true;
+  }
+
   onSubmit() {
     const userId = this.loginForm.get('userId')?.value || '';
 
-    this.showOtpComponent = true;
     this.authService.getOtp(userId).subscribe({
       next: (response) => {
-        alert(`OTP received:  ${response.otp}`);
+        this.setOtpComponentVisible();
+        this.showOtpToast(response.otp);
       },
       error: (error) => {
         console.error('Failure: ', error);
+        this.showErrorToast(error.error.error);
       },
     });
   }
