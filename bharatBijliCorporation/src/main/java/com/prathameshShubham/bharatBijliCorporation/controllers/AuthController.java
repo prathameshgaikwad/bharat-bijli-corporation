@@ -47,17 +47,17 @@ public class AuthController {
         try {
             email = getEmailById(id);
         } catch (IllegalArgumentException e) {
-            Map<String, String> JSONErrorResponse = new HashMap<>();
-            JSONErrorResponse.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);  // Return error message
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));  // Return error message
         }
         
         generatedOtp = String.valueOf((int) ((Math.random() * 900000) + 100000));  // Random 6-digit OTP
 //        sendEmail(email, generatedOtp);
-        Map<String, String> JSONResponse = new HashMap<>();
-        JSONResponse.put("message", "OTP sent to email: " + email);
-        JSONResponse.put("otp", generatedOtp);
-        return ResponseEntity.ok(JSONResponse);
+        return ResponseEntity.ok(
+                Map.of(
+                    "message",  "OTP sent to email: " + email,
+                    "otp", generatedOtp
+                )
+        );
     }
 
     private void sendEmail(String email, String otp) {
@@ -93,9 +93,9 @@ public class AuthController {
 
         // Verify the OTP
         if (!loginRequest.getOtp().equals(generatedOtp)) {
-            Map<String, String> JSONErrorResponse = new HashMap<>();
-            JSONErrorResponse.put("message", "Invalid OTP");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    Map.of("message", "Invalid OTP")
+            );
         }
 
         // Retrieve the user (Employee or Customer)
@@ -103,9 +103,9 @@ public class AuthController {
 
         // Check if the user exists
         if (user == null) {
-            Map<String, String> JSONErrorResponse = new HashMap<>();
-            JSONErrorResponse.put("message", "User ID does not exist");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JSONErrorResponse);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    Map.of("message", "User ID does not exist")
+            );
         }
 
         // Generate a JWT token for the user with role
@@ -118,9 +118,12 @@ public class AuthController {
         jwtCookie.setMaxAge(60*60);      // 1 hour expiry
         httpServletResponse.addCookie(jwtCookie);
 
-        Map<String, String> JSONLoginResponse = new HashMap<>();
-        JSONLoginResponse.put("message", "Login successful");
-        return ResponseEntity.ok(JSONLoginResponse);
+        return ResponseEntity.ok(
+                Map.of(
+                        "message","Login successful",
+                        "role",role
+                )
+        );
     }
 
     // Helper method to retrieve user (Employee or Customer) and set role
