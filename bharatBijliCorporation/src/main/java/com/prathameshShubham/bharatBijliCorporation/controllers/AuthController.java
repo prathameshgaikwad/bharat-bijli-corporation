@@ -6,6 +6,8 @@ import com.prathameshShubham.bharatBijliCorporation.models.LoginRequest;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -87,7 +89,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
 
         // Verify the OTP
         if (!loginRequest.getOtp().equals(generatedOtp)) {
@@ -109,9 +111,15 @@ public class AuthController {
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
 
-        // Return the JWT token in the response
+        // Return the JWT token in an HTTP-Only Cookie
+        Cookie jwtCookie = new Cookie("jwt",token);
+        jwtCookie.setHttpOnly(true);     // prevent XSS by blocking JavaScript access
+        jwtCookie.setPath("/");          // make accessible across entire app
+        jwtCookie.setMaxAge(60*60);      // 1 hour expiry
+        httpServletResponse.addCookie(jwtCookie);
+
         Map<String, String> JSONLoginResponse = new HashMap<>();
-        JSONLoginResponse.put("token", token);
+        JSONLoginResponse.put("message", "Login successful");
         return ResponseEntity.ok(JSONLoginResponse);
     }
 
