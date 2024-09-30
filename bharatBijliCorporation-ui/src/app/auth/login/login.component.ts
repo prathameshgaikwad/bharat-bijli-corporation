@@ -37,6 +37,7 @@ import { ToastModule } from 'primeng/toast';
 })
 export class LoginComponent {
   showOtpComponent: boolean = false;
+  isLoading: boolean = false;
   protected loginForm = new FormGroup({
     userId: new FormControl('', [Validators.required]),
   });
@@ -55,10 +56,12 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    this.isLoading = true;
     const userId = this.loginForm.get('userId')?.value || '';
 
     this.authService.getOtp(userId).subscribe({
       next: (response) => {
+        this.isLoading = false;
         this.setOtpComponentVisible();
         this.messageService.add({
           severity: 'success',
@@ -67,6 +70,7 @@ export class LoginComponent {
         });
       },
       error: (error) => {
+        this.isLoading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

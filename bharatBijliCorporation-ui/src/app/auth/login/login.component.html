@@ -30,7 +30,8 @@
         iconPos="right"
         [rounded]="true"
         type="submit"
-        [disabled]="loginForm.invalid"
+        [disabled]="loginForm.invalid || isLoading"
+        [loading]="isLoading"
       />
     </form>
     <div *ngIf="showOtpComponent">
