@@ -149,6 +149,23 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse httpServletResponse) {
+
+        // Invalidate the JWT token by clearing the cookie
+        Cookie jwtCookie = new Cookie("jwt", null);
+        jwtCookie.setHttpOnly(true);    // Security: Prevent JavaScript access
+        jwtCookie.setPath("/");         // Ensure cookie is for entire app
+        jwtCookie.setMaxAge(0);         // Set max age to 0 to delete the cookie
+
+        // Add the cookie to the response
+        httpServletResponse.addCookie(jwtCookie);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Logout successful"
+        ));
+    }
+
     // Helper method to retrieve user (Employee or Customer) and set role
     private Object getUserById(String id) {
         if (id.startsWith("EMP")) {
