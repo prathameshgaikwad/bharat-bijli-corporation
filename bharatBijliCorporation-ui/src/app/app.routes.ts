@@ -1,3 +1,4 @@
+import { CustomerGuard } from './core/guards/customer.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
@@ -18,6 +19,7 @@ export const routes: Routes = [
       import('./customer/customer-dashboard/customer-dashboard.component').then(
         (m) => m.CustomerDashboardComponent
       ),
+    canActivate: [CustomerGuard],
   },
   {
     path: 'customer/invoices',
@@ -25,6 +27,7 @@ export const routes: Routes = [
       import('./customer/invoices/invoices.component').then(
         (m) => m.InvoicesComponent
       ),
+    canActivate: [CustomerGuard],
   },
   {
     path: 'customer/payments',
@@ -32,6 +35,7 @@ export const routes: Routes = [
       import('./customer/payments/payments.component').then(
         (m) => m.PaymentsComponent
       ),
+    canActivate: [CustomerGuard],
   },
   { path: '**', component: PageNotFoundComponent },
 ];

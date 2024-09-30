@@ -72,6 +72,20 @@ export class AuthService {
     return decoded.exp < currentTime;
   }
 
+  isCustomer(): boolean {
+    const decoded = this.getDecodedToken();
+    return decoded?.role === 'CUSTOMER';
+  }
+
+  isEmployee(): boolean {
+    const decoded = this.getDecodedToken();
+    return decoded?.role === 'EMPLOYEE';
+  }
+
+  isAuthenticated(): boolean {
+    return this.getToken() !== null;
+  }
+
   getOtp(userId: string): Observable<OtpResponse> {
     const params = new HttpParams().set('id', userId);
     return this.http.get<OtpResponse>(`${this.baseUrl}/getOtp`, { params });
