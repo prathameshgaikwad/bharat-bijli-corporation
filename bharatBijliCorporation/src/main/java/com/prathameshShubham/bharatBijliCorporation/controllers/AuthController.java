@@ -70,23 +70,13 @@ public class AuthController {
     }
 
     private String getEmailById(String id) {
-        if (id.startsWith("EMP")) {
-            Employee employee = employeeService.getEmployee(id);
-            if (employee == null || employee.getPersonalDetails() == null) {
-                throw new IllegalArgumentException("Employee not found or invalid personal details");
-            }
-            return employee.getPersonalDetails().getEmailId();
-
-        } else if (id.startsWith("CUST")) {
-            Customer customer = customerService.getCustomer(id);
-            if (customer == null || customer.getPersonalDetails() == null) {
-                throw new IllegalArgumentException("Customer not found or invalid personal details");
-            }
-            return customer.getPersonalDetails().getEmailId();
-
-        } else {
+        if (id.startsWith("EMP"))
+            return getEmployeeEmailId(id);
+        else if (id.startsWith("CUST"))
+            return getCustomerEmailId(id);
+        else
             throw new IllegalArgumentException("Invalid User ID");
-        }
+
     }
 
     @PostMapping("/login")
@@ -112,11 +102,7 @@ public class AuthController {
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
 
-        // Return the JWT token in an HTTP-Only Cookie
-        Cookie jwtCookie = new Cookie("jwt",token);
-        jwtCookie.setHttpOnly(true);     // prevent XSS by blocking JavaScript access
-        jwtCookie.setPath("/");          // make accessible across entire app
-        jwtCookie.setMaxAge(60*60);      // 1 hour expiry
+        Cookie jwtCookie = getHttpOnlyJwtCookie(token);
         httpServletResponse.addCookie(jwtCookie);
 
         return ResponseEntity.ok(
@@ -151,15 +137,8 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpServletResponse) {
-
-        // Invalidate the JWT token by clearing the cookie
-        Cookie jwtCookie = new Cookie("jwt", null);
-        jwtCookie.setHttpOnly(true);    // Security: Prevent JavaScript access
-        jwtCookie.setPath("/");         // Ensure cookie is for entire app
-        jwtCookie.setMaxAge(0);         // Set max age to 0 to delete the cookie
-
-        // Add the cookie to the response
-        httpServletResponse.addCookie(jwtCookie);
+        Cookie invalidatedJwtCookie = getInvalidatedJwtCookie();
+        httpServletResponse.addCookie(invalidatedJwtCookie);
 
         return ResponseEntity.ok(Map.of(
                 "message", "Logout successful"
@@ -168,23 +147,64 @@ public class AuthController {
 
     // Helper method to retrieve user (Employee or Customer) and set role
     private Object getUserById(String id) {
-        if (id.startsWith("EMP")) {
-            Employee employee = employeeService.getEmployee(id);
-            if (employee != null) {
-                role = "EMPLOYEE"; // Set role
-                return employee;
-            }
-        } else if (id.startsWith("CUST")) {
-            Customer customer = customerService.getCustomer(id);
-            if (customer != null) {
-                role = "CUSTOMER"; // Set role
-                return customer;
-            }
+        if (id.startsWith("EMP"))
+            return getUserWithEmployeeRole(id);
+        else if (id.startsWith("CUST"))
+            return getUserWithCustomerRole(id);
+        else
+            throw new IllegalArgumentException("Invalid User ID");
+    }
+
+    private Cookie getHttpOnlyJwtCookie(String token) {
+        Cookie jwtCookie = new Cookie("jwt",token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");          // make accessible across entire app
+        jwtCookie.setMaxAge(60*60);      // 1 hour expiry
+        return jwtCookie;
+    }
+
+    private Cookie getInvalidatedJwtCookie() {
+        Cookie jwtCookie = new Cookie("jwt", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");         // Ensure cookie is for entire app
+        jwtCookie.setMaxAge(0);         // Set max age to 0 to delete the cookie
+        return jwtCookie;
+    }
+
+    private Employee getUserWithEmployeeRole(String id) {
+        Employee employee = employeeService.getEmployee(id);
+        if (employee != null) {
+            role = "EMPLOYEE";
+            return employee;
         } else {
             throw new IllegalArgumentException("Invalid User ID");
         }
-        return null; // Return null if user not found
     }
 
+    private Customer getUserWithCustomerRole(String id) {
+        Customer customer = customerService.getCustomer(id);
+        if (customer != null) {
+            role = "CUSTOMER";
+            return customer;
+        }else {
+            throw new IllegalArgumentException("Invalid User ID");
+        }
+    }
 
+    private String getEmployeeEmailId(String id) {
+        Employee employee = employeeService.getEmployee(id);
+        if (employee == null || employee.getPersonalDetails() == null) {
+            throw new IllegalArgumentException("Employee not found or invalid personal details");
+        }
+        return employee.getPersonalDetails().getEmailId();
+    }
+
+    private String getCustomerEmailId(String id) {
+        Customer customer = customerService.getCustomer(id);
+        if (customer == null || customer.getPersonalDetails() == null) {
+            throw new IllegalArgumentException("Customer not found or invalid personal details");
+        }
+        return customer.getPersonalDetails().getEmailId();
+
+    }
 }
