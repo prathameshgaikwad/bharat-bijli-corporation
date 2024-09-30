@@ -1,4 +1,3 @@
-import { AuthService, LoginRequest } from '../../../core/auth.service';
 import { Component, Input } from '@angular/core';
 import {
   FormControl,
@@ -8,8 +7,10 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { AuthService } from '../../../core/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { InputOtpModule } from 'primeng/inputotp';
+import { LoginRequest } from '../../types/auth';
 import { Router } from '@angular/router';
 
 @Component({

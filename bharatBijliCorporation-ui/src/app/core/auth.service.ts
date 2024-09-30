@@ -1,39 +1,14 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  LoginRequest,
+  LoginResponse,
+  OtpResponse,
+  RegistrationResponse,
+} from '../shared/types/auth';
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-interface OtpResponse {
-  message: string;
-  otp: string;
-}
-
-export interface LoginRequest {
-  userId: string;
-  otp: string;
-}
-
-export interface PersonalDetails {
-  firstName: string;
-  lastName: string;
-  emailId: string;
-  phoneNumber: string;
-  address: string;
-  city: string;
-  state: string;
-  pincode: number;
-  dateOfBirth: Date;
-}
-
-export interface LoginResponse {
-  message: string;
-  role: string;
-}
-
-export interface RegistrationResponse {
-  customerId: string;
-  firstName: string;
-}
+import { PersonalDetails } from '../shared/types/user';
 
 @Injectable({
   providedIn: 'root',
