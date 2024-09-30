@@ -28,17 +28,8 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String jwtToken = null;
-        Cookie[] cookies = request.getCookies();
-
-        if(cookies != null) {
-            for(Cookie cookie : cookies) {
-                if(cookie.getName().equals("jwt")) {
-                    jwtToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
+//        String jwtToken = extractTokenFromCookies(request.getCookies());
+        String jwtToken = extractTokenFromAuthorizationHeader(request.getHeader("Authorization"));
 
         String userId = JwtUtil.extractClaims(jwtToken).getSubject();  // Extract user ID from token
 
@@ -54,6 +45,24 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public Collection< ? extends GrantedAuthority> getRoleAuth(String role){
         return Arrays.asList(new SimpleGrantedAuthority(role));
+    }
+
+    private String extractTokenFromCookies(Cookie[] cookies) {
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookie.getName().equals("jwt")) {
+                   return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extractTokenFromAuthorizationHeader(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
     }
 
 }

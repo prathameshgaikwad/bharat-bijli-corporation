@@ -101,16 +101,8 @@ public class AuthController {
 
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
-
-        Cookie jwtCookie = getHttpOnlyJwtCookie(token);
-        httpServletResponse.addCookie(jwtCookie);
-
-        return ResponseEntity.ok(
-                Map.of(
-                        "message","Login successful",
-                        "role",role
-                )
-        );
+//        return sendResponseWithHttpOnlyJwtCookie(token, httpServletResponse);
+        return sendResponseWithJwt(token, httpServletResponse);
     }
 
     @PostMapping("/register")
@@ -206,5 +198,32 @@ public class AuthController {
         }
         return customer.getPersonalDetails().getEmailId();
 
+    }
+
+    private ResponseEntity<Map<String, String>> sendResponseWithHttpOnlyJwtCookie(
+            String token,
+            HttpServletResponse httpServletResponse
+    ) {
+        Cookie jwtCookie = getHttpOnlyJwtCookie(token);
+        httpServletResponse.addCookie(jwtCookie);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message","Login successful",
+                        "role",role
+                )
+        );
+    }
+
+    private ResponseEntity<Map<String, String>> sendResponseWithJwt(
+            String token,
+            HttpServletResponse httpServletResponse
+    ) {
+        return ResponseEntity.ok(
+                Map.of(
+                        "message","Login successful",
+                        "token",token
+                )
+        );
     }
 }
