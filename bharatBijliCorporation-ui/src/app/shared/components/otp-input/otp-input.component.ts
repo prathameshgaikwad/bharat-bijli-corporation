@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { AuthService } from '../../../core/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { InputOtpModule } from 'primeng/inputotp';
 import { LoginRequest } from '../../types/auth';
@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
 export class OtpInputComponent {
   length: number = 6;
   @Input({ required: true }) userId!: string;
+  isLoading: boolean = false;
 
   otpForm = new FormGroup({
     otp: new FormControl(null, [
@@ -35,17 +36,15 @@ export class OtpInputComponent {
 
   onSubmit() {
     if (this.otpForm.valid) {
+      this.isLoading = true;
       const loginRequest: LoginRequest = {
         userId: this.userId,
         otp: this.otpForm.value.otp || '',
       };
-
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
-          const { token } = response;
-          this.authService.setToken(token);
+          this.isLoading = false;
           const role = this.authService.getUserRole();
-
           if (role === 'CUSTOMER') {
             this.router.navigate(['/customer/dashboard']);
           } else {
@@ -53,6 +52,7 @@ export class OtpInputComponent {
           }
         },
         error: (err) => {
+          this.isLoading = false;
           console.error('Login failed: ', err);
         },
       });
