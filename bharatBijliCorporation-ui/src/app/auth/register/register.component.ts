@@ -1,4 +1,3 @@
-import { AuthService, PersonalDetails } from '../../core/auth.service';
 import {
   FormControl,
   FormGroup,
@@ -8,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
+import { AuthService } from '../../core/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';
@@ -17,6 +17,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
+import { PersonalDetails } from '../../shared/types/user';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
