@@ -59,7 +59,7 @@ public class CustomerService {
         return customerRepo
                 .findById(customerId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Customer not found for ID: " + customerId)
+                        () -> new UserNotFoundException("Customer not found for ID: " + customerId)
                 );
     }
 

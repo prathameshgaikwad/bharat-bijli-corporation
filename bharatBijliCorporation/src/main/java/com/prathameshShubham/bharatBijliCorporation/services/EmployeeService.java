@@ -40,7 +40,7 @@ public class EmployeeService {
     public Employee getEmployee(String employeeId) throws UserNotFoundException {
         return employeeRepo.findById(employeeId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Employee not found for ID: " + employeeId)
+                        () -> new UserNotFoundException("Employee not found for ID: " + employeeId)
                 );
     }
 }
