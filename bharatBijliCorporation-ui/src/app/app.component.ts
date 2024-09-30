@@ -21,20 +21,4 @@ import { RegisterComponent } from './auth/register/register.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  showNavbar = true;
-
-  constructor(private router: Router) {
-    // Subscribe to route changes
-    this.router.events.subscribe((event: any) => {
-      if (event.url) {
-        // Check if the route is 'login' or 'register'
-        if (event.url === '/login' || event.url === '/register') {
-          this.showNavbar = false;
-        } else {
-          this.showNavbar = true;
-        }
-      }
-    });
-  }
-}
+export class AppComponent {}

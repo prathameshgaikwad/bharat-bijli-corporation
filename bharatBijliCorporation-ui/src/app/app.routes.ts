@@ -1,4 +1,5 @@
 import { LoginComponent } from './auth/login/login.component';
+import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
@@ -32,4 +33,5 @@ export const routes: Routes = [
         (m) => m.PaymentsComponent
       ),
   },
+  { path: '**', component: PageNotFoundComponent },
 ];
