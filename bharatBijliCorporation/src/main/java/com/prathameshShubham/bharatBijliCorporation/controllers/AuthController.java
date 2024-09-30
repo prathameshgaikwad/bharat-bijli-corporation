@@ -1,5 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidIdFormatException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.LoginRequest;
@@ -18,13 +20,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
 public class AuthController {
 
-    private String generatedOtp;
+    private HashMap<String, String>storeOtp = new HashMap<String, String>();;
     private String role;
 
     @Autowired
@@ -44,46 +47,29 @@ public class AuthController {
     @GetMapping(value = "/getOtp", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> getOtp(@RequestParam String id) {
         String email;
-
+        String generatedOtp;
         try {
             email = getEmailById(id);
-        } catch (IllegalArgumentException e) {
+        } catch (UserNotFoundException | InvalidIdFormatException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));  // Return error message
         }
-        
+
         generatedOtp = String.valueOf((int) ((Math.random() * 900000) + 100000));  // Random 6-digit OTP
-//        sendEmail(email, generatedOtp);
+        // sendEmail(email, generatedOtp);
+        storeOtp.put(id, generatedOtp);
         return ResponseEntity.ok(
                 Map.of(
-                    "message",  "OTP sent to email: " + email,
-                    "otp", generatedOtp
+                        "message", "OTP sent to email: " + email,
+                        "otp", generatedOtp
                 )
         );
-    }
-
-    private void sendEmail(String email, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Your OTP Code");
-        message.setText("Your OTP is: " + otp);
-        javaMailSender.send(message);
-    }
-
-    private String getEmailById(String id) {
-        if (id.startsWith("EMP"))
-            return getEmployeeEmailId(id);
-        else if (id.startsWith("CUST"))
-            return getCustomerEmailId(id);
-        else
-            throw new IllegalArgumentException("Invalid User ID");
-
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
 
         // Verify the OTP
-        if (!loginRequest.getOtp().equals(generatedOtp)) {
+        if (!loginRequest.getOtp().equals(storeOtp.get(loginRequest.getUserId()))) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     Map.of("message", "Invalid OTP")
             );
@@ -137,6 +123,24 @@ public class AuthController {
         ));
     }
 
+    private void sendEmail(String email, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Your OTP Code");
+        message.setText("Your OTP is: " + otp);
+        javaMailSender.send(message);
+    }
+
+    private String getEmailById(String id)  {
+        if (id.startsWith("EMP") && id.length()>=9) {
+            return getEmployeeEmailId(id);
+        } else if (id.startsWith("CUST")  && id.length()>=9) {
+            return getCustomerEmailId(id);
+        } else {
+            throw new InvalidIdFormatException("Invalid ID format: " + id);
+        }
+    }
+
     // Helper method to retrieve user (Employee or Customer) and set role
     private Object getUserById(String id) {
         if (id.startsWith("EMP"))
@@ -183,21 +187,20 @@ public class AuthController {
         }
     }
 
-    private String getEmployeeEmailId(String id) {
+    private String getEmployeeEmailId(String id) throws UserNotFoundException {
         Employee employee = employeeService.getEmployee(id);
         if (employee == null || employee.getPersonalDetails() == null) {
-            throw new IllegalArgumentException("Employee not found or invalid personal details");
+            throw new UserNotFoundException("Employee not found for ID: " + id);
         }
         return employee.getPersonalDetails().getEmailId();
     }
 
-    private String getCustomerEmailId(String id) {
+    private String getCustomerEmailId(String id) throws  UserNotFoundException {
         Customer customer = customerService.getCustomer(id);
         if (customer == null || customer.getPersonalDetails() == null) {
-            throw new IllegalArgumentException("Customer not found or invalid personal details");
+            throw new UserNotFoundException("Customer not found for ID: " + id);
         }
         return customer.getPersonalDetails().getEmailId();
-
     }
 
     private ResponseEntity<Map<String, String>> sendResponseWithHttpOnlyJwtCookie(
@@ -206,7 +209,7 @@ public class AuthController {
     ) {
         Cookie jwtCookie = getHttpOnlyJwtCookie(token);
         httpServletResponse.addCookie(jwtCookie);
-
+        storeOtp.clear();
         return ResponseEntity.ok(
                 Map.of(
                         "message","Login successful",

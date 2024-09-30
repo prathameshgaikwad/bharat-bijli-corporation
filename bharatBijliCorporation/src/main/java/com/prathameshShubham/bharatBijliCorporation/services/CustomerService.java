@@ -2,10 +2,7 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.opencsv.CSVReader;
 import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatus;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.DuplicateEntryException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
@@ -58,11 +55,11 @@ public class CustomerService {
         return customers;
     }
 
-    public Customer getCustomer(String customerId) {
+    public Customer getCustomer(String customerId)  throws UserNotFoundException {
         return customerRepo
                 .findById(customerId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Customer not found for ID: " + customerId)
+                        () -> new UserNotFoundException("Customer not found for ID: " + customerId)
                 );
     }
 

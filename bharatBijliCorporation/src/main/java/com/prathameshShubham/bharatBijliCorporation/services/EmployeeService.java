@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.prathameshShubham.bharatBijliCorporation.enums.EmployeeStatus;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.repositories.EmployeeRepo;
@@ -36,11 +37,10 @@ public class EmployeeService {
         return String.format("EMP%06d", count);  // Format ID with leading zeros
     }
 
-    public Employee getEmployee(String employeeId) {
-        return employeeRepo
-                .findById(employeeId)
+    public Employee getEmployee(String employeeId) throws UserNotFoundException {
+        return employeeRepo.findById(employeeId)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("Employee not found for ID: " + employeeId)
+                        () -> new UserNotFoundException("Employee not found for ID: " + employeeId)
                 );
     }
 }
