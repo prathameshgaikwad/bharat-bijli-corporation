@@ -9,8 +9,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  message: string;
-  role: string;
+  token: string;
 }
 
 export interface RegistrationResponse {

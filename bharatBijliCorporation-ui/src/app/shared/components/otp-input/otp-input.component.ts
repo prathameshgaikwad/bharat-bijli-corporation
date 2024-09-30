@@ -42,7 +42,11 @@ export class OtpInputComponent {
 
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
-          if (response.role === 'CUSTOMER') {
+          const { token } = response;
+          this.authService.setToken(token);
+          const role = this.authService.getUserRole();
+
+          if (role === 'CUSTOMER') {
             this.router.navigate(['/customer/dashboard']);
           } else {
             this.router.navigate(['/employee/dashboard']);
