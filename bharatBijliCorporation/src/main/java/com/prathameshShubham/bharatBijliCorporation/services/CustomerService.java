@@ -2,7 +2,10 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.opencsv.CSVReader;
 import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatus;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.DuplicateEntryException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
@@ -68,35 +71,84 @@ public class CustomerService {
         return String.format("CUST%06d", count);
     }
 
-    public String uploadCsv(MultipartFile file) throws Exception {
-        if (!file.getOriginalFilename().endsWith(".csv")) {
-            throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
-        }
-        CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()));
+    public String uploadCsv(MultipartFile file) throws InvalidFileFormatException, EmptyCsvFileException {
+        StringBuilder resultSummary = new StringBuilder();  // For capturing summary of success/failure
+        int successCount = 0;
+        int failureCount = 0;
 
-        // Read the header row
-        String[] headers = csvReader.readNext();
-        if (headers == null) {
-            throw new Exception("CSV file is empty.");
-        }
-
-        // Dynamically map column names to values using a list of maps
-        String[] nextLine;
-        while ((nextLine = csvReader.readNext()) != null) {
-            Map<String, String> row = new HashMap<>();
-            for (int i = 0; i < headers.length; i++) {
-                row.put(headers[i], nextLine[i]);
+        try {
+            if (!file.getOriginalFilename().endsWith(".csv")) {
+                throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
             }
 
-            saveToDatabase(row);
+            CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()));
+            String[] headers = csvReader.readNext();
+
+            if (headers == null) {
+                throw new EmptyCsvFileException("CSV file is empty.");
+            }
+
+            String[] nextLine;
+            while ((nextLine = csvReader.readNext()) != null) {
+                Map<String, String> row = new HashMap<>();
+                for (int i = 0; i < headers.length; i++) {
+                    row.put(headers[i], nextLine[i]);
+                }
+
+                try {
+                    validateRow(row);
+                    isDuplicate(row);
+                    saveToDatabase(row);
+                    successCount++;  // Increment on successful save
+                } catch (MissingFieldException e) {
+                    System.err.println("Validation failed for row: " + row + " - " + e.getMessage());
+                    resultSummary.append("Validation failed for row: ").append(row).append("\n");
+                    failureCount++;  // Increment on failure
+                } catch (DuplicateEntryException e) {
+                    System.err.println("Duplicate entry for row: " + row + " - " + e.getMessage());
+                    resultSummary.append("Duplicate entry for row: ").append(row).append("\n");
+                    failureCount++;  // Increment on failure
+                } catch (Exception e) {
+                    System.err.println("Unexpected error for row: " + row + " - " + e.getMessage());
+                    resultSummary.append("Unexpected error for row: ").append(row).append("\n");
+                    failureCount++;  // Increment on failure
+                }
+            }
+        } catch (InvalidFileFormatException | EmptyCsvFileException e) {
+            throw e;  // Rethrow exceptions that indicate an issue with the file itself
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while processing the file: " + e.getMessage());
         }
-        return "File uploaded and processed successfully.";
+
+        // Add summary of results
+        resultSummary.append("Processing completed: ").append(successCount).append(" rows processed successfully, ")
+                .append(failureCount).append(" rows failed.");
+
+        return resultSummary.toString();  // Return the summary message
     }
 
+    private void validateRow(Map<String, String> rowData) throws MissingFieldException {
+        if (rowData.get("dateOfBirth") == null ||
+                rowData.get("city") == null ||
+                rowData.get("address") == null ||
+                rowData.get("emailId") == null ||
+                rowData.get("pincode") == null ||
+                rowData.get("firstName") == null ||
+                rowData.get("lastName") == null ||
+                rowData.get("phoneNumber") == null ||
+                rowData.get("state") == null) {
+            throw new MissingFieldException("Missing required fields in row: " + rowData);
+        }
+    }
+
+    private void isDuplicate(Map<String, String> rowData) throws DuplicateEntryException {
+        String emailId = rowData.get("emailId");
+        if(checkIfEmailExists(emailId))
+            throw new DuplicateEntryException("Duplicate entry found for: " + emailId);
+    }
 
     private void saveToDatabase(Map<String, String> rowData) {
         PersonalDetails personalDetails = new PersonalDetails();
-
         personalDetails.setDateOfBirth(LocalDate.parse(rowData.get("dateOfBirth")));
         personalDetails.setCity(rowData.get("city"));
         personalDetails.setAddress(rowData.get("address"));
@@ -109,4 +161,9 @@ public class CustomerService {
 
         saveCustomer(personalDetails);
     }
+
+    private boolean checkIfEmailExists(String emailId) {
+        return false; // Placeholder return statement
+    }
+
 }
