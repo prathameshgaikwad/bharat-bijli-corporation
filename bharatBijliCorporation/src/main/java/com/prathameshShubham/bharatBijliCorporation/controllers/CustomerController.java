@@ -1,5 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.prathameshShubham.bharatBijliCorporation.exceptions.DuplicateEntryException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
@@ -30,22 +33,6 @@ public class CustomerController {
     @PostMapping
     public ResponseEntity<Customer> saveCustomer(@RequestBody PersonalDetails personalDetails) {
         return ResponseEntity.ok(customerService.saveCustomer(personalDetails));
-    }
-
-    // Endpoint to save a csv file of customers
-    @PostMapping("/bulk-csv-upload")
-    public ResponseEntity<String> saveCustomers(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
-        }
-
-        try {
-            String result = customerService.uploadCsv(file);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error while processing the file: " + e.getMessage());
-        }
     }
 
     @GetMapping("/{customerId}")
