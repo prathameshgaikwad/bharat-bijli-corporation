@@ -71,4 +71,17 @@ export class AuthService {
       }
     );
   }
+
+  logout() {
+    return this.http.post(
+      `${this.baseUrl}/logout`,
+      {},
+      {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+        withCredentials: true,
+      }
+    );
+  }
 }
