@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { AuthService } from '../../core/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';

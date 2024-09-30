@@ -3,7 +3,8 @@
   <p-button
     label="Confirm"
     [rounded]="true"
-    [disabled]="otpForm.invalid"
+    [disabled]="otpForm.invalid || isLoading"
     [type]="'submit'"
+    [loading]="isLoading"
   />
 </form>

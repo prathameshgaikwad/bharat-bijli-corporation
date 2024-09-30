@@ -9,3 +9,13 @@ export interface PersonalDetails {
   pincode: number;
   dateOfBirth: Date;
 }
+
+export interface Customer {
+  id: string;
+  personalDetails: PersonalDetails;
+  serviceConnectionStatus: string;
+}
+
+export interface User {
+  id: string;
+}

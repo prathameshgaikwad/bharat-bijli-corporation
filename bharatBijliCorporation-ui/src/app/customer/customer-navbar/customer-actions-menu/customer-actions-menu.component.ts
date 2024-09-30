@@ -6,7 +6,7 @@ import {
 } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
 
-import { AuthService } from '../../../core/auth.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -81,10 +81,12 @@ export class CustomerActionsMenuComponent implements OnInit {
   }
 
   onLogout() {
-    this.authService.clearToken();
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Logout failed', err);
       },
     });
   }

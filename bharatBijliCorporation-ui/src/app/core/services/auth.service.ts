@@ -5,11 +5,12 @@ import {
   LoginResponse,
   OtpResponse,
   RegistrationResponse,
-} from '../shared/types/auth';
+} from '../../shared/types/auth';
+import { Observable, tap } from 'rxjs';
 
+import { AppStateService } from './app-state.service';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { PersonalDetails } from '../shared/types/user';
+import { PersonalDetails } from '../../shared/types/user';
 
 export interface DecodedToken extends JwtPayload {
   userId: string;
@@ -20,10 +21,13 @@ export interface DecodedToken extends JwtPayload {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:8080/auth';
-  private tokenKey = 'token';
+  private readonly AUTH_API = 'http://localhost:8080/auth';
+  private readonly tokenKey = 'token';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private appStateService: AppStateService
+  ) {}
 
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
@@ -88,24 +92,31 @@ export class AuthService {
 
   getOtp(userId: string): Observable<OtpResponse> {
     const params = new HttpParams().set('id', userId);
-    return this.http.get<OtpResponse>(`${this.baseUrl}/getOtp`, { params });
+    return this.http.get<OtpResponse>(`${this.AUTH_API}/getOtp`, { params });
   }
 
   login(loginRequest: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(
-      `${this.baseUrl}/login`,
-      loginRequest,
-      {
+    return this.http
+      .post<LoginResponse>(`${this.AUTH_API}/login`, loginRequest, {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
         }),
-      }
-    );
+      })
+      .pipe(
+        tap((response) => {
+          this.setToken(response.token);
+          const decodedToken = this.getDecodedToken();
+          if (decodedToken) {
+            this.appStateService.setUserId(decodedToken.userId);
+            this.appStateService.setRole(decodedToken.role);
+          }
+        })
+      );
   }
 
   register(personalDetails: PersonalDetails): Observable<RegistrationResponse> {
     return this.http.post<RegistrationResponse>(
-      `${this.baseUrl}/register`,
+      `${this.AUTH_API}/register`,
       personalDetails,
       {
         headers: new HttpHeaders({
@@ -116,15 +127,23 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.post(
-      `${this.baseUrl}/logout`,
-      {},
-      {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-        }),
-        withCredentials: true,
-      }
-    );
+    return this.http
+      .post(
+        `${this.AUTH_API}/logout`,
+        {},
+        {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+          }),
+          withCredentials: true,
+        }
+      )
+      .pipe(
+        tap(() => {
+          this.clearToken();
+          this.appStateService.setRole('GUEST');
+          this.appStateService.setUserId('');
+        })
+      );
   }
 }
