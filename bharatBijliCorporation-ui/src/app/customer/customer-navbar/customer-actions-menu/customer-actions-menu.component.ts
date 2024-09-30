@@ -81,6 +81,7 @@ export class CustomerActionsMenuComponent implements OnInit {
   }
 
   onLogout() {
+    this.authService.clearToken();
     this.authService.logout().subscribe({
       next: () => {
         this.router.navigate(['/login']);
