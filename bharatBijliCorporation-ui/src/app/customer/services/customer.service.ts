@@ -1,50 +1,10 @@
-import { Customer } from '../../shared/types/user';
+import { Invoice, Page } from '../../shared/types/consumables.types';
+
+import { Customer } from '../../shared/types/user.types';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UsernameResponse } from '../../shared/types/auth';
-
-export interface Invoice {
-  id: string;
-  customerId: string;
-  unitsConsumed: number;
-  tariff: number;
-  periodStartDate: Date;
-  periodEndDate: Date;
-  dueDate: Date;
-  status: 'PENDING' | 'PAID' | 'OVERDUE' | 'PARTIALLY_PAID' | 'VOID';
-}
-
-interface Pageable {
-  pageNumber: number;
-  pageSize: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  offset: number;
-  paged: boolean;
-  unpaged: boolean;
-}
-
-export interface Page<T> {
-  content: T[];
-  pageable: Pageable;
-  last: boolean;
-  totalPages: number;
-  totalElements: number;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    sorted: boolean;
-    unsorted: boolean;
-  };
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
+import { UsernameResponse } from '../../shared/types/auth.types';
 
 @Injectable({
   providedIn: 'root',

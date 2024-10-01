@@ -1,9 +1,10 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { CustomerService, Invoice, Page } from '../services/customer.service';
+import { Invoice, Page } from '../../shared/types/consumables.types';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
+import { CustomerService } from '../services/customer.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';

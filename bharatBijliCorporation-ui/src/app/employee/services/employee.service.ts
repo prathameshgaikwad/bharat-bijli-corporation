@@ -1,8 +1,8 @@
-import { Customer } from '../../shared/types/user';
+import { Employee } from '../../shared/types/user.types';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UsernameResponse } from '../../shared/types/auth';
+import { UsernameResponse } from '../../shared/types/auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +12,9 @@ export class EmployeeService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getEmployeeDetails(employeeId: string): Observable<Customer> {
+  getEmployeeDetails(employeeId: string): Observable<Employee> {
     const url = `${this.baseUrl}/${employeeId}`;
-    return this.httpClient.get<Customer>(url);
+    return this.httpClient.get<Employee>(url);
   }
 
   getEmployeeUsername(employeeId: string): Observable<UsernameResponse> {

@@ -6,12 +6,12 @@ import {
   OtpResponse,
   RegistrationResponse,
   UsernameResponse,
-} from '../../shared/types/auth';
+} from '../../shared/types/auth.types';
 import { Observable, tap } from 'rxjs';
 
 import { AppStateService } from './app-state.service';
 import { Injectable } from '@angular/core';
-import { PersonalDetails } from '../../shared/types/user';
+import { PersonalDetails } from '../../shared/types/user.types';
 
 export interface DecodedToken extends JwtPayload {
   sub: string;

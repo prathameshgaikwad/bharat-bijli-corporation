@@ -17,7 +17,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
-import { PersonalDetails } from '../../shared/types/user';
+import { PersonalDetails } from '../../shared/types/user.types';
 import { ToastModule } from 'primeng/toast';
 
 @Component({

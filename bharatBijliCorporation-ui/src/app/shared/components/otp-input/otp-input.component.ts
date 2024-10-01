@@ -10,7 +10,7 @@ import {
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { InputOtpModule } from 'primeng/inputotp';
-import { LoginRequest } from '../../types/auth';
+import { LoginRequest } from '../../types/auth.types';
 import { Router } from '@angular/router';
 
 @Component({
