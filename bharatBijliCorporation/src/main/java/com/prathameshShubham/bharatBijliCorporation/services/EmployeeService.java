@@ -43,4 +43,13 @@ public class EmployeeService {
                         () -> new UserNotFoundException("Employee not found for ID: " + employeeId)
                 );
     }
+
+    public String getEmployeeUsername(String employeeId) throws UserNotFoundException {
+        return employeeRepo
+                .findById(employeeId)
+                .map(employee -> employee.getPersonalDetails().getFirstName())
+                .orElseThrow(
+                        () -> new UserNotFoundException("Employee not found for ID: " + employeeId)
+                );
+    }
 }

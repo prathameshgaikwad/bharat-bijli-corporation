@@ -63,6 +63,15 @@ public class CustomerService {
                 );
     }
 
+    public String getCustomerUsername(String customerId)  throws UserNotFoundException {
+        return customerRepo
+                .findById(customerId)
+                .map(customer -> customer.getPersonalDetails().getFirstName())
+                .orElseThrow(
+                        () -> new UserNotFoundException("Customer not found for ID: " + customerId)
+                );
+    }
+
     private String generateCustomerId() {
         long count = customerRepo.count() + 1; // Get the count of employees and increment
         return String.format("CUST%06d", count);
