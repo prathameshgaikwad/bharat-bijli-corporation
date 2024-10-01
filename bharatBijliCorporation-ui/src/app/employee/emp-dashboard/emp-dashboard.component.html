@@ -1,0 +1,18 @@
+<div class="stats-bar">
+  <app-stats></app-stats>
+</div>
+<br />
+<div class="table-cont">
+  <h2>Recent Transacions</h2>
+  <app-listing
+    [headers]="['Customer', 'Amount', 'Method', 'Status', 'Time']"
+    [fields]="[
+      'customer',
+      'amount',
+      'transactionMethod',
+      'transactionStatus',
+      'createdAt'
+    ]"
+    [data]="transactions"
+  ></app-listing>
+</div>

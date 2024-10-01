@@ -1,0 +1,61 @@
+<div class="card" >
+  <p-table
+    [value]="data"
+    [rows]="rows"
+    [totalRecords]="totalRecords"
+    [lazy]="true"
+    (onLazyLoad)="loadData($event)"
+    responsiveLayout="scroll"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngFor="let header of headers">{{ header }}</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td *ngFor="let field of fields">
+          @if(field == "invoice_status"){
+          <p-chip
+          [style] = "{
+            'color' : 'green'
+          }"
+            *ngIf="rowData[field] == 'Paid'"
+            label="{{ rowData[field] }}"
+            icon="pi pi-check-circle"
+          />
+          <p-chip
+          [style] = "{
+            'color' : 'red'
+          }"
+            *ngIf="rowData[field] == 'Unpaid'"
+            label="{{ rowData[field] }}"
+            icon="pi pi-exclamation-circle"
+          />
+          } 
+          @else if(field == "transactionStatus"){
+            <p-chip
+            [style] = "{
+              'color' : 'green'
+            }"
+              *ngIf="rowData[field] == 'COMPLETED'"
+              label="{{ rowData[field] }}"
+              icon="pi pi-check-circle"
+            />
+            <p-chip
+            [style] = "{
+              'color' : '#917115'
+            }"
+              *ngIf="rowData[field] == 'PENDING'"
+              label="{{ rowData[field] }}"
+              icon="pi pi-exclamation-circle"
+            />
+          }
+          @else{
+          {{ rowData[field] }}
+          }
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
