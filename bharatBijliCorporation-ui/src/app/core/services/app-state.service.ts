@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
@@ -13,6 +13,9 @@ export class AppStateService {
   private userIdSubject: BehaviorSubject<string> = new BehaviorSubject<string>(
     ''
   );
+
+  private usernameSubject: BehaviorSubject<string> =
+    new BehaviorSubject<string>('');
 
   constructor() {}
 
@@ -30,5 +33,13 @@ export class AppStateService {
 
   public setUserId(id: string): void {
     this.userIdSubject.next(id);
+  }
+
+  public getUsername(): Observable<string> {
+    return this.usernameSubject.asObservable();
+  }
+
+  public setUsername(username: string): void {
+    this.usernameSubject.next(username);
   }
 }

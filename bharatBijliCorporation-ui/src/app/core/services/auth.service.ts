@@ -5,6 +5,7 @@ import {
   LoginResponse,
   OtpResponse,
   RegistrationResponse,
+  UsernameResponse,
 } from '../../shared/types/auth';
 import { Observable, tap } from 'rxjs';
 
@@ -22,6 +23,8 @@ export interface DecodedToken extends JwtPayload {
 })
 export class AuthService {
   private readonly AUTH_API = 'http://localhost:8080/auth';
+  private readonly CUSTOMER_API = 'http://localhost:8080/customers';
+  private readonly EMPLOYEE_API = 'http://localhost:8080/employee';
   private readonly tokenKey = 'token';
 
   constructor(
@@ -104,14 +107,41 @@ export class AuthService {
       })
       .pipe(
         tap((response) => {
-          this.setToken(response.token);
-          const decodedToken = this.getDecodedToken();
-          if (decodedToken) {
-            this.appStateService.setUserId(decodedToken.userId);
-            this.appStateService.setRole(decodedToken.role);
-          }
+          this.handleLoginResponse(response);
         })
       );
+  }
+
+  private handleLoginResponse(loginResponse: LoginResponse): void {
+    this.setToken(loginResponse.token);
+    const decodedToken = this.getDecodedToken();
+    if (decodedToken) {
+      this.appStateService.setUserId(decodedToken.sub!);
+      this.appStateService.setRole(decodedToken.role);
+      this.fetchUsername(decodedToken.role, decodedToken.sub!);
+    }
+  }
+
+  private fetchUsername(role: string, userId: string): void {
+    if (role === 'CUSTOMER') {
+      this.getCustomerUsername(userId).subscribe({
+        next: (response: UsernameResponse) => {
+          this.appStateService.setUsername(response.username);
+        },
+        error: (err) => {
+          console.error('Failed to fetch customer username:', err);
+        },
+      });
+    } else if (role === 'EMPLOYEE') {
+      this.getEmployeeUsername(userId).subscribe({
+        next: (response: UsernameResponse) => {
+          this.appStateService.setUsername(response.username);
+        },
+        error: (err) => {
+          console.error('Failed to fetch employee username:', err);
+        },
+      });
+    }
   }
 
   register(personalDetails: PersonalDetails): Observable<RegistrationResponse> {
@@ -145,5 +175,17 @@ export class AuthService {
           this.appStateService.setUserId('');
         })
       );
+  }
+
+  getCustomerUsername(customerId: string): Observable<UsernameResponse> {
+    return this.http.get<UsernameResponse>(
+      `${this.CUSTOMER_API}/${customerId}/username`
+    );
+  }
+
+  getEmployeeUsername(employeeId: string): Observable<UsernameResponse> {
+    return this.http.get<UsernameResponse>(
+      `${this.EMPLOYEE_API}/${employeeId}/username`
+    );
   }
 }

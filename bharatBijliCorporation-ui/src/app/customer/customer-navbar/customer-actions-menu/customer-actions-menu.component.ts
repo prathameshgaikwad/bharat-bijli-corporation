@@ -6,6 +6,7 @@ import {
 } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
 
+import { AppStateService } from '../../../core/services/app-state.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
@@ -27,18 +28,22 @@ import { MenuModule } from 'primeng/menu';
   providers: [ConfirmationService],
 })
 export class CustomerActionsMenuComponent implements OnInit {
-  balance: number = 1203.9;
-  username: string = 'Prathamesh';
+  username: string = '';
 
   items: MenuItem[] | undefined;
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private appStateService: AppStateService
   ) {}
 
   ngOnInit() {
+    this.appStateService
+      .getUsername()
+      .subscribe((username) => (this.username = username));
+
     this.items = [
       {
         label: 'Profile',
