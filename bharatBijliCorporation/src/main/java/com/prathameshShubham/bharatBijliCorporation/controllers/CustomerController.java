@@ -54,6 +54,7 @@ public class CustomerController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        System.out.println("------------- INVOICE REQUEST ------------------");
         Page<Invoice> invoices = invoiceService.getLatestInvoicesForCustomer(customerId, page, size);
         return ResponseEntity.ok(invoices);
     }

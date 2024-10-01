@@ -5,6 +5,7 @@ import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldException;
+import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
@@ -66,7 +67,8 @@ public class InvoiceService {
     // get a paginated list of the latest invoices belonging to a customer
     public Page<Invoice> getLatestInvoicesForCustomer(String customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return invoiceRepo.findByCustomerOrderByCreatedAt(customerId, pageable);
+        Customer customer = customerService.getCustomer(customerId);
+        return invoiceRepo.findByCustomerOrderByCreatedAt(customer, pageable);
     }
 
     public Page<Invoice> getInvoicesByEmployeeId(String employeeId, int page, int size) {
