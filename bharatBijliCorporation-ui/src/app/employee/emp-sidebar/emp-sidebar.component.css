@@ -1,0 +1,4 @@
+.active-link {
+  background-color: #cfd3d6; /* Highlight active link with a color */
+  color: black;
+}

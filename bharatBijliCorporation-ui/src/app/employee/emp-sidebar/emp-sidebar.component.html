@@ -1,0 +1,14 @@
+<div class="card flex justify-content-center">
+  <p-menu [model]="items" [style]="{ width: '20rem', height: '60vh' }">
+    <ng-template pTemplate="item" let-item>
+      <a
+        [routerLink]="item.route"
+        class="p-menuitem-link"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <span style="padding-right: 10px" [class]="item.icon"></span>
+        <span class="ml-2">{{ item.label }}</span>
+      </a>
+    </ng-template>
+  </p-menu>
+</div>

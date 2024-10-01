@@ -15,8 +15,7 @@ import { RegisterComponent } from './auth/register/register.component';
     RouterOutlet,
     LoginComponent,
     RegisterComponent,
-    CompanyLogoComponent,
-    CustomerNavbarComponent,
+    CompanyLogoComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
