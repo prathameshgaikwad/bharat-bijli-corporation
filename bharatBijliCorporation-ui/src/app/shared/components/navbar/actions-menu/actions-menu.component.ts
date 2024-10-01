@@ -7,17 +7,17 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AppStateService } from '../../../core/services/app-state.service';
-import { AuthService } from '../../../core/services/auth.service';
+import { AppStateService } from '../../../../core/services/app-state.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { CustomerService } from '../../services/customer.service';
-import { EmployeeService } from '../../../employee/services/employee.service';
+import { CustomerService } from '../../../../customer/services/customer.service';
+import { EmployeeService } from '../../../../employee/services/employee.service';
 import { MenuModule } from 'primeng/menu';
 
 @Component({
-  selector: 'app-customer-actions-menu',
+  selector: 'app-actions-menu',
   standalone: true,
   imports: [
     AvatarModule,
@@ -26,11 +26,11 @@ import { MenuModule } from 'primeng/menu';
     MenuModule,
     ConfirmDialogModule,
   ],
-  templateUrl: './customer-actions-menu.component.html',
-  styleUrl: './customer-actions-menu.component.css',
+  templateUrl: './actions-menu.component.html',
+  styleUrl: './actions-menu.component.css',
   providers: [ConfirmationService],
 })
-export class CustomerActionsMenuComponent implements OnInit, OnDestroy {
+export class ActionsMenuComponent implements OnInit, OnDestroy {
   username: string = '';
   userId: string = '';
   role: string = 'GUEST';

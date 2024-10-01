@@ -4,13 +4,13 @@ import { Observable, Subject, catchError, of, takeUntil } from 'rxjs';
 import { AppStateService } from '../../core/services/app-state.service';
 import { CommonModule } from '@angular/common';
 import { Customer } from '../../shared/types/user';
-import { CustomerNavbarComponent } from '../customer-navbar/customer-navbar.component';
 import { CustomerService } from '../services/customer.service';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CustomerNavbarComponent, CommonModule],
+  imports: [NavbarComponent, CommonModule],
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.css',
 })

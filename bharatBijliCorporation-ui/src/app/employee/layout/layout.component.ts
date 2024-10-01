@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { EmpSidebarComponent } from '../emp-sidebar/emp-sidebar.component';
-import { StatsComponent } from '../stats/stats.component';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { EmpDashboardComponent } from '../emp-dashboard/emp-dashboard.component';
-import { CustomerNavbarComponent } from '../../customer/customer-navbar/customer-navbar.component';
+import { EmpSidebarComponent } from '../emp-sidebar/emp-sidebar.component';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { RouterOutlet } from '@angular/router';
+import { StatsComponent } from '../stats/stats.component';
 
 @Component({
   selector: 'app-layout',
@@ -15,10 +15,9 @@ import { CustomerNavbarComponent } from '../../customer/customer-navbar/customer
     StatsComponent,
     CommonModule,
     EmpDashboardComponent,
-    CustomerNavbarComponent
+    NavbarComponent,
   ],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
 })
-export class LayoutComponent {
-}
+export class LayoutComponent {}
