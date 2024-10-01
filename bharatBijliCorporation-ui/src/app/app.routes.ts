@@ -1,11 +1,11 @@
 import { CustomerGuard } from './core/guards/customer.guard';
+import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
+import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
+import { EmployeeGuard } from './core/guards/employee.guard';
+import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
-import { LayoutComponent } from './employee/layout/layout.component';
-import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
-import { EmployeeGuard } from './core/guards/employee.guard';
-import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -23,7 +23,7 @@ export const routes: Routes = [
       import('./customer/customer-dashboard/customer-dashboard.component').then(
         (m) => m.CustomerDashboardComponent
       ),
-    // canActivate: [CustomerGuard],
+    canActivate: [CustomerGuard],
   },
   {
     path: 'customer/invoices',
@@ -40,20 +40,21 @@ export const routes: Routes = [
         (m) => m.PaymentsComponent
       ),
     canActivate: [CustomerGuard],
-  }, {
-    path:'employee',
-    component:LayoutComponent,
-    children:[
+  },
+  {
+    path: 'employee',
+    component: LayoutComponent,
+    children: [
       {
-        path:'dashboard',
-        component:EmpDashboardComponent
+        path: 'dashboard',
+        component: EmpDashboardComponent,
       },
       {
-        path:'side',
-        component:EmpSidebarComponent
-      }
+        path: 'side',
+        component: EmpSidebarComponent,
+      },
     ],
-    canActivate:[EmployeeGuard]
+    canActivate: [EmployeeGuard],
   },
   { path: '**', component: PageNotFoundComponent },
 ];
