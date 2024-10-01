@@ -16,3 +16,7 @@ export interface RegistrationResponse {
   customerId: string;
   firstName: string;
 }
+
+export interface UsernameResponse {
+  username: string;
+}
