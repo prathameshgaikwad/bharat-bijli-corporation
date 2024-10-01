@@ -1,4 +1,4 @@
-import { ServiceConnectionStatus } from './enums';
+import { EmployeeStatus, ServiceConnectionStatus } from './enums.types';
 
 export interface PersonalDetails {
   firstName: string;
@@ -28,6 +28,12 @@ export interface Customer {
   id: string;
   personalDetails: PersonalDetails;
   serviceConnectionStatus: ServiceConnectionStatus;
+}
+
+export interface Employee {
+  id: string;
+  personalDetails: PersonalDetails;
+  employeeStatus: EmployeeStatus;
 }
 
 export const defaultCustomer: Customer = {

@@ -3,7 +3,7 @@ import { Observable, Subject, catchError, of, takeUntil } from 'rxjs';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { CommonModule } from '@angular/common';
-import { Customer } from '../../shared/types/user';
+import { Customer } from '../../shared/types/user.types';
 import { CustomerService } from '../services/customer.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
