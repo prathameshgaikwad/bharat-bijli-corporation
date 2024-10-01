@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("customers")
@@ -38,6 +39,12 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ResponseEntity<Customer> getCustomer(@PathVariable String customerId){
         return ResponseEntity.ok(customerService.getCustomer(customerId));
+    }
+
+    @GetMapping("/{customerId}/username")
+    public ResponseEntity<Map<String, String>> getCustomerUsername(@PathVariable String customerId){
+        String username = customerService.getCustomerUsername(customerId);
+        return ResponseEntity.ok(Map.of("username",username));
     }
 
     // Endpoint to fetch paginated list of invoices of a customer by customerId

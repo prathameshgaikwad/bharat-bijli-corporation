@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("employees")
 public class EmployeeController {
@@ -30,6 +32,12 @@ public class EmployeeController {
     @GetMapping("/{employeeId}")
     public ResponseEntity<Employee> getEmployee(@PathVariable String employeeId) {
         return ResponseEntity.ok(employeeService.getEmployee(employeeId));
+    }
+
+    @GetMapping("/{employeeId}/username")
+    public ResponseEntity<Map<String, String>> getEmployeeUsername(@PathVariable String employeeId) {
+        String username = employeeService.getEmployeeUsername(employeeId);
+        return ResponseEntity.ok(Map.of("username", username));
     }
 
     // Endpoint to save a csv file of customers
