@@ -5,10 +5,11 @@
 <div class="table-cont">
   <h2>Recent Transacions</h2>
   <app-listing
-    [headers]="['Customer', 'Amount', 'Method', 'Status', 'Time']"
+    [headers]="['Customer', 'Amount', 'Fee', 'Method', 'Status', 'Date']"
     [fields]="[
       'customer',
       'amount',
+      'transactionFee',
       'transactionMethod',
       'transactionStatus',
       'createdAt'
