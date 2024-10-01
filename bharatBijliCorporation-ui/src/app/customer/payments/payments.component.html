@@ -1,4 +1,63 @@
 <app-navbar></app-navbar>
 <div class="page">
-  <p>payments works!</p>
+  <div class="page-header">
+    <h2>Your Latest Transactions</h2>
+    <p>
+      Track your transactions, view payment details, and monitor your financial
+      history.
+    </p>
+  </div>
+  <p-table
+    [value]="transactions"
+    [paginator]="true"
+    [rows]="this.pageSize"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
+    sortMode="multiple"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 8%">#</th>
+        <th style="width: 20%">Reference</th>
+        <th style="width: 20%">Associated Bill</th>
+        <th style="width: 20%" pSortableColumn="amount">
+          Amount <p-sortIcon field="amount" />
+        </th>
+        <th style="width: 15%">Fee</th>
+        <th style="width: 12%" pSortableColumn="status">
+          Status <p-sortIcon field="status" />
+        </th>
+        <th>View</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-transaction let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>
+          {{ transaction.transactionReference }}
+        </td>
+        <td>
+          {{ transaction.invoice.id }}
+        </td>
+        <td>
+          {{ transaction.amount | currency : "INR" : "symbol" : "1.2-2" }}
+        </td>
+        <td>
+          {{
+            transaction.transactionFee | currency : "INR" : "symbol" : "1.2-2"
+          }}
+        </td>
+        <td>
+          <p-tag
+            [icon]="getIcon(transaction.transactionStatus)"
+            [severity]="getSeverity(transaction.transactionStatus)"
+            [value]="transaction.transactionStatus"
+          ></p-tag>
+        </td>
+        <td>
+          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>

@@ -2,6 +2,7 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
+import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.TransactionRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,6 +17,9 @@ public class TransactionService {
 
     @Autowired
     private TransactionRepo transactionRepo;
+
+    @Autowired
+    private CustomerService customerService;
 
     public Transaction saveTransaction(Transaction transaction) {
         return transactionRepo.save(transaction);
@@ -51,6 +55,7 @@ public class TransactionService {
 
     public Page<Transaction> getLatestTransactionsByCustomer(String customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return transactionRepo.findByCustomerOrderByCreatedAt(customerId, pageable);
+        Customer customer = customerService.getCustomer(customerId);
+        return transactionRepo.findByCustomerOrderByCreatedAt(customer, pageable);
     }
 }
