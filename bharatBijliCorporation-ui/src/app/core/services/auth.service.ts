@@ -14,7 +14,7 @@ import { Injectable } from '@angular/core';
 import { PersonalDetails } from '../../shared/types/user';
 
 export interface DecodedToken extends JwtPayload {
-  userId: string;
+  sub: string;
   role: string;
 }
 
@@ -66,7 +66,7 @@ export class AuthService {
 
   getUserId(): string | null {
     const decoded = this.getDecodedToken();
-    return decoded?.userId || null;
+    return decoded?.sub || null;
   }
 
   isTokenExpired(): boolean {
@@ -116,9 +116,11 @@ export class AuthService {
     this.setToken(loginResponse.token);
     const decodedToken = this.getDecodedToken();
     if (decodedToken) {
-      this.appStateService.setUserId(decodedToken.sub!);
-      this.appStateService.setRole(decodedToken.role);
-      this.fetchUsername(decodedToken.role, decodedToken.sub!);
+      const userId = decodedToken.sub!;
+      const role = decodedToken.role;
+      this.appStateService.setUserId(userId);
+      this.appStateService.setRole(role);
+      this.fetchUsername(role, userId);
     }
   }
 
@@ -171,8 +173,7 @@ export class AuthService {
       .pipe(
         tap(() => {
           this.clearToken();
-          this.appStateService.setRole('GUEST');
-          this.appStateService.setUserId('');
+          this.appStateService.clearState();
         })
       );
   }
