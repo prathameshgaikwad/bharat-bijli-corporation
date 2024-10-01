@@ -24,7 +24,7 @@ export interface DecodedToken extends JwtPayload {
 export class AuthService {
   private readonly AUTH_API = 'http://localhost:8080/auth';
   private readonly CUSTOMER_API = 'http://localhost:8080/customers';
-  private readonly EMPLOYEE_API = 'http://localhost:8080/employee';
+  private readonly EMPLOYEE_API = 'http://localhost:8080/employees';
   private readonly tokenKey = 'token';
 
   constructor(
