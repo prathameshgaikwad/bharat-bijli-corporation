@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CustomerNavbarComponent } from '../customer-navbar/customer-navbar.component';
+import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
   selector: 'app-payments',
   standalone: true,
-  imports: [CustomerNavbarComponent],
+  imports: [NavbarComponent],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.css',
 })
