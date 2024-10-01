@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
 
     Page<Transaction> findByCustomerOrderByCreatedAt(Customer customer, Pageable pageable);
+
+    Page<Transaction> findByOrderByCreatedAtDesc(Pageable pageable);
 }

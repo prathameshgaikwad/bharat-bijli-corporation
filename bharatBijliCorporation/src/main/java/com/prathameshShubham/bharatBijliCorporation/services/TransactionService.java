@@ -58,4 +58,22 @@ public class TransactionService {
         Customer customer = customerService.getCustomer(customerId);
         return transactionRepo.findByCustomerOrderByCreatedAt(customer, pageable);
     }
+
+
+    //Paginated Transactions
+    public Page<Transaction> getPaginatedTransactions(int pageNo, int size) {
+        Pageable pageable = PageRequest.of(pageNo, size);
+        Page<Transaction> page = transactionRepo.findAll(pageable);
+        return page;
+    }
+
+    //Recent Transaction
+    public Page<Transaction> getRecentTransactions() {
+        Pageable pageable = PageRequest.of(0,5);
+       return  transactionRepo.findByOrderByCreatedAtDesc(pageable);
+    }
+
+    public Long getCountOfTransactions() {
+        return  transactionRepo.count();
+    }
 }
