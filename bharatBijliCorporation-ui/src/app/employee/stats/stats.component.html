@@ -1,7 +1,7 @@
 <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
   <div class="grid">
     <div class="col-12 md:col-6 lg:col-3">
-      <div class="surface-card shadow-2 p-3 border-round">
+      <div class="surface-card shadow-2 p-3 border-round width">
         <div class="flex justify-content-between mb-3">
           <div>
             <span class="block text-500 font-medium mb-3">Customers</span>
@@ -16,7 +16,7 @@
         </div>
         <span
           class="text-green-500 font-medium hover"
-          [routerLink]="['/home/customer']"
+          [routerLink]="['/employee/customer']"
           >View Customers
         </span>
         <span class="text-500"></span>
@@ -38,7 +38,7 @@
         </div>
         <span
           class="text-green-500 hover font-medium"
-          [routerLink]="['/home/customer']"
+          [routerLink]="['/employee/customer']"
           >Check Out
         </span>
         <span class="text-500"></span>
@@ -60,7 +60,7 @@
         </div>
         <span
           class="text-green-500 font-medium hover"
-          [routerLink]="['/home/transactions']"
+          [routerLink]="['/employee/transactions']"
           routerLinkActive="router-link-active"
           >View Transactions
         </span>
@@ -83,7 +83,7 @@
         </div>
         <span
           class="text-green-500 font-medium hover"
-          [routerLink]="['/home/pendings']"
+          [routerLink]="['/employee/pendings']"
           >View
         </span>
         <span class="text-500"></span>
