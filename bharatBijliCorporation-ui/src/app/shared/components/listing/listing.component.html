@@ -1,4 +1,4 @@
-<div class="card" >
+<div class="card">
   <p-table
     [value]="data"
     [rows]="rows"
@@ -15,43 +15,26 @@
     <ng-template pTemplate="body" let-rowData>
       <tr>
         <td *ngFor="let field of fields">
-          @if(field == "invoice_status"){
+          @if(field == "customer"){
+          {{ rowData.customer.personalDetails.firstName }}
+          {{ rowData.customer.personalDetails.lastName }}
+          } @else if(field == "invoice_status"){
           <p-chip
-          [style] = "{
-            'color' : 'green'
-          }"
-            *ngIf="rowData[field] == 'Paid'"
+            [style]="{
+              color: getStatusColor(rowData[field])
+            }"
             label="{{ rowData[field] }}"
-            icon="pi pi-check-circle"
-          />
+            icon="{{ getStatusIcon(rowData[field]) }}"
+          ></p-chip>
+          } @else if(field == "transactionStatus"){
           <p-chip
-          [style] = "{
-            'color' : 'red'
-          }"
-            *ngIf="rowData[field] == 'Unpaid'"
+            [style]="{
+              color: getStatusColor(rowData[field])
+            }"
             label="{{ rowData[field] }}"
-            icon="pi pi-exclamation-circle"
-          />
-          } 
-          @else if(field == "transactionStatus"){
-            <p-chip
-            [style] = "{
-              'color' : 'green'
-            }"
-              *ngIf="rowData[field] == 'COMPLETED'"
-              label="{{ rowData[field] }}"
-              icon="pi pi-check-circle"
-            />
-            <p-chip
-            [style] = "{
-              'color' : '#917115'
-            }"
-              *ngIf="rowData[field] == 'PENDING'"
-              label="{{ rowData[field] }}"
-              icon="pi pi-exclamation-circle"
-            />
-          }
-          @else{
+            icon="{{ getStatusIcon(rowData[field]) }}"
+          ></p-chip>
+          } @else{
           {{ rowData[field] }}
           }
         </td>

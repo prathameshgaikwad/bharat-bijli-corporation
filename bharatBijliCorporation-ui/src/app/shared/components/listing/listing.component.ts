@@ -25,20 +25,58 @@ export class ListingComponent {
   loading: boolean = false;
 
   ngOnInit() {
-    // Set total records to the length of the data array passed from parent
     this.totalRecords = this.data.length;
-
-    // Load the first page of data initially
     this.loadData({ first: 0, rows: this.rows });
   }
 
-  // Simulate lazy loading/pagination for data
   loadData(event: any) {
     this.loading = true;
-
-    // Calculate start and end indices for slicing
     const start = event.first;
     const end = start + event.rows;
     this.loading = false;
   }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'OVERDUE':
+      case 'CANCELLED':
+      case 'DECLINED':
+      case 'FAILED':
+        return 'red'; // Red for negative statuses
+      case 'SUCCESS':
+      case 'PAID':
+        return 'green'; // Green for successful or paid
+      case 'PENDING':
+      case 'PARTIALLY_PAID':
+        return 'orange'; // Orange for pending or partial payments
+      case 'VOID':
+      case 'EXPIRED':
+        return 'grey'; // Grey for void or expired
+      default:
+        return 'black'; // Default color
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'SUCCESS':
+      case 'PAID':
+        return 'pi pi-check-circle'; // Success or Paid icon
+      case 'CANCELLED':
+      case 'DECLINED':
+      case 'FAILED':
+        return 'pi pi-exclamation-circle'; // Failure icons
+      case 'PENDING':
+      case 'PARTIALLY_PAID':
+        return 'pi pi-hourglass'; // Pending or partially paid icon
+      case 'OVERDUE':
+        return 'pi pi-times-circle'; // Overdue icon
+      case 'VOID':
+      case 'EXPIRED':
+        return 'pi pi-ban'; // Void or expired icon
+      default:
+        return 'pi pi-info-circle'; // Default icon
+    }
+  }
+
 }
