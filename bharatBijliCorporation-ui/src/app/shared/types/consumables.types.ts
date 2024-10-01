@@ -24,9 +24,10 @@ export interface Transaction {
   amount: number;
   transactionMethod: TransactionMethod;
   description: string;
-  fee: number;
+  transactionFee: number;
   transactionReference: string;
   transactionStatus: TransactionStatus;
+  createdAt : Date;
 }
 
 interface Pageable {
