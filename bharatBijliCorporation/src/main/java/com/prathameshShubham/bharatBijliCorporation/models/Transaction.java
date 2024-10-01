@@ -3,7 +3,9 @@ package com.prathameshShubham.bharatBijliCorporation.models;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "transactions")
 public class Transaction {
 
