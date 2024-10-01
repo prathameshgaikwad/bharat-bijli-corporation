@@ -29,6 +29,7 @@ public class Transaction {
     @Column(nullable = false)
     private Double amount;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionMethod transactionMethod;
 
