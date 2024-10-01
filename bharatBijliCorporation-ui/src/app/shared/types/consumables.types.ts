@@ -1,4 +1,10 @@
-import { InvoiceStatus } from './enums.types';
+import {
+  InvoiceStatus,
+  TransactionMethod,
+  TransactionStatus,
+} from './enums.types';
+
+import { Customer } from './user.types';
 
 export interface Invoice {
   id: string;
@@ -9,6 +15,18 @@ export interface Invoice {
   periodEndDate: Date;
   dueDate: Date;
   status: InvoiceStatus;
+}
+
+export interface Transaction {
+  id: string;
+  invoice: Invoice;
+  customer: Customer;
+  amount: number;
+  transactionMethod: TransactionMethod;
+  description: string;
+  fee: number;
+  transactionReference: string;
+  transactionStatus: TransactionStatus;
 }
 
 interface Pageable {
