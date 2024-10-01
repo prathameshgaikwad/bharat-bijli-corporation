@@ -15,15 +15,35 @@ export interface Invoice {
   status: 'PENDING' | 'PAID' | 'OVERDUE' | 'PARTIALLY_PAID' | 'VOID';
 }
 
+interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
+}
+
 export interface Page<T> {
   content: T[];
-  totalElements: number;
-  totalPages: number;
-  number: number;
-  size: number;
-  first: boolean;
+  pageable: Pageable;
   last: boolean;
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  first: boolean;
   numberOfElements: number;
+  empty: boolean;
 }
 
 @Injectable({

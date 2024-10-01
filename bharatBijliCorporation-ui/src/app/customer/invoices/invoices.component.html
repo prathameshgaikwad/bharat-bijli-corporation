@@ -1,1 +1,65 @@
-<p>invoices works!</p>
+<app-navbar></app-navbar>
+<div class="page">
+  <div class="page-header">
+    <h2>Your Latest Invoices</h2>
+    <p>
+      Quickly access your invoices, check due dates, and stay on your billing
+      history.
+    </p>
+  </div>
+  <p-table
+    [value]="invoices"
+    [paginator]="true"
+    [rows]="this.pageSize"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
+    sortMode="multiple"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 8%">#</th>
+        <th style="width: 20%">Period</th>
+        <th style="width: 20%" pSortableColumn="dueDate">
+          Due on <p-sortIcon field="dueDate" />
+        </th>
+        <th style="width: 20%" pSortableColumn="consumption">
+          Consumption <p-sortIcon field="consumption" />
+        </th>
+        <th style="width: 20%" pSortableColumn="amount">
+          Bill Amount <p-sortIcon field="amount" />
+        </th>
+        <th style="width: 12%" pSortableColumn="status">
+          Status <p-sortIcon field="status" />
+        </th>
+        <th>Download</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-invoice let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>
+          {{ invoice.periodStartDate | date : "d MMM yy" }} -
+          {{ invoice.periodEndDate | date : "d MMM yy" }}
+        </td>
+        <td>{{ invoice.dueDate | date : "EEE, d MMM yyyy" }}</td>
+        <td>{{ invoice.unitsConsumed | number : "1.2-2" }} units</td>
+        <td>
+          {{
+            invoice.tariff * invoice.unitsConsumed
+              | currency : "INR" : "symbol" : "1.2-2"
+          }}
+        </td>
+        <td>
+          <p-tag
+            [icon]="getIcon(invoice.invoiceStatus)"
+            [severity]="getSeverity(invoice.invoiceStatus)"
+            [value]="invoice.invoiceStatus"
+          ></p-tag>
+        </td>
+        <td>
+          <p-button icon="pi pi-download" [rounded]="true" [text]="true" />
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

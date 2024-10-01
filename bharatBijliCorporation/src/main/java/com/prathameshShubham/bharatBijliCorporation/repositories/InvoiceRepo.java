@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface InvoiceRepo extends JpaRepository<Invoice, Long> {
 
     // Fetch invoices by customer, sorted by createdAt in descending order, and paginated
-    Page<Invoice> findByCustomerOrderByCreatedAt(String customerId, Pageable pageable);
+    Page<Invoice> findByCustomerOrderByCreatedAt(Customer customer, Pageable pageable);
     Page<Invoice> findByGeneratedByEmployeeId(String employeeId, Pageable pageable);
 }
