@@ -18,22 +18,13 @@ interface SidebarItem {
   styleUrl: './emp-sidebar.component.css'
 })
 export class EmpSidebarComponent {
-  sidebarItems: SidebarItem[] = [
-    { label: 'Dashboard', route: 'dashboard' },
-    { label: 'Customers', route: 'customer' },
-    { label: 'Invoices', route: 'invoices' },
-    { label: 'Transactions', route: 'transactions' },
-    { label: 'Pay By Cash', route: 'pay-cash' },
-  ];
-
-  constructor(private route : Router){}
 
   items: MenuItem[] | undefined;
-    
+
   ngOnInit() {
     this.items = [
         { label: 'Dashboard', icon: 'pi pi-home', route : 'dashboard' },
-        { label: 'Customers', icon: 'pi pi-user', route : 'side' },
+        { label: 'Customers', icon: 'pi pi-user', route : 'customer' },
         { label: 'Invoices', icon: 'pi pi-receipt' },
         { label: 'Transactions', icon: 'pi pi-indian-rupee' },
         { label: 'PAY BY CASH', icon: 'pi pi-wallet' }
