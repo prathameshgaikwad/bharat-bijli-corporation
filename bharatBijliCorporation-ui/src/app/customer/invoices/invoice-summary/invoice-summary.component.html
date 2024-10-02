@@ -1,0 +1,55 @@
+<div class="container">
+  <p>
+    Period:
+    <span class="value">
+      {{ invoiceDetails.periodStartDate | date : "d MMM yy" }} -
+      {{ invoiceDetails.periodEndDate | date : "d MMM yy" }}
+    </span>
+  </p>
+  <p>
+    Due on:
+    <span class="value">{{
+      invoiceDetails.dueDate | date : "EEE, d MMM yyyy"
+    }}</span>
+  </p>
+  <p>
+    Consumption:
+    <span class="value"
+      >{{ invoiceDetails.unitsConsumed | number : "1.2-2" }} units</span
+    >
+  </p>
+  <p>
+    Tariff:
+    <span class="value"
+      >{{ invoiceDetails.tariff | currency : "INR" : "symbol" : "1.2-2" }} /unit
+    </span>
+  </p>
+  <p>
+    Billing Amount:
+    <span class="value">{{
+      billingAmount | currency : "INR" : "symbol" : "1.2-2"
+    }}</span>
+  </p>
+  <p-divider type="dashed" align="center" *ngIf="!isOverdue"
+    ><p>{{ "Discount" }}</p></p-divider
+  >
+  <p *ngIf="!isOverdue">
+    Paying before due date (5%):
+    <span class="value">{{
+      payBeforeDueDateDiscount | currency : "INR" : "symbol" : "1.2-2"
+    }}</span>
+  </p>
+
+  <p-divider type="dashed" align="center"><p>Total</p></p-divider>
+  <p class="subtitle bold">
+    Total Amount:
+    <span class="value">{{
+      totalAmount | currency : "INR" : "symbol" : "1.2-2"
+    }}</span>
+  </p>
+</div>
+
+<button pButton [disabled]="invoiceDetails.id">
+  Pay Now
+  <i class="pi pi-arrow-right"></i>
+</button>
