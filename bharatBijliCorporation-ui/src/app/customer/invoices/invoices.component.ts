@@ -5,9 +5,9 @@ import { Invoice, Page } from '../../shared/types/consumables.types';
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CustomerService } from '../services/customer.service';
+import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { PendingDuesComponent } from '../pending-dues/pending-dues.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
@@ -22,7 +22,7 @@ import { TagModule } from 'primeng/tag';
     CommonModule,
     ButtonModule,
     TagModule,
-    PendingDuesComponent,
+    DynamicInvoiceMessage,
   ],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',

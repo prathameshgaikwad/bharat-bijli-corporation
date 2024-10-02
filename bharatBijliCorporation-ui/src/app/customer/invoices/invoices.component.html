@@ -1,20 +1,20 @@
 <app-navbar></app-navbar>
 <div class="page">
-  <app-pending-dues
+  <app-dynamic-invoice-message
     *ngIf="isOverdueAvailable"
     [invoiceStatus]="overDueInvoiceStatus"
     title="Overdue Bills"
     message="You've missed the due date on some bills. Total overdue ->"
     buttonLabel="Pay Dues"
     severity="error"
-  ></app-pending-dues>
-  <app-pending-dues
+  ></app-dynamic-invoice-message>
+  <app-dynamic-invoice-message
     *ngIf="isBillGenerated"
     [invoiceStatus]="pendingInvoiceStatus"
     message="Your bill is generated. Amount to be paid -> "
     buttonLabel="View Bill"
     severity="info"
-  ></app-pending-dues>
+  ></app-dynamic-invoice-message>
   <div class="page-header">
     <h2>Your Latest Bills</h2>
     <p>

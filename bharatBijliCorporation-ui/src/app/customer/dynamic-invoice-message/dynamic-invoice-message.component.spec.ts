@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PendingDuesComponent } from './pending-dues.component';
+import { PendingDuesComponent } from './dynamic-invoice-message.component';
 
 describe('PendingDuesComponent', () => {
   let component: PendingDuesComponent;
@@ -8,9 +8,8 @@ describe('PendingDuesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PendingDuesComponent]
-    })
-    .compileComponents();
+      imports: [PendingDuesComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PendingDuesComponent);
     component = fixture.componentInstance;

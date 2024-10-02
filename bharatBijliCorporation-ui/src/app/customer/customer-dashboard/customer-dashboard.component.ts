@@ -4,14 +4,14 @@ import { Subject, Subscription } from 'rxjs';
 import { AppStateService } from '../../core/services/app-state.service';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../services/customer.service';
+import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { PendingDuesComponent } from '../pending-dues/pending-dues.component';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [NavbarComponent, CommonModule, PendingDuesComponent],
+  imports: [NavbarComponent, CommonModule, DynamicInvoiceMessage],
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.css',
 })

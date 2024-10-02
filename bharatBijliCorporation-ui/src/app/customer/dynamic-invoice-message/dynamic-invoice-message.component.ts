@@ -1,24 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  InvoicesByStatusResponse,
-  PendingDuesResponse,
-} from '../../shared/types/consumables.types';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../services/customer.service';
 import { InvoiceStatus } from '../../shared/types/enums.types';
+import { InvoicesByStatusResponse } from '../../shared/types/consumables.types';
 import { MessagesModule } from 'primeng/messages';
 
 @Component({
-  selector: 'app-pending-dues',
+  selector: 'app-dynamic-invoice-message',
   standalone: true,
   imports: [MessagesModule, CommonModule, ButtonModule],
-  templateUrl: './pending-dues.component.html',
-  styleUrl: './pending-dues.component.css',
+  templateUrl: './dynamic-invoice-message.component.html',
+  styleUrl: './dynamic-invoice-message.component.css',
 })
-export class PendingDuesComponent implements OnInit {
+export class DynamicInvoiceMessage implements OnInit {
   @Input() title: string = '';
   @Input() message: string = '';
   @Input() buttonLabel: string = '';

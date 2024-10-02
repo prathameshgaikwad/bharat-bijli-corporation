@@ -6,13 +6,13 @@
     </h1>
   </div>
   <div>
-    <app-pending-dues
+    <app-dynamic-invoice-message
       *ngIf="isBillsOverdue"
       [invoiceStatus]="overDueInvoiceStatus"
       title="Overdue Bills"
       message="You've missed the due date on some bills. Total overdue ->"
       buttonLabel="Pay Dues"
       severity="error"
-    ></app-pending-dues>
+    ></app-dynamic-invoice-message>
   </div>
 </div>
