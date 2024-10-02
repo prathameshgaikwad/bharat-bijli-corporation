@@ -6,6 +6,8 @@ import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
+import { AddCustComponent } from './employee/add-cust/add-cust.component';
+import { TransactionsComponent } from './employee/transactions/transactions.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -43,15 +45,25 @@ export const routes: Routes = [
   },
   {
     path: 'employee',
-    component: LayoutComponent,
+    loadComponent: () =>
+      import('./employee/layout/layout.component').then(
+        (m) => m.LayoutComponent
+      ),
     children: [
       {
         path: 'dashboard',
-        component: EmpDashboardComponent,
+        loadComponent: () =>
+        import('./employee/emp-dashboard/emp-dashboard.component').then(
+          (m) => m.EmpDashboardComponent
+        ),
       },
       {
-        path: 'side',
-        component: EmpSidebarComponent,
+        path:'customer',
+        component:AddCustComponent
+      },
+      {
+        path:'transactions',
+        component:TransactionsComponent
       },
     ],
     canActivate: [EmployeeGuard],

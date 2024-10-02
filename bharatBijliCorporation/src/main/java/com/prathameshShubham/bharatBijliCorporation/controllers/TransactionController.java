@@ -27,8 +27,12 @@ public class TransactionController {
     @GetMapping
     public ResponseEntity<Page<Transaction>> getTransactions(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(transactionService.getPaginatedTransactions(page, size));
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortField,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestParam(required = false) String search) {
+        System.out.print(".");
+        return ResponseEntity.ok(transactionService.getPaginatedTransactions(page, size, sortField, sortOrder, search));
     }
 
     @GetMapping("/recents")

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -61,9 +62,21 @@ public class TransactionService {
 
 
     //Paginated Transactions
-    public Page<Transaction> getPaginatedTransactions(int pageNo, int size) {
-        Pageable pageable = PageRequest.of(pageNo, size);
-        Page<Transaction> page = transactionRepo.findAll(pageable);
+    public Page<Transaction> getPaginatedTransactions(int pageNo, int size, String sortField, String sortOrder, String search) {
+        // If sortField is 'customer', we sort by 'customer.personalDetails.firstName'
+        if ("customer".equals(sortField)) {
+            sortField = "customer.personalDetails.firstName";
+        }
+        Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo, size, sort);
+        Page<Transaction> page;
+
+        if (search != null && !search.isEmpty()) {
+            page =  transactionRepo.searchByCustomerName(search, pageable);
+        } else {
+            page =  transactionRepo.findAll(pageable);
+        }
+
         return page;
     }
 

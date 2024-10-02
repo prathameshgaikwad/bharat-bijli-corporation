@@ -27,6 +27,7 @@ export class EmpSidebarComponent {
         { label: 'Customers', icon: 'pi pi-user', route : 'customer' },
         { label: 'Invoices', icon: 'pi pi-receipt' },
         { label: 'Transactions', icon: 'pi pi-indian-rupee' },
+        { label: 'Transactions', icon: 'pi pi-indian-rupee', route : 'transactions' },
         { label: 'PAY BY CASH', icon: 'pi pi-wallet' }
     ];
 }
