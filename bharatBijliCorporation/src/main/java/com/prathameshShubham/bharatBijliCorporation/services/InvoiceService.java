@@ -76,21 +76,6 @@ public class InvoiceService {
         return invoiceRepo.findByCustomerOrderByCreatedAt(customer, pageable);
     }
 
-//    public PendingDuesResponse getPendingInvoices(String customerId, int page, int size) {
-//        List<InvoiceStatus> pendingStatuses = List.of(InvoiceStatus.PENDING);
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        Page<Invoice> pendingInvoices = invoiceRepo.findByCustomerIdAndInvoiceStatusIn(customerId, pendingStatuses, pageable);
-//
-//        double pendingDuesTotal = pendingInvoices.getContent().stream()
-//                .mapToDouble(i -> i.getUnitsConsumed() * i.getTariff())
-//                .sum();
-//
-//        Page<InvoiceDTO> invoiceDTOPage = convertToDTO(pendingInvoices);
-//
-//        return new PendingDuesResponse(pendingDuesTotal, invoiceDTOPage);
-//    }
-
     public InvoicesByStatusResponse getInvoicesByStatus(String customerId, InvoiceStatus invoiceStatus, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Invoice> invoicesByStatus = invoiceRepo.findByCustomerIdAndInvoiceStatus(customerId, invoiceStatus,

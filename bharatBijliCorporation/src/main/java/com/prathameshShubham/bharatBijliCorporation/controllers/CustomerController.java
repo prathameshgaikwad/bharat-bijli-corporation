@@ -53,21 +53,13 @@ public class CustomerController {
         return ResponseEntity.ok(invoices);
     }
 
-//    @GetMapping("/{customerId}/pending-dues")
-//    public ResponseEntity<PendingDuesResponse> getPendingInvoices(@PathVariable String customerId,
-//                                              @RequestParam(defaultValue = "0") int page,
-//                                              @RequestParam(defaultValue = "10") int size) {
-//        PendingDuesResponse pendingDuesResponse = invoiceService.getPendingInvoices(customerId, page, size);
-//        return ResponseEntity.ok(pendingDuesResponse);
-//    }
-
     @GetMapping("/{customerId}/invoices/{invoiceStatus}")
-    public ResponseEntity<InvoicesByStatusResponse> getOverdueInvoices(@PathVariable String customerId,
+    public ResponseEntity<InvoicesByStatusResponse> getInvoicesByStatus(@PathVariable String customerId,
                                                                        @PathVariable InvoiceStatus invoiceStatus,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size) {
-        InvoicesByStatusResponse pendingDuesResponse = invoiceService.getInvoicesByStatus(customerId,invoiceStatus, page, size);
-        return ResponseEntity.ok(pendingDuesResponse);
+        InvoicesByStatusResponse invoicesByStatusResponse = invoiceService.getInvoicesByStatus(customerId,invoiceStatus, page, size);
+        return ResponseEntity.ok(invoicesByStatusResponse);
     }
 
     // Endpoint to fetch paginated list of latest transactions done by a customer
