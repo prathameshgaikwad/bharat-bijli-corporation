@@ -17,6 +17,16 @@ export interface Invoice {
   status: InvoiceStatus;
 }
 
+export interface PendingDuesResponse {
+  pendingDuesTotal: number;
+  invoices: Page<Invoice>;
+}
+export interface InvoicesByStatusResponse {
+  invoiceAmountTotal: number;
+  status: InvoiceStatus;
+  invoices: Page<Invoice>;
+}
+
 export interface Transaction {
   id: string;
   invoice: Invoice;
@@ -27,7 +37,7 @@ export interface Transaction {
   transactionFee: number;
   transactionReference: string;
   transactionStatus: TransactionStatus;
-  createdAt : Date;
+  createdAt: Date;
 }
 
 interface Pageable {

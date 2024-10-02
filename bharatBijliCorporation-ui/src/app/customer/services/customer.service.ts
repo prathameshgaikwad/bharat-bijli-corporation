@@ -1,12 +1,15 @@
 import {
   Invoice,
+  InvoicesByStatusResponse,
   Page,
+  PendingDuesResponse,
   Transaction,
 } from '../../shared/types/consumables.types';
 
 import { Customer } from '../../shared/types/user.types';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { InvoiceStatus } from '../../shared/types/enums.types';
 import { Observable } from 'rxjs';
 import { UsernameResponse } from '../../shared/types/auth.types';
 
@@ -25,6 +28,16 @@ export class CustomerService {
   ): Observable<Page<Invoice>> {
     const url = `${this.baseUrl}/${customerId}/invoices?page=${page}&size=${size}`;
     return this.httpClient.get<Page<Invoice>>(url);
+  }
+
+  getInvoicesByStatus(
+    customerId: string,
+    invoiceStatus: InvoiceStatus,
+    page: number = 0,
+    size: number = 10
+  ): Observable<InvoicesByStatusResponse> {
+    const url = `${this.baseUrl}/${customerId}/invoices/${invoiceStatus}?page=${page}&size=${size}`;
+    return this.httpClient.get<InvoicesByStatusResponse>(url);
   }
 
   getTransactions(

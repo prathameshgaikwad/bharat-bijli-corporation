@@ -1,0 +1,18 @@
+.amount {
+  font-weight: 800;
+}
+
+.pay-button {
+  margin-left: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  h3,
+  p {
+    margin: 0;
+  }
+}
