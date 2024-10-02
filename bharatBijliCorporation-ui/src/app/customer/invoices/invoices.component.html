@@ -25,6 +25,11 @@
   </div>
   <p-table
     [value]="invoices"
+    selectionMode="single"
+    [(selection)]="selectedInvoiceDetails"
+    dataKey="id"
+    (onRowSelect)="showInvoice($event.data)"
+    (onRowUnselect)="hideInvoice()"
     [paginator]="true"
     [rows]="this.pageSize"
     [tableStyle]="{ 'min-width': '50rem' }"
@@ -33,7 +38,7 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 8%">#</th>
+        <th style="width: 8%">id</th>
         <th style="width: 20%">Period</th>
         <th style="width: 20%">Due on</th>
         <th style="width: 20%">Consumption</th>
@@ -43,7 +48,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-invoice let-i="rowIndex">
-      <tr>
+      <tr [pSelectableRow]="invoice">
         <td>{{ i + 1 }}</td>
         <td>
           {{ invoice.periodStartDate | date : "d MMM yy" }} -
@@ -65,9 +70,21 @@
           ></p-tag>
         </td>
         <td>
-          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" />
+          <p-button icon="pi pi-file-pdf" [rounded]="true" [text]="true" />
         </td>
       </tr>
     </ng-template>
   </p-table>
+</div>
+<div>
+  <p-dialog
+    header="Bill Summary"
+    [modal]="true"
+    [(visible)]="isInvoiceSummaryVisible"
+    [style]="{ width: '25rem' }"
+  >
+    <app-invoice-summary
+      [invoiceDetails]="selectedInvoiceDetails"
+    ></app-invoice-summary>
+  </p-dialog>
 </div>

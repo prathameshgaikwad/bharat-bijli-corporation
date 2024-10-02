@@ -1,5 +1,11 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import {
   Invoice,
   defaultInvoice,
@@ -16,7 +22,7 @@ import { TagModule } from 'primeng/tag';
   templateUrl: './invoice-summary.component.html',
   styleUrl: './invoice-summary.component.css',
 })
-export class InvoiceSummaryComponent implements OnInit {
+export class InvoiceSummaryComponent implements OnInit, OnChanges {
   @Input() invoiceDetails: Invoice = defaultInvoice;
   isOverdue: boolean = false;
   billingAmount: number = 0;
@@ -24,6 +30,16 @@ export class InvoiceSummaryComponent implements OnInit {
   totalAmount: number = 0;
 
   ngOnInit(): void {
+    this.calculateInvoiceDetails();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['invoiceDetails']) {
+      this.calculateInvoiceDetails();
+    }
+  }
+
+  private calculateInvoiceDetails() {
     this.isOverdue = this.invoiceDetails.invoiceStatus === 'OVERDUE';
     this.billingAmount =
       this.invoiceDetails.tariff * this.invoiceDetails.unitsConsumed;
