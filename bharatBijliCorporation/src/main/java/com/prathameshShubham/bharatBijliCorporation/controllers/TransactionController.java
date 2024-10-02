@@ -41,4 +41,9 @@ public class TransactionController {
     public ResponseEntity<Long> getCountOfTransactions(){
         return ResponseEntity.ok(transactionService.getCountOfTransactions());
     }
+
+    @GetMapping("pendings/count")
+    public  ResponseEntity<Long> getCountOfPendingTransactions(){
+        return  ResponseEntity.ok(transactionService.getCountOfPendingTransaction());
+    }
 }
