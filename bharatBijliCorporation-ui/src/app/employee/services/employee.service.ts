@@ -11,6 +11,7 @@ import { Page, Transaction } from '../../shared/types/consumables.types';
 export class EmployeeService {
   private baseUrl = 'http://localhost:8080/employees';
   private baseTransactionsUrl = 'http://localhost:8080/transactions';
+  private baseInvoicesUrl = 'http://localhost:8080/invoices';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -26,5 +27,21 @@ export class EmployeeService {
 
   getRecentTransactions() : Observable<Page<Transaction>>{
     return this.httpClient.get<Page<Transaction>> (`${this.baseTransactionsUrl}/recents`);
+  }
+
+  getCountOfTransaction(): Observable<number>{
+      return this.httpClient.get<number>(`${this.baseTransactionsUrl}/count`)
+  }
+
+  getCountOfInvoices(): Observable<number> {
+    return this.httpClient.get<number>(`${this.baseInvoicesUrl}/count`);
+  }
+
+  getCountOfPendingTransactions(): Observable<number> {
+    return this.httpClient.get<number>(`${this.baseTransactionsUrl}/pendings/count`);
+  }
+
+  getCountOfCustomers() : Observable<number> {
+    return this.httpClient.get<number>(`${this.baseUrl}/count/customers`)
   }
 }

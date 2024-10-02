@@ -58,4 +58,8 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("count/customers")
+    public ResponseEntity<Long> getCountOfCustomers(){
+        return ResponseEntity.ok(customerService.getCountOfCustomers());
+    }
 }

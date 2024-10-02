@@ -14,52 +14,9 @@ import { Page, Transaction } from '../../shared/types/consumables.types';
 })
 export class EmpDashboardComponent implements OnInit {
   transactions : any[] =[] ;
-  // = [
-  //   {
-  //     customer: 'John Doe', // Assuming the Customer model has a 'name' property
-  //     amount: 150.0,
-  //     transactionMethod: 'CREDIT_CARD', // Adjust according to your enums
-  //     transactionStatus: 'PENDING', // Adjust according to your enums
-  //     createdAt: '2024-09-29T12:34:56', // Adjust as per LocalDateTime format
-  //     hola: 'amigos',
-  //   },
-  //   {
-  //     customer: 'John Doe', // Assuming the Customer model has a 'name' property
-  //     amount: 150.0,
-  //     transactionMethod: 'CREDIT_CARD', // Adjust according to your enums
-  //     transactionStatus: 'COMPLETED', // Adjust according to your enums
-  //     createdAt: '2024-09-29T12:34:56', // Adjust as per LocalDateTime format
-  //     hola: 'amigos',
-  //   },
-  //   {
-  //     customer: 'John Doe', // Assuming the Customer model has a 'name' property
-  //     amount: 150.0,
-  //     transactionMethod: 'CREDIT_CARD', // Adjust according to your enums
-  //     transactionStatus: 'COMPLETED', // Adjust according to your enums
-  //     createdAt: '2024-09-29T12:34:56', // Adjust as per LocalDateTime format
-  //     hola: 'amigos',
-  //   },
-  //   {
-  //     customer: 'John Doe', // Assuming the Customer model has a 'name' property
-  //     amount: 150.0,
-  //     transactionMethod: 'CREDIT_CARD', // Adjust according to your enums
-  //     transactionStatus: 'COMPLETED', // Adjust according to your enums
-  //     createdAt: '2024-09-29T12:34:56', // Adjust as per LocalDateTime format
-  //     hola: 'amigos',
-  //   },
-  //   {
-  //     customer: 'John Doe', // Assuming the Customer model has a 'name' property
-  //     amount: 150.0,
-  //     transactionMethod: 'CREDIT_CARD', // Adjust according to your enums
-  //     transactionStatus: 'COMPLETED', // Adjust according to your enums
-  //     createdAt: '2024-09-29T12:34:56', // Adjust as per LocalDateTime format
-  //     hola: 'amigos',
-  //   },
-  // ];
-
+  
   constructor(
-    private empService: EmployeeService,
-    private httpclient: HttpClient
+    private empService: EmployeeService
   ) {}
 
   ngOnInit(): void {

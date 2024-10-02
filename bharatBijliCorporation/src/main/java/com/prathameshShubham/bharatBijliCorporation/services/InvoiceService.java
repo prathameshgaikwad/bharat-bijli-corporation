@@ -153,4 +153,7 @@ public class InvoiceService {
         saveInvoice(invoiceRequest);
     }
 
+    public Long getCountOfInvoices() {
+        return invoiceRepo.count();
+    }
 }

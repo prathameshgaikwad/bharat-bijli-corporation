@@ -90,5 +90,8 @@ public class InvoiceController {
         }
     }
 
-
+    @GetMapping("/count")
+    public ResponseEntity<Long> getCountOfTransactions(){
+        return ResponseEntity.ok(invoiceService.getCountOfInvoices());
+    }
 }

@@ -76,4 +76,8 @@ public class TransactionService {
     public Long getCountOfTransactions() {
         return  transactionRepo.count();
     }
+
+    public Long getCountOfPendingTransaction(){
+        return transactionRepo.countByTransactionStatus(TransactionStatus.PENDING);
+    }
 }
