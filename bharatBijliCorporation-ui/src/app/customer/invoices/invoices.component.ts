@@ -5,7 +5,9 @@ import { Invoice, Page } from '../../shared/types/consumables.types';
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CustomerService } from '../services/customer.service';
+import { InvoiceStatus } from '../../shared/types/enums.types';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { PendingDuesComponent } from '../pending-dues/pending-dues.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
@@ -20,6 +22,7 @@ import { TagModule } from 'primeng/tag';
     CommonModule,
     ButtonModule,
     TagModule,
+    PendingDuesComponent,
   ],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
@@ -30,6 +33,10 @@ export class InvoicesComponent implements OnInit {
   totalPages: number = 0;
   currentPage: number = 0;
   pageSize: number = 10;
+  isBillGenerated: boolean = true;
+  isOverdueAvailable: boolean = true;
+  overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
+  pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
 
   constructor(
     private appStateService: AppStateService,

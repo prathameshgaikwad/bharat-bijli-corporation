@@ -1,6 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.opencsv.CSVReader;
+import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
+import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceDTO;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
@@ -12,6 +14,7 @@ import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceService {
@@ -69,6 +74,55 @@ public class InvoiceService {
         Pageable pageable = PageRequest.of(page, size);
         Customer customer = customerService.getCustomer(customerId);
         return invoiceRepo.findByCustomerOrderByCreatedAt(customer, pageable);
+    }
+
+//    public PendingDuesResponse getPendingInvoices(String customerId, int page, int size) {
+//        List<InvoiceStatus> pendingStatuses = List.of(InvoiceStatus.PENDING);
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        Page<Invoice> pendingInvoices = invoiceRepo.findByCustomerIdAndInvoiceStatusIn(customerId, pendingStatuses, pageable);
+//
+//        double pendingDuesTotal = pendingInvoices.getContent().stream()
+//                .mapToDouble(i -> i.getUnitsConsumed() * i.getTariff())
+//                .sum();
+//
+//        Page<InvoiceDTO> invoiceDTOPage = convertToDTO(pendingInvoices);
+//
+//        return new PendingDuesResponse(pendingDuesTotal, invoiceDTOPage);
+//    }
+
+    public InvoicesByStatusResponse getInvoicesByStatus(String customerId, InvoiceStatus invoiceStatus, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Invoice> invoicesByStatus = invoiceRepo.findByCustomerIdAndInvoiceStatus(customerId, invoiceStatus,
+                pageable);
+
+        double invoiceAmountTotal = invoicesByStatus.getContent().stream()
+                .mapToDouble(i -> i.getUnitsConsumed() * i.getTariff())
+                .sum();
+
+        Page<InvoiceDTO> invoiceDTOPage = convertToDTO(invoicesByStatus);
+
+        return new InvoicesByStatusResponse(invoiceAmountTotal, invoiceStatus, invoiceDTOPage);
+    }
+
+    private Page<InvoiceDTO> convertToDTO(Page<Invoice> invoices) {
+        List<InvoiceDTO> invoiceDTOs = invoices.getContent().stream()
+                .map(invoice -> {
+                    InvoiceDTO dto = new InvoiceDTO();
+                    dto.setId(invoice.getId());
+                    dto.setUnitsConsumed(invoice.getUnitsConsumed());
+                    dto.setTariff(invoice.getTariff());
+                    dto.setPeriodStartDate(invoice.getPeriodStartDate());
+                    dto.setPeriodEndDate(invoice.getPeriodEndDate());
+                    dto.setDueDate(invoice.getDueDate());
+                    dto.setInvoiceStatus(invoice.getInvoiceStatus());
+                    dto.setCreatedAt(invoice.getCreatedAt());
+                    dto.setUpdatedAt(invoice.getUpdatedAt());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(invoiceDTOs, invoices.getPageable(), invoices.getTotalElements());
     }
 
     public Page<Invoice> getInvoicesByEmployeeId(String employeeId, int page, int size) {

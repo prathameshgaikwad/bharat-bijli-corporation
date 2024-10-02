@@ -1,0 +1,19 @@
+<p-messages severity="{{ severity }}" closable="false" *ngIf="totalAmount > 0">
+  <ng-template pTemplate>
+    <div class="content">
+      <h3 *ngIf="title">{{ title }}</h3>
+      <p *ngIf="message">
+        {{ message }}
+        <span class="amount">{{
+          totalAmount | currency : "INR" : "symbol" : "1.2-2"
+        }}</span>
+      </p>
+    </div>
+    <p-button
+      class="pay-button"
+      label="{{ buttonLabel }}"
+      [severity]="buttonSeverity"
+      size="small"
+    ></p-button>
+  </ng-template>
+</p-messages>

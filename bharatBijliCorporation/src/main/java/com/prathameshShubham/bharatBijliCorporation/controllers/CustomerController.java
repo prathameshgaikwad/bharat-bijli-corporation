@@ -1,21 +1,16 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
-import com.prathameshShubham.bharatBijliCorporation.exceptions.DuplicateEntryException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
+import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
+import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -54,9 +49,25 @@ public class CustomerController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        System.out.println("------------- INVOICE REQUEST ------------------");
         Page<Invoice> invoices = invoiceService.getLatestInvoicesForCustomer(customerId, page, size);
         return ResponseEntity.ok(invoices);
+    }
+
+//    @GetMapping("/{customerId}/pending-dues")
+//    public ResponseEntity<PendingDuesResponse> getPendingInvoices(@PathVariable String customerId,
+//                                              @RequestParam(defaultValue = "0") int page,
+//                                              @RequestParam(defaultValue = "10") int size) {
+//        PendingDuesResponse pendingDuesResponse = invoiceService.getPendingInvoices(customerId, page, size);
+//        return ResponseEntity.ok(pendingDuesResponse);
+//    }
+
+    @GetMapping("/{customerId}/invoices/{invoiceStatus}")
+    public ResponseEntity<InvoicesByStatusResponse> getOverdueInvoices(@PathVariable String customerId,
+                                                                       @PathVariable InvoiceStatus invoiceStatus,
+                                                                       @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        InvoicesByStatusResponse pendingDuesResponse = invoiceService.getInvoicesByStatus(customerId,invoiceStatus, page, size);
+        return ResponseEntity.ok(pendingDuesResponse);
     }
 
     // Endpoint to fetch paginated list of latest transactions done by a customer
