@@ -76,6 +76,24 @@ export class InvoicesComponent implements OnInit {
     }
   }
 
+  downloadPdf(customerId: string = this.customerId, invoiceId: string): void {
+    this.customerService.downloadInvoicePdf(customerId, invoiceId).subscribe({
+      next: (response: Blob) => {
+        // Create a blob URL and open it
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice_${invoiceId}.pdf`; // Specify the file name
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up
+      },
+      error: (err) => {
+        console.error('Error downloading PDF:', err);
+      },
+    });
+  }
+
   getSeverity(status: string) {
     switch (status) {
       case 'PAID':
