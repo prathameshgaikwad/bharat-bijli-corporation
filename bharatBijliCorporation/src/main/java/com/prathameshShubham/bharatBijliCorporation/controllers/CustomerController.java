@@ -6,6 +6,8 @@ import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RequestMapping("customers")
 public class CustomerController {
 
+    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
     @Autowired
     private CustomerService customerService;
 
@@ -53,11 +56,18 @@ public class CustomerController {
         return ResponseEntity.ok(invoices);
     }
 
-    @GetMapping("/{customerId}/invoices/{invoiceStatus}")
+    @GetMapping("/{customerId}/invoices/{invoiceId}")
+    public ResponseEntity<Invoice> getInvoice(@PathVariable Long invoiceId) {
+        System.out.println("------------------ GETTING BY ID------------------");
+        return ResponseEntity.ok(invoiceService.getInvoice(invoiceId));
+    }
+
+    @GetMapping("/{customerId}/invoices/status/{invoiceStatus}")
     public ResponseEntity<InvoicesByStatusResponse> getInvoicesByStatus(@PathVariable String customerId,
                                                                        @PathVariable InvoiceStatus invoiceStatus,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size) {
+        System.out.println("------------------ GETTING BY STATUS------------------");
         InvoicesByStatusResponse invoicesByStatusResponse = invoiceService.getInvoicesByStatus(customerId,invoiceStatus, page, size);
         return ResponseEntity.ok(invoicesByStatusResponse);
     }

@@ -11,6 +11,7 @@
   <app-dynamic-invoice-message
     *ngIf="isBillGenerated"
     [invoiceStatus]="pendingInvoiceStatus"
+    title="Latest Bill Generated"
     message="Your bill is generated. Amount to be paid -> "
     buttonLabel="View Bill"
     severity="info"

@@ -14,8 +14,19 @@ export interface Invoice {
   periodStartDate: Date;
   periodEndDate: Date;
   dueDate: Date;
-  status: InvoiceStatus;
+  invoiceStatus: InvoiceStatus;
 }
+
+export const defaultInvoice: Invoice = {
+  id: '',
+  customerId: '',
+  unitsConsumed: 0,
+  tariff: 0,
+  periodStartDate: new Date(),
+  periodEndDate: new Date(),
+  dueDate: new Date(),
+  invoiceStatus: InvoiceStatus.PENDING,
+};
 
 export interface PendingDuesResponse {
   pendingDuesTotal: number;

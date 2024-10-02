@@ -21,6 +21,14 @@ export class CustomerService {
 
   constructor(private httpClient: HttpClient) {}
 
+  getCustomerInvoiceById(
+    customerId: string,
+    invoiceId: string
+  ): Observable<Invoice> {
+    const url = `${this.baseUrl}/${customerId}/invoices/${invoiceId}`;
+    return this.httpClient.get<Invoice>(url);
+  }
+
   getInvoices(
     customerId: string,
     page: number = 0,
@@ -36,7 +44,7 @@ export class CustomerService {
     page: number = 0,
     size: number = 10
   ): Observable<InvoicesByStatusResponse> {
-    const url = `${this.baseUrl}/${customerId}/invoices/${invoiceStatus}?page=${page}&size=${size}`;
+    const url = `${this.baseUrl}/${customerId}/invoices/status/${invoiceStatus}?page=${page}&size=${size}`;
     return this.httpClient.get<InvoicesByStatusResponse>(url);
   }
 

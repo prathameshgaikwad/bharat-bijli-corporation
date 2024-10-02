@@ -14,6 +14,20 @@
       label="{{ buttonLabel }}"
       [severity]="buttonSeverity"
       size="small"
+      (onClick)="navigate()"
     ></p-button>
   </ng-template>
 </p-messages>
+<p-toast />
+<div *ngIf="!isLoading">
+  <p-dialog
+    header="Bill Summary"
+    [modal]="true"
+    [(visible)]="isInvoiceSummaryVisible"
+    [style]="{ width: '25rem' }"
+  >
+    <app-invoice-summary
+      [invoiceDetails]="selectedInvoiceDetails"
+    ></app-invoice-summary>
+  </p-dialog>
+</div>

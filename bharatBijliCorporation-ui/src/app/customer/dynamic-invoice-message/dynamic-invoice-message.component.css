@@ -16,3 +16,7 @@
     margin: 0;
   }
 }
+
+:host ::ng-deep .p-toast {
+  scale: 0.9;
+}
