@@ -1,23 +1,28 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject, catchError, of, takeUntil } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { CommonModule } from '@angular/common';
-import { Customer } from '../../shared/types/user.types';
 import { CustomerService } from '../services/customer.service';
+import { InvoiceStatus } from '../../shared/types/enums.types';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { PendingDuesComponent } from '../pending-dues/pending-dues.component';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [NavbarComponent, CommonModule],
+  imports: [NavbarComponent, CommonModule, PendingDuesComponent],
   templateUrl: './customer-dashboard.component.html',
   styleUrl: './customer-dashboard.component.css',
 })
 export class CustomerDashboardComponent implements OnInit, OnDestroy {
-  customerDetails$!: Observable<Customer | null>;
   customerId: string = '';
+  username: string = '';
   private destroy$ = new Subject<void>();
+  private subscription!: Subscription;
+  isBillsPending!: boolean;
+  isBillsOverdue!: boolean;
+  overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
 
   constructor(
     private appStateService: AppStateService,
@@ -25,36 +30,18 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.appStateService
-      .getUserId()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (userId) => {
-          this.customerId = userId || '';
-          if (this.customerId && this.appStateService.getRole()) {
-            this.loadCustomerDetails(this.customerId);
-          } else {
-            console.error('No customer ID found');
-          }
-        },
-        error: (err) => {
-          console.error('Error fetching user ID', err);
-        },
+    this.subscription = this.appStateService
+      .getUsername()
+      .subscribe((username) => {
+        this.username = username;
       });
   }
 
-  private loadCustomerDetails(customerId: string): void {
-    this.customerDetails$ = this.customerService
-      .getCustomerDetails(customerId)
-      .pipe(
-        catchError((error) => {
-          console.error('Failed to load customer details', error);
-          return of(null);
-        })
-      );
-  }
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

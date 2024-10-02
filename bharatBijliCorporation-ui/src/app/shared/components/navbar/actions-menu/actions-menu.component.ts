@@ -121,6 +121,7 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.username = response.username;
+          this.appStateService.setUsername(this.username);
         },
         error: (err) => {
           console.error('Failed to fetch customer username:', err);
@@ -135,6 +136,7 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.username = response.username;
+          this.appStateService.setUsername(this.username);
         },
         error: (err) => {
           console.error('Failed to fetch employee username:', err);

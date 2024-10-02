@@ -1,4 +1,18 @@
 <app-navbar></app-navbar>
 <div class="page">
-  <p>customer-dashboard works!</p>
+  <div class="page-header greeting-container">
+    <h1 class="heading username">
+      Good Morning, <span>{{ username }}!</span>
+    </h1>
+  </div>
+  <div>
+    <app-pending-dues
+      *ngIf="isBillsOverdue"
+      [invoiceStatus]="overDueInvoiceStatus"
+      title="Overdue Bills"
+      message="You've missed the due date on some bills. Total overdue ->"
+      buttonLabel="Pay Dues"
+      severity="error"
+    ></app-pending-dues>
+  </div>
 </div>
