@@ -34,19 +34,11 @@
       <tr>
         <th style="width: 8%">#</th>
         <th style="width: 20%">Period</th>
-        <th style="width: 20%" pSortableColumn="dueDate">
-          Due on <p-sortIcon field="dueDate" />
-        </th>
-        <th style="width: 20%" pSortableColumn="consumption">
-          Consumption <p-sortIcon field="consumption" />
-        </th>
-        <th style="width: 20%" pSortableColumn="amount">
-          Bill Amount <p-sortIcon field="amount" />
-        </th>
-        <th style="width: 12%" pSortableColumn="status">
-          Status <p-sortIcon field="status" />
-        </th>
-        <th>Download</th>
+        <th style="width: 20%">Due on</th>
+        <th style="width: 20%">Consumption</th>
+        <th style="width: 20%">Bill Amount</th>
+        <th style="width: 12%">Status</th>
+        <th>View</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-invoice let-i="rowIndex">
@@ -72,7 +64,7 @@
           ></p-tag>
         </td>
         <td>
-          <p-button icon="pi pi-download" [rounded]="true" [text]="true" />
+          <p-button icon="pi pi-eye" [rounded]="true" [text]="true" />
         </td>
       </tr>
     </ng-template>
