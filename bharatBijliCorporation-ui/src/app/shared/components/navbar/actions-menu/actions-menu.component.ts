@@ -48,8 +48,6 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    console.log('Navbar');
-
     this.appStateService
       .getUserId()
       .pipe(takeUntil(this.destroy$))

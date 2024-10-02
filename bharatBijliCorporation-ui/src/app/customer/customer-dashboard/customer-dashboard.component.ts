@@ -25,8 +25,6 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('Dashboard');
-
     this.appStateService
       .getUserId()
       .pipe(takeUntil(this.destroy$))

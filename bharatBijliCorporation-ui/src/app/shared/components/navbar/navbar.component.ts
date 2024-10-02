@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit {
         routerLink: '/customer/dashboard',
       },
       {
-        label: 'Invoices',
+        label: 'Bills',
         icon: 'pi pi-receipt',
         routerLink: '/customer/invoices',
       },
