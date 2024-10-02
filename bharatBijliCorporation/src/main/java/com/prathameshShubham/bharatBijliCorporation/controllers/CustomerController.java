@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 @RestController
@@ -28,6 +29,10 @@ public class CustomerController {
 
     @Autowired
     private TransactionService transactionService;
+
+    @Autowired
+    private InvoiceController invoiceController;
+
 
     @PostMapping
     public ResponseEntity<Customer> saveCustomer(@RequestBody PersonalDetails personalDetails) {
@@ -58,16 +63,20 @@ public class CustomerController {
 
     @GetMapping("/{customerId}/invoices/{invoiceId}")
     public ResponseEntity<Invoice> getInvoice(@PathVariable Long invoiceId) {
-        System.out.println("------------------ GETTING BY ID------------------");
         return ResponseEntity.ok(invoiceService.getInvoice(invoiceId));
     }
+
+    @GetMapping("/{customerId}/invoices/{invoiceId}/pdf")
+    public ResponseEntity<byte[]> getInvoicePdf(@PathVariable String customerId, @PathVariable Long invoiceId) throws  IOException {
+        return invoiceController.getInvoicePdf(invoiceId);
+    }
+
 
     @GetMapping("/{customerId}/invoices/status/{invoiceStatus}")
     public ResponseEntity<InvoicesByStatusResponse> getInvoicesByStatus(@PathVariable String customerId,
                                                                        @PathVariable InvoiceStatus invoiceStatus,
                                                                        @RequestParam(defaultValue = "0") int page,
                                                                        @RequestParam(defaultValue = "10") int size) {
-        System.out.println("------------------ GETTING BY STATUS------------------");
         InvoicesByStatusResponse invoicesByStatusResponse = invoiceService.getInvoicesByStatus(customerId,invoiceStatus, page, size);
         return ResponseEntity.ok(invoicesByStatusResponse);
     }

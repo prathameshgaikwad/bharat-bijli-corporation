@@ -70,7 +70,12 @@
           ></p-tag>
         </td>
         <td>
-          <p-button icon="pi pi-file-pdf" [rounded]="true" [text]="true" />
+          <p-button
+            icon="pi pi-file-pdf"
+            [rounded]="true"
+            [text]="true"
+            (onClick)="downloadPdf(customerId, invoice.id)"
+          />
         </td>
       </tr>
     </ng-template>

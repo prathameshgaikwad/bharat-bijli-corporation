@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Invoice,
   InvoicesByStatusResponse,
@@ -7,7 +8,6 @@ import {
 } from '../../shared/types/consumables.types';
 
 import { Customer } from '../../shared/types/user.types';
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { Observable } from 'rxjs';
@@ -27,6 +27,18 @@ export class CustomerService {
   ): Observable<Invoice> {
     const url = `${this.baseUrl}/${customerId}/invoices/${invoiceId}`;
     return this.httpClient.get<Invoice>(url);
+  }
+
+  downloadInvoicePdf(customerId: string, invoiceId: string): Observable<Blob> {
+    const url = `${this.baseUrl}/${customerId}/invoices/${invoiceId}/pdf`;
+    const options = {
+      responseType: 'blob' as 'json',
+      headers: new HttpHeaders({
+        Accept: 'application/pdf',
+      }),
+    };
+
+    return this.httpClient.get<Blob>(url, options);
   }
 
   getInvoices(
