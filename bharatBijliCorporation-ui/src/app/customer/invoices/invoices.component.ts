@@ -1,12 +1,18 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Invoice, Page } from '../../shared/types/consumables.types';
+import {
+  Invoice,
+  Page,
+  defaultInvoice,
+} from '../../shared/types/consumables.types';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CustomerService } from '../services/customer.service';
+import { DialogModule } from 'primeng/dialog';
 import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
+import { InvoiceSummaryComponent } from './invoice-summary/invoice-summary.component';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -23,6 +29,8 @@ import { TagModule } from 'primeng/tag';
     ButtonModule,
     TagModule,
     DynamicInvoiceMessage,
+    DialogModule,
+    InvoiceSummaryComponent,
   ],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
@@ -37,6 +45,8 @@ export class InvoicesComponent implements OnInit {
   isOverdueAvailable: boolean = true;
   overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
   pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
+  isInvoiceSummaryVisible: boolean = false;
+  selectedInvoiceDetails: Invoice = defaultInvoice;
 
   constructor(
     private appStateService: AppStateService,
@@ -103,5 +113,14 @@ export class InvoicesComponent implements OnInit {
   changePage(page: number): void {
     this.currentPage = page;
     this.loadInvoices(page);
+  }
+
+  showInvoice(invoice: Invoice) {
+    this.isInvoiceSummaryVisible = true;
+    this.selectedInvoiceDetails = invoice;
+  }
+  hideInvoice() {
+    this.isInvoiceSummaryVisible = false;
+    this.selectedInvoiceDetails = defaultInvoice;
   }
 }
