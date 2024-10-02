@@ -1,0 +1,12 @@
+.table-cont {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.table-cont p {
+  margin-bottom: 20px;
+  margin-top: 0px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}

@@ -1,19 +1,55 @@
+<div class="page-header greeting-container">
+  <h1 class="heading username">
+    Good Morning, <span>{{ username }}!</span>
+  </h1>
+</div>
 <div class="stats-bar">
   <app-stats></app-stats>
 </div>
 <br />
 <div class="table-cont">
   <h2>Recent Transacions</h2>
-  <app-listing
-    [headers]="['Customer', 'Amount', 'Fee', 'Method', 'Status', 'Date']"
-    [fields]="[
-      'customer',
-      'amount',
-      'transactionFee',
-      'transactionMethod',
-      'transactionStatus',
-      'createdAt'
-    ]"
-    [data]="transactions"
-  ></app-listing>
+  <div class="card">
+    <p-table
+      [value]="transactions"
+      [rows]="rowsPerPage"
+      [totalRecords]="totalRecords"
+      responsiveLayout="scroll"
+      styleClass="p-datatable-striped"
+      [tableStyle]="{ 'min-width': '50rem' }"
+    >
+      >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Fee</th>
+          <th>Method</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData>
+        <tr>
+          <td>
+            {{ rowData.customer.personalDetails.firstName }}
+            {{ rowData.customer.personalDetails.lastName }}
+          </td>
+          <td>{{ rowData.amount }}</td>
+          <td>{{ rowData.transactionFee }}</td>
+          <td>{{ rowData.transactionMethod }}</td>
+          <td>
+            <p-chip
+              [style]="{
+                color: getStatusColor(rowData.transactionStatus)
+              }"
+              icon="{{ getStatusIcon(rowData.transactionStatus) }}"
+              label="{{ rowData.transactionStatus }}"
+            ></p-chip>
+          </td>
+          <td>{{ rowData.createdAt | date : "medium" }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

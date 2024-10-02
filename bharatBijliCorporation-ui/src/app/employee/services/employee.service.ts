@@ -1,5 +1,5 @@
 import { Employee } from '../../shared/types/user.types';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsernameResponse } from '../../shared/types/auth.types';
@@ -25,12 +25,33 @@ export class EmployeeService {
     return this.httpClient.get<UsernameResponse>(url);
   }
 
-  getRecentTransactions() : Observable<Page<Transaction>>{
-    return this.httpClient.get<Page<Transaction>> (`${this.baseTransactionsUrl}/recents`);
+  getPaginatedTransactions(
+    page: number = 0,
+    size: number = 10,
+    sortField: string = 'createdAt',
+    sortOrder: string = 'asc',
+    searchQuery: string
+  ): Observable<Page<Transaction>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('sortField', sortField)
+      .set('sortOrder', sortOrder)
+      .set('search', searchQuery);
+    return this.httpClient.get<Page<Transaction>>(
+      `${this.baseTransactionsUrl}`,
+      { params }
+    );
   }
 
-  getCountOfTransaction(): Observable<number>{
-      return this.httpClient.get<number>(`${this.baseTransactionsUrl}/count`)
+  getRecentTransactions(): Observable<Page<Transaction>> {
+    return this.httpClient.get<Page<Transaction>>(
+      `${this.baseTransactionsUrl}/recents`
+    );
+  }
+
+  getCountOfTransaction(): Observable<number> {
+    return this.httpClient.get<number>(`${this.baseTransactionsUrl}/count`);
   }
 
   getCountOfInvoices(): Observable<number> {
@@ -38,10 +59,14 @@ export class EmployeeService {
   }
 
   getCountOfPendingTransactions(): Observable<number> {
-    return this.httpClient.get<number>(`${this.baseTransactionsUrl}/pendings/count`);
+    return this.httpClient.get<number>(
+      `${this.baseTransactionsUrl}/pendings/count`
+    );
   }
 
-  getCountOfCustomers() : Observable<number> {
-    return this.httpClient.get<number>(`${this.baseUrl}/count/customers`)
+  getCountOfCustomers(): Observable<number> {
+    return this.httpClient.get<number>(`${this.baseUrl}/count/customers`);
   }
+
+
 }

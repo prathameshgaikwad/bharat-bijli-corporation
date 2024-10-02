@@ -1,0 +1,21 @@
+.username {
+  text-align: start;
+  padding: 0;
+
+  span {
+    font-weight: 300;
+  }
+
+  i {
+    font-size: 1.5rem;
+    margin-left: 8px;
+  }
+}
+
+.greeting-container {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: space-between;
+}
