@@ -28,6 +28,12 @@ button {
   gap: 0.7rem;
 }
 
+.paidButton:active,
+.paidButton:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 :host ::ng-deep .p-divider.p-divider-horizontal:before {
   border-top: 2px dashed #979797;
 }
