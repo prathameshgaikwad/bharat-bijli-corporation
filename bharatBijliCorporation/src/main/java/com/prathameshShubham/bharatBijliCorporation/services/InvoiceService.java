@@ -10,13 +10,11 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldExcep
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
+import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -194,5 +192,25 @@ public class InvoiceService {
 
     public Long getCountOfInvoices() {
         return invoiceRepo.count();
+    }
+
+    public Page<Invoice> getPaginatedInvoices(int pageNo, int size, String sortField, String sortOrder, String search) {
+        if ("customer".equals(sortField)) {
+            sortField = "customer.personalDetails.firstName";
+        }
+        Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo, size, sort);
+        Page<Invoice> page;
+
+        if (search != null && !search.isEmpty()) {
+            page =  invoiceRepo.searchByCustomerName(search, pageable);
+            if(page.isEmpty()){
+                page = invoiceRepo.findByCustomerId(search, pageable);
+            }
+        } else {
+            page =  invoiceRepo.findAll(pageable);
+        }
+
+        return page;
     }
 }

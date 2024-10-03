@@ -1,0 +1,198 @@
+<p-messages [(value)]="error" [enableService]="true" />
+<p-dialog
+  header="Bill Summary"
+  [modal]="true"
+  [(visible)]="showBox"
+  [style]="{ width: '25rem' }"
+>
+  <div class="container">
+    <p>
+      Period:
+      <span class="value">
+        {{ selectedInvoiceDetails.periodStartDate | date : "d MMM yy" }} -
+        {{ selectedInvoiceDetails.periodEndDate | date : "d MMM yy" }}
+      </span>
+    </p>
+    <p>
+      Due on:
+      <span class="value">{{
+        selectedInvoiceDetails.dueDate | date : "EEE, d MMM yyyy"
+      }}</span>
+    </p>
+    <p>
+      Consumption:
+      <span class="value"
+        >{{
+          selectedInvoiceDetails.unitsConsumed | number : "1.2-2"
+        }}
+        units</span
+      >
+    </p>
+    <p>
+      Tariff:
+      <span class="value"
+        >{{
+          selectedInvoiceDetails.tariff | currency : "INR" : "symbol" : "1.2-2"
+        }}
+        /unit
+      </span>
+    </p>
+    <p>
+      Billing Amount:
+      <span class="value">{{
+        billingAmount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span>
+    </p>
+    @if(isPaid){
+    <p class="subtitle bold">
+      Total Amount Paid :
+      <span class="value">{{
+        totalAmount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span>
+    </p>
+
+    <p class="subtitle">
+      Payment At : :
+      <span class="value">{{ paidAt | date : "d MMM yy" }}</span>
+    </p>
+
+    <hr />
+    <p-button (click)="toggle()">Already Paid</p-button>
+    } @else{
+    <p-divider type="dashed" align="center" *ngIf="!isOverdue"
+      ><p>{{ "Discount" }}</p></p-divider
+    >
+    <p *ngIf="!isOverdue">
+      Paying before due date (5%):
+      <span class="value">{{
+        payBeforeDueDateDiscount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span>
+    </p>
+
+    <p-divider type="dashed" align="center"><p>Total</p></p-divider>
+    <p class="subtitle bold">
+      Total Amount:
+      <span class="value">{{
+        totalAmount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span>
+    </p>
+    }
+  </div>
+</p-dialog>
+<div class="table-cont">
+  <p-messages [(value)]="messages" [enableService]="false" />
+  <div class="header">
+    <p>All Invoices</p>
+  </div>
+  <div class="search-bar">
+    <div class="search-container">
+      <div class="card flex justify-content-center" style="margin-bottom: 30px">
+        <p-inputGroup [style]="{ height: '45px' }">
+          <input
+            pInputText
+            placeholder="Search Customer"
+            [(ngModel)]="searchQuery"
+          />
+          <p-inputGroupAddon (click)="onSearch()">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-search"
+              (click)="onSearch()"
+              [style]="{ 'background-color': 'white', color: 'blue' }"
+            ></button>
+          </p-inputGroupAddon>
+        </p-inputGroup>
+      </div>
+    </div>
+    <div class="add-invoices">
+      <p-button
+        label="Add Invoices"
+        icon="pi pi-file"
+        (click)="navigateToAddInvoice()"
+        [text]="true"
+        [raised]="true"
+        severity="success"
+        [style]="{ height: '45px' }"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="main-body">
+    <div class="card">
+      <p-table
+        [value]="invoices"
+        [rows]="rowsPerPage"
+        [totalRecords]="totalRecords"
+        responsiveLayout="scroll"
+        (onSort)="onSort($event)"
+        styleClass="p-datatable-striped"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        selectionMode="single"
+        [(selection)]="selectedInvoiceDetails"
+        (onRowSelect)="showInvoice($event.data)"
+        (onRowUnselect)="hideInvoice()"
+      >
+        >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="customer">
+              Customer
+              <p-sortIcon field="customer"></p-sortIcon>
+            </th>
+            <th>Period</th>
+            <th pSortableColumn="dueDate">
+              Due on
+              <p-sortIcon field="dueDate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="unitsConsumed">
+              Consumption
+              <p-sortIcon field="unitsConsumed"></p-sortIcon>
+            </th>
+            <th pSortableColumn="invoiceStatus">
+              Status
+              <p-sortIcon field="invoiceStatus"></p-sortIcon>
+            </th>
+            <th pSortableColumn="tariff">
+              Tarrif
+              <p-sortIcon field="tariff"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+          <tr [pSelectableRow]="rowData">
+            <td>
+              {{ rowData.customer.personalDetails.firstName }}
+              {{ rowData.customer.personalDetails.lastName }}
+            </td>
+            <td>
+              {{ rowData.periodStartDate | date : "d MMM yy" }} -
+              {{ rowData.periodEndDate | date : "d MMM yy" }}
+            </td>
+            <td>{{ rowData.dueDate | date : "EEE, d MMM yyyy" }}</td>
+            <td>{{ rowData.unitsConsumed | number : "1.2-2" }} units</td>
+            <td>
+              <p-chip
+                [style]="{
+                  color: getStatusColor(rowData.invoiceStatus)
+                }"
+                icon="{{ getStatusIcon(rowData.invoiceStatus) }}"
+                label="{{ rowData.invoiceStatus }}"
+              ></p-chip>
+            </td>
+            <td>
+              {{ rowData.tariff }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <p-paginator
+      [rows]="rowsPerPage"
+      [totalRecords]="totalRecords"
+      [first]="first"
+      (onPageChange)="onPageChange($event)"
+    >
+    </p-paginator>
+  </div>
+</div>

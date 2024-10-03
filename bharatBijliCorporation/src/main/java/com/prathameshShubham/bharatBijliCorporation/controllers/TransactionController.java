@@ -1,5 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.itextpdf.layout.element.Tab;
+import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,20 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Transaction>> getTransactions(
+    public ResponseEntity<?> getTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder,
             @RequestParam(required = false) String search) {
-        System.out.print(".");
-        return ResponseEntity.ok(transactionService.getPaginatedTransactions(page, size, sortField, sortOrder, search));
+
+        Page<Transaction> chunk = transactionService.getPaginatedTransactions(page, size, sortField, sortOrder, search);
+
+        if(chunk.isEmpty()){
+            return ResponseEntity.ok("No Invoices Found");
+        }
+
+        return ResponseEntity.ok(chunk);
     }
 
     @GetMapping("/recents")
@@ -49,5 +57,12 @@ public class TransactionController {
     @GetMapping("pendings/count")
     public  ResponseEntity<Long> getCountOfPendingTransactions(){
         return  ResponseEntity.ok(transactionService.getCountOfPendingTransaction());
+    }
+
+    @PostMapping("/invoice/paid")
+    public ResponseEntity<Transaction> getTransactionByInvoice(@RequestBody Invoice invoice) {
+        return transactionService.getTransactionByInvoice(invoice)
+                .map(ResponseEntity::ok)           // If found, return 200 OK with the transaction
+                .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404 Not Found
     }
 }
