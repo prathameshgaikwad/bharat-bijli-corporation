@@ -49,7 +49,18 @@
   </p>
 </div>
 
-<button pButton [disabled]="invoiceDetails.id">
+<button pButton *ngIf="isBillPayable; else paidButton">
   Pay Now
   <i class="pi pi-arrow-right"></i>
 </button>
+<ng-template #paidButton>
+  <button
+    pButton
+    severity="success"
+    style="pointer-events: none"
+    class="paidButton"
+  >
+    <i class="pi pi-check"></i>
+    Paid
+  </button>
+</ng-template>
