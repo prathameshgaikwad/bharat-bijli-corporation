@@ -31,7 +31,7 @@
     }}</span>
   </p>
   <p-divider type="dashed" align="center" *ngIf="!isOverdue"
-    ><p>{{ "Discount" }}</p></p-divider
+    ><p>{{ isBillPayable ? "Discount" : "Savings" }}</p></p-divider
   >
   <p *ngIf="!isOverdue">
     Paying before due date (5%):
