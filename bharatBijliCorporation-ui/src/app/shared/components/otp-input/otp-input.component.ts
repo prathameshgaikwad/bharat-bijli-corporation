@@ -11,14 +11,23 @@ import { AuthService } from '../../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { InputOtpModule } from 'primeng/inputotp';
 import { LoginRequest } from '../../types/auth.types';
+import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-otp-input',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, InputOtpModule, ButtonModule],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    InputOtpModule,
+    ButtonModule,
+    ToastModule,
+  ],
   templateUrl: './otp-input.component.html',
   styleUrl: './otp-input.component.css',
+  providers: [MessageService],
 })
 export class OtpInputComponent {
   length: number = 6;
@@ -32,7 +41,11 @@ export class OtpInputComponent {
     ]),
   });
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private messageService: MessageService
+  ) {}
 
   onSubmit() {
     if (this.otpForm.valid) {
@@ -53,7 +66,21 @@ export class OtpInputComponent {
         },
         error: (err) => {
           this.isLoading = false;
-          console.error('Login failed: ', err);
+          console.log(err);
+
+          if (err.status === 401) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Invalid OTP',
+              detail: 'Please try again',
+            });
+          } else {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Something went wrong',
+              detail: 'Please try again later',
+            });
+          }
         },
       });
     }
