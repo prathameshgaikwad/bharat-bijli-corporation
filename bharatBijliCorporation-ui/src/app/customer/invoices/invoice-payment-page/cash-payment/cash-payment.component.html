@@ -1,10 +1,37 @@
 <p-dialog
+  header="Header"
   [(visible)]="isVisible"
   [modal]="true"
-  header="Process to pay with Cash"
-  [style]="{ width: '25rem' }"
+  [style]="{ width: '550px' }"
 >
-  <p>To make a cash payment, please visit our nearest touch point.</p>
-  <p-divider align="center">Address</p-divider>
-  <p>BBC Bhavan, Viman Nagar, Pune - 411014</p>
+  <ng-template pTemplate="header">
+    <div class="dialog-header">
+      <span> Pay by Cash </span>
+    </div>
+  </ng-template>
+  <span class="information"
+    >You need to visit our office to hand over cash payment.</span
+  >
+  <p-fieldset>
+    <ng-template pTemplate="header">
+      <span
+        ><i class="pi pi-map-marker" style="margin-right: 6px"></i>Address</span
+      >
+    </ng-template>
+    <p style="text-align: center; line-height: 1.2" class="information">
+      5, Lane No. 11, Chandralok Nagari, Dahanukar Colony, Kothrud, Pune,
+      Maharashtra 411038
+    </p></p-fieldset
+  >
+  <ng-template pTemplate="footer">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.7592923269576!2d73.80637667512138!3d18.49455928259392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bfc5ae9c82ab%3A0xdea36e0e269e198a!2sMahavitaran%20Office!5e0!3m2!1sen!2sin!4v1727979589856!5m2!1sen!2sin"
+      width="500"
+      height="250"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </ng-template>
 </p-dialog>
