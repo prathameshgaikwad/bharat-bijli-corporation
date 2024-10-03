@@ -14,6 +14,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-transactions',
@@ -27,6 +28,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     ButtonModule,
     InputTextModule,
     InputGroupAddonModule,
+    MessagesModule,
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
@@ -35,6 +37,9 @@ export class TransactionsComponent {
   transactions: any[] = [];
   totalRecords: number = 0;
   rowsPerPage: number = 10;
+
+  messages: any = [];
+  check = false;
 
   rows = this.transactions.length;
   first = 0;
@@ -101,9 +106,12 @@ export class TransactionsComponent {
   }
 
   onSearch() {
-    console.log(this.searchQuery);
-    this.first = 0; // Reset pagination to the first page when searching
-    this.loadTransactions(); // Re-fetch transactions with search term
+    this.first = 0;
+    const prevrec = this.transactions;
+    this.loadTransactions();
+    if(this.searchQuery==''){
+      this.messages = [{ severity: 'warn', detail: 'Enter' }];
+    }
   }
 
   getStatusColor(status: string): string {
