@@ -1,3 +1,4 @@
+import { AddCustComponent } from './employee/add-cust/add-cust.component';
 import { CustomerGuard } from './core/guards/customer.guard';
 import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
 import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
@@ -6,7 +7,6 @@ import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
-import { AddCustComponent } from './employee/add-cust/add-cust.component';
 import { TransactionsComponent } from './employee/transactions/transactions.component';
 import { InvoicesComponent } from './customer/invoices/invoices.component';
 import { EmpInvoicesComponent } from './employee/invoices/invoices.component';
@@ -45,6 +45,14 @@ export const routes: Routes = [
       import('./customer/payments/payments.component').then(
         (m) => m.PaymentsComponent
       ),
+    canActivate: [CustomerGuard],
+  },
+  {
+    path: 'customer/invoices/:invoiceId/payment',
+    loadComponent: () =>
+      import(
+        './customer/invoices/invoice-payment-page/invoice-payment-page.component'
+      ).then((m) => m.InvoicePaymentPageComponent),
     canActivate: [CustomerGuard],
   },
   {

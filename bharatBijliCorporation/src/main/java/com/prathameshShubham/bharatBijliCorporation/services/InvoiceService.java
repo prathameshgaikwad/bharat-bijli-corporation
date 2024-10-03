@@ -64,6 +64,9 @@ public class InvoiceService {
     public Invoice updateInvoiceStatus(Long invoiceId, InvoiceStatus status) {
         Invoice invoice = getInvoice(invoiceId);
         invoice.setInvoiceStatus(status);
+        System.out.println("---------------------------------- UPDATING INVOICE STATUS " +
+                "-------------------------------------");
+        System.out.println(invoice.getInvoiceStatus());
         return invoiceRepo.save(invoice);
     }
 

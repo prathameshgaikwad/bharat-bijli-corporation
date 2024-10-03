@@ -1,0 +1,17 @@
+.form-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.83rem;
+  padding: 0;
+  margin: 2rem 0;
+
+  p-floatLabel {
+    font-size: 0.85rem;
+  }
+
+  button {
+    border-radius: 4px;
+    display: inline-flex;
+    width: 100%;
+  }
+}

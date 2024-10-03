@@ -114,3 +114,62 @@ export interface Page<T> {
   numberOfElements: number;
   empty: boolean;
 }
+
+export interface BillingDetails {
+  billingAmount: number;
+  isPaymentBeforeDueDate: boolean;
+  isOnlinePayment: boolean;
+  payBeforeDueDateDiscount: number;
+  payByOnlineDiscount: number;
+  totalDiscount: number;
+  totalAmount: number;
+}
+
+export interface RecordPaymentRequest {
+  customerId: string;
+  invoiceId: string;
+  totalAmount: number;
+  discountByDueDate?: number;
+  discountByOnlinePayment?: number;
+  paymentMethod: TransactionMethod;
+  paymentDescription?: string;
+  transactionReference: string;
+  transactionDate: Date;
+}
+
+export interface PaymentDetails {
+  paymentMethod: TransactionMethod;
+  paymentDescription: string;
+}
+
+export interface PaymentMethodSelectionDetails {
+  isCardSelected: boolean;
+  isUpiSelected: boolean;
+  isBankTransferSelected: boolean;
+  isWalletSelected: boolean;
+  isCashSelected: boolean;
+}
+
+export const DEFAULT_PAYMENT_METHOD_SELECTION_DETAILS: PaymentMethodSelectionDetails =
+  {
+    isCardSelected: false,
+    isUpiSelected: false,
+    isBankTransferSelected: false,
+    isWalletSelected: false,
+    isCashSelected: false,
+  };
+
+export const DEFAULT_PAYMENT_DETAILS: PaymentDetails = {
+  paymentMethod: TransactionMethod.DEBIT_CARD,
+  paymentDescription: 'Paid by Debit Card',
+};
+
+export const DEFAULT_BILLING_DETAILS: BillingDetails = {
+  billingAmount: 0,
+  isPaymentBeforeDueDate: false,
+  isOnlinePayment: false,
+  payBeforeDueDateDiscount: 0,
+  payByOnlineDiscount: 0,
+  totalDiscount: 0,
+  totalAmount: 0,
+};

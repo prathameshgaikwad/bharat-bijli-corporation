@@ -13,6 +13,7 @@ import {
 
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 
 @Component({
@@ -30,6 +31,8 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
   totalAmount: number = 0;
   isBillPayable: boolean = true;
   isLoading: boolean = false;
+
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     this.calculateInvoiceDetails();
@@ -70,5 +73,11 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
     }
 
     this.isOverdue = this.invoiceDetails.invoiceStatus === 'OVERDUE';
+  }
+
+  onPayClick() {
+    this.router.navigate([
+      `/customer/invoices/${this.invoiceDetails.id}/payment`,
+    ]);
   }
 }

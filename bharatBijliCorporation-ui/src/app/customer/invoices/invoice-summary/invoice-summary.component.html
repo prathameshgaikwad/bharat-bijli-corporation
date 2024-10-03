@@ -35,9 +35,12 @@
   >
   <p *ngIf="!isOverdue">
     Paying before due date (5%):
-    <span class="value">{{
-      payBeforeDueDateDiscount | currency : "INR" : "symbol" : "1.2-2"
-    }}</span>
+    <span class="value discount"
+      >-
+      {{
+        payBeforeDueDateDiscount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span
+    >
   </p>
 
   <p-divider type="dashed" align="center"><p>Total</p></p-divider>
@@ -49,7 +52,7 @@
   </p>
 </div>
 
-<button pButton *ngIf="isBillPayable; else paidButton">
+<button pButton *ngIf="isBillPayable; else paidButton" (click)="onPayClick()">
   Pay Now
   <i class="pi pi-arrow-right"></i>
 </button>
