@@ -3,6 +3,7 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
+import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.TransactionRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,7 +12,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -63,7 +67,6 @@ public class TransactionService {
 
     //Paginated Transactions
     public Page<Transaction> getPaginatedTransactions(int pageNo, int size, String sortField, String sortOrder, String search) {
-        // If sortField is 'customer', we sort by 'customer.personalDetails.firstName'
         if ("customer".equals(sortField)) {
             sortField = "customer.personalDetails.firstName";
         }
@@ -92,5 +95,9 @@ public class TransactionService {
 
     public Long getCountOfPendingTransaction(){
         return transactionRepo.countByTransactionStatus(TransactionStatus.PENDING);
+    }
+
+    public Optional<Transaction> getTransactionByInvoice(Invoice invoice) {
+        return Optional.ofNullable(transactionRepo.findByInvoiceIdAndTransactionStatus(invoice.getId(), TransactionStatus.SUCCESS));
     }
 }
