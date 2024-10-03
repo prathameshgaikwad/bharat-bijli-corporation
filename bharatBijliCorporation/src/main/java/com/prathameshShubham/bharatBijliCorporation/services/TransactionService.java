@@ -63,7 +63,6 @@ public class TransactionService {
 
     //Paginated Transactions
     public Page<Transaction> getPaginatedTransactions(int pageNo, int size, String sortField, String sortOrder, String search) {
-        // If sortField is 'customer', we sort by 'customer.personalDetails.firstName'
         if ("customer".equals(sortField)) {
             sortField = "customer.personalDetails.firstName";
         }
