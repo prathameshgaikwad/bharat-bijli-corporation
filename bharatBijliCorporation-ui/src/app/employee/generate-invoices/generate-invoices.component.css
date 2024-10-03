@@ -1,0 +1,46 @@
+.container {
+  display: grid;
+  padding-bottom: 20px;
+}
+
+.part {
+  width: 49.5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.small-subtitle {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0.5rem;
+}
+
+.right {
+  background-color: #fff;
+  border-radius: 2rem;
+  margin: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.form-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.83rem;
+  padding: 0 3rem;
+  justify-items: center;
+}
+
+p-floatLabel {
+  font-size: 0.85rem;
+}
+
+p-button {
+  margin: 0 auto;
+  margin-top: 2rem;
+}
+
+/* Additional styles for responsiveness */

@@ -8,6 +8,10 @@ import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
 import { TransactionsComponent } from './employee/transactions/transactions.component';
+import { InvoicesComponent } from './customer/invoices/invoices.component';
+import { EmpInvoicesComponent } from './employee/invoices/invoices.component';
+import { GenerateInvoicesComponent } from './employee/generate-invoices/generate-invoices.component';
+import { InvoiceTemplateComponent } from './employee/invoice-template/invoice-template.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -72,6 +76,20 @@ export const routes: Routes = [
       {
         path: 'transactions',
         component: TransactionsComponent,
+      },
+      {
+        path: 'emp-invoices',
+        component: InvoiceTemplateComponent,
+        children: [
+          {
+            path: '',
+            component: EmpInvoicesComponent,
+          },
+          {
+            path: 'add',
+            component: GenerateInvoicesComponent,
+          },
+        ],
       },
     ],
     canActivate: [EmployeeGuard],
