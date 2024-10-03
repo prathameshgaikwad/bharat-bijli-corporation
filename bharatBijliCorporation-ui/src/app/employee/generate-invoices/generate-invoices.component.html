@@ -1,0 +1,92 @@
+<div class="container">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <h1 class="heading part-title">Create an Invoice</h1>
+    <p class="subtitle small-subtitle">Please enter the details below</p>
+  </div>
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <!-- Period Start Date Field -->
+      <p-floatLabel>
+        <p-calendar
+          name="periodStartDate"
+          formControlName="periodStartDate"
+          inputId="periodStartDate"
+        ></p-calendar>
+        <label for="periodStartDate">Period Start Date</label>
+      </p-floatLabel>
+
+      <!-- Period End Date Field -->
+      <p-floatLabel>
+        <p-calendar
+          name="periodEndDate"
+          formControlName="periodEndDate"
+          inputId="periodEndDate"
+          [(ngModel)]="registrationForm.value.periodEndDate"
+        ></p-calendar>
+        <label for="periodEndDate">Period End Date</label>
+      </p-floatLabel>
+
+
+      <!-- Due Date Field -->
+      <p-floatLabel>
+        <p-calendar
+          name="dueDate"
+          formControlName="dueDate"
+          inputId="dueDate"
+        ></p-calendar>
+        <label for="dueDate">Due Date</label>
+      </p-floatLabel>
+
+
+      <!-- Tariff Field -->
+      <p-floatLabel>
+        <input
+          id="tariff"
+          type="number"
+          pInputText
+          name="tariff"
+          formControlName="tariff"
+        />
+        <label for="tariff">Tariff</label>
+      </p-floatLabel>
+
+      <!-- Units Consumed Field -->
+      <p-floatLabel>
+        <input
+          id="unitsConsumed"
+          type="number"
+          pInputText
+          name="unitsConsumed"
+          formControlName="unitsConsumed"
+        />
+        <label for="unitsConsumed">Units Consumed</label>
+      </p-floatLabel>
+
+      <!-- Customer ID Field -->
+      <p-floatLabel>
+        <input
+          id="customerId"
+          type="text"
+          pInputText
+          name="customerId"
+          formControlName="customerId"
+        />
+        <label for="customerId">Customer ID</label>
+      </p-floatLabel>
+    </div>
+    <div style="display: flex">
+      <p-button
+        label="Continue"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        [rounded]="true"
+        type="submit"
+        [disabled]="registrationForm.invalid"
+        [loading]="isloading"
+      />
+    </div>
+  </form>
+  <p-toast [life]="10000" />
+</div>
+
+{{registrationForm.value.periodEndDate}}

@@ -5,6 +5,7 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileExcep
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
+import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.PDFService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -94,4 +96,21 @@ public class InvoiceController {
     public ResponseEntity<Long> getCountOfTransactions(){
         return ResponseEntity.ok(invoiceService.getCountOfInvoices());
     }
+
+    @GetMapping
+    public ResponseEntity<?> getInvoices(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "dueDate") String sortField,
+            @RequestParam(defaultValue = "asc") String sortOrder,
+            @RequestParam(required = false) String search) {
+        Page<Invoice> chunk = invoiceService.getPaginatedInvoices(page, size, sortField, sortOrder, search);
+
+        if(chunk.isEmpty()){
+            return ResponseEntity.ok("No Invoices Found");
+        }
+
+        return ResponseEntity.ok(chunk);
+    }
+
 }

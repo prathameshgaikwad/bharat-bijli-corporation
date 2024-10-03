@@ -32,7 +32,7 @@ public class Invoice {
     private Double unitsConsumed;
 
     @Column(nullable = false)
-    private Double tariff;
+    private Double tariff = 41.5;
 
     @Column(nullable = false)
     private LocalDateTime periodStartDate;

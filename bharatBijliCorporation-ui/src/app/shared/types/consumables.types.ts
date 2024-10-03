@@ -17,6 +17,39 @@ export interface Invoice {
   invoiceStatus: InvoiceStatus;
 }
 
+export interface InvoiceResp {
+  customerId: string;
+  unitsConsumed: number;
+  tariff: number;
+  periodStartDate: Date;
+  periodEndDate: Date;
+  dueDate: Date;
+  invoiceStatus: InvoiceStatus;
+  employeeId : string;
+}
+
+export const defaultInvoiceResp:  InvoiceResp = {
+  customerId: '',
+  unitsConsumed: 0,
+  tariff: 0,
+  periodStartDate: new Date(),
+  periodEndDate: new Date(),
+  dueDate: new Date(),
+  invoiceStatus: InvoiceStatus.PENDING,
+  employeeId : ''
+};
+
+export interface InvoiceCustResp {
+  customer : Customer
+  unitsConsumed: number;
+  tariff: number;
+  periodStartDate: Date;
+  periodEndDate: Date;
+  dueDate: Date;
+  invoiceStatus: InvoiceStatus;
+}
+
+
 export const defaultInvoice: Invoice = {
   id: '',
   customerId: '',
