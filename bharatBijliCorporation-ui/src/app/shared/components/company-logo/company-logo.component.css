@@ -10,6 +10,7 @@
     font-size: 1.35rem;
     letter-spacing: -0.05rem;
     font-weight: 800;
+    white-space: nowrap;
 
     span {
       font-weight: 300;
