@@ -49,7 +49,7 @@
   </p>
 </div>
 
-<button pButton [disabled]="invoiceDetails.id">
+<button pButton [disabled]="invoiceDetails.id" *ngIf="isBillPayable">
   Pay Now
   <i class="pi pi-arrow-right"></i>
 </button>
