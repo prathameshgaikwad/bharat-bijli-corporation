@@ -84,13 +84,13 @@ export class RegisterComponent {
         next: (response) => {
           this.messageService.add({
             severity: 'success',
-            summary: 'Registration Successful',
-            detail: `Redirecting to Login...`,
+            summary: `${response.customer.id}`,
+            detail: `Successful. Please use this ID to login. Redirecting in 10s.`,
           });
 
           setTimeout(() => {
             this.router.navigate(['/login']);
-          }, 3000);
+          }, 10000);
         },
         error: (error) => {
           this.messageService.add({

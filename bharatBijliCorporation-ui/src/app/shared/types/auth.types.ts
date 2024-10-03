@@ -1,3 +1,5 @@
+import { Customer } from './user.types';
+
 export interface OtpResponse {
   message: string;
   otp: string;
@@ -13,8 +15,7 @@ export interface LoginResponse {
 }
 
 export interface RegistrationResponse {
-  customerId: string;
-  firstName: string;
+  customer: Customer;
 }
 
 export interface UsernameResponse {
