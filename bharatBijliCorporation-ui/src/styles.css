@@ -69,3 +69,8 @@ body {
   background-color: #f2f2f2;
   min-height: calc(100vh - 82.8px);
 }
+
+.discount {
+  color: #61b735;
+  font-weight: 600;
+}

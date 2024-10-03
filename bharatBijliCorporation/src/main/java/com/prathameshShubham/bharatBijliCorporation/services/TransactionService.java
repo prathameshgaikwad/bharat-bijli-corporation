@@ -1,8 +1,11 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
+import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
+import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
+import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.TransactionRepo;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class TransactionService {
 
@@ -22,8 +27,30 @@ public class TransactionService {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private InvoiceService invoiceService;
+
     public Transaction saveTransaction(Transaction transaction) {
         return transactionRepo.save(transaction);
+    }
+
+    public Transaction savePaymentByCustomer(RecordPaymentRequest request, Customer customer, Invoice invoice) {
+        Transaction transaction = new Transaction();
+        transaction.setCustomer(customer);
+        transaction.setInvoice(invoice);
+        transaction.setAmount(request.getTotalAmount());
+        transaction.setDiscountByDueDate(request.getDiscountByDueDate() != null ? request.getDiscountByDueDate() : BigDecimal.ZERO);
+        transaction.setDiscountByOnlinePayment(request.getDiscountByOnlinePayment() != null ? request.getDiscountByOnlinePayment() : BigDecimal.ZERO);
+        transaction.setTransactionMethod(request.getPaymentMethod());
+        transaction.setDescription(request.getPaymentDescription());
+        transaction.setTransactionReference(request.getTransactionReference());
+        transaction.setTransactionDate(request.getTransactionDate());
+        transaction.setTransactionStatus(TransactionStatus.SUCCESS); // Assuming the transaction is completed upon recording
+        System.out.println("---------------------------------- TRYING TO UPDATING INVOICE STATUS " +
+                "-------------------------------------");
+        invoiceService.updateInvoiceStatus(invoice.getId(), InvoiceStatus.PAID);
+        // Save the transaction
+        return saveTransaction(transaction); // Call saveTransaction to persist the transaction
     }
 
     public Transaction getTransaction(Long transactionId) {

@@ -1,19 +1,25 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
+import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
+import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
+import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Map;
 
 @RestController
@@ -90,5 +96,19 @@ public class CustomerController {
     ) {
         Page<Transaction> transactions = transactionService.getLatestTransactionsByCustomer(customerId, page, size);
         return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/record-payment")
+    public ResponseEntity<Transaction> recordPayment(@Valid @RequestBody RecordPaymentRequest request) {
+        // Fetch the customer
+        var customer = customerService.getCustomer(request.getCustomerId());
+
+        // Fetch the invoice
+        var invoice = invoiceService.getInvoice(request.getInvoiceId());
+
+        // Call the service to create the transaction
+        Transaction savedTransaction = transactionService.savePaymentByCustomer(request, customer, invoice);
+
+        return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
     }
 }

@@ -19,12 +19,10 @@ export enum InvoiceStatus {
 export enum TransactionMethod {
   BANK_TRANSFER = 'BANK_TRANSFER',
   CASH = 'CASH',
-  CHEQUE = 'CHEQUE',
   CREDIT_CARD = 'CREDIT_CARD',
-  DEMAND_DRAFT = 'DEMAND_DRAFT',
+  DEBIT_CARD = 'DEBIT_CARD',
   UPI = 'UPI',
   WALLET = 'WALLET',
-  OTHER = 'DEBIT_CARD',
 }
 
 export enum TransactionStatus {

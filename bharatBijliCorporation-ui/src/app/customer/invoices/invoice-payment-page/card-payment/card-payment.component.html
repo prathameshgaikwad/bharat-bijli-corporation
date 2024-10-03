@@ -1,0 +1,54 @@
+<form [formGroup]="cardDetails" (ngSubmit)="onMakePayment()">
+  <p-divider></p-divider>
+  <div class="form-group">
+    <p-floatLabel>
+      <input
+        id="cardNumber"
+        type="text"
+        pInputText
+        name="cardNumber"
+        formControlName="cardNumber"
+      />
+      <label for="cardNumber">Card Number</label>
+    </p-floatLabel>
+    <p-floatLabel>
+      <input
+        id="cardHolderName"
+        type="text"
+        pInputText
+        name="cardHolderName"
+        formControlName="cardHolderName"
+      />
+      <label for="cardHolderName">Card Holder Name</label>
+    </p-floatLabel>
+    <p-floatLabel>
+      <p-calendar
+        name="expiryDate"
+        formControlName="expiryDate"
+        inputId="expiryDate"
+        [minDate]="minDate"
+        dateFormat="mm/y"
+        view="month"
+      />
+      <label for="expiryDate">Expiry Date</label>
+    </p-floatLabel>
+    <p-floatLabel>
+      <p-password
+        formControlName="cvv"
+        [feedback]="false"
+        formControlName="cvv"
+      />
+      <label for="expiryDate">CVV</label>
+    </p-floatLabel>
+    <button
+      label="Continue"
+      pButton
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      [rounded]="true"
+      type="submit"
+      [disabled]="cardDetails.invalid"
+    ></button>
+  </div>
+</form>
+<p-toast></p-toast>

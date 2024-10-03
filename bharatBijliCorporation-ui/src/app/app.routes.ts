@@ -1,3 +1,4 @@
+import { AddCustComponent } from './employee/add-cust/add-cust.component';
 import { CustomerGuard } from './core/guards/customer.guard';
 import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
 import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
@@ -6,7 +7,6 @@ import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
-import { AddCustComponent } from './employee/add-cust/add-cust.component';
 import { TransactionsComponent } from './employee/transactions/transactions.component';
 
 export const routes: Routes = [
@@ -44,6 +44,14 @@ export const routes: Routes = [
     canActivate: [CustomerGuard],
   },
   {
+    path: 'customer/invoices/:invoiceId/payment',
+    loadComponent: () =>
+      import(
+        './customer/invoices/invoice-payment-page/invoice-payment-page.component'
+      ).then((m) => m.InvoicePaymentPageComponent),
+    canActivate: [CustomerGuard],
+  },
+  {
     path: 'employee',
     loadComponent: () =>
       import('./employee/layout/layout.component').then(
@@ -53,17 +61,17 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-        import('./employee/emp-dashboard/emp-dashboard.component').then(
-          (m) => m.EmpDashboardComponent
-        ),
+          import('./employee/emp-dashboard/emp-dashboard.component').then(
+            (m) => m.EmpDashboardComponent
+          ),
       },
       {
-        path:'customer',
-        component:AddCustComponent
+        path: 'customer',
+        component: AddCustComponent,
       },
       {
-        path:'transactions',
-        component:TransactionsComponent
+        path: 'transactions',
+        component: TransactionsComponent,
       },
     ],
     canActivate: [EmployeeGuard],

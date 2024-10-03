@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { UploadComponent } from '../upload/upload.component';
+
+// import { UploadComponent } from '../upload/upload.component';
 
 @Component({
   selector: 'app-add-cust',
   standalone: true,
-  imports: [UploadComponent],
+  imports: [],
   templateUrl: './add-cust.component.html',
-  styleUrl: './add-cust.component.css'
+  styleUrl: './add-cust.component.css',
 })
-export class AddCustComponent {
-
-}
+export class AddCustComponent {}

@@ -4,6 +4,7 @@ import {
   InvoicesByStatusResponse,
   Page,
   PendingDuesResponse,
+  RecordPaymentRequest,
   Transaction,
 } from '../../shared/types/consumables.types';
 
@@ -67,6 +68,11 @@ export class CustomerService {
   ): Observable<Page<Transaction>> {
     const url = `${this.baseUrl}/${customerId}/transactions?page=${page}&size=${size}`;
     return this.httpClient.get<Page<Transaction>>(url);
+  }
+
+  recordPayment(paymentRequest: RecordPaymentRequest): Observable<Transaction> {
+    const url = `${this.baseUrl}/record-payment`;
+    return this.httpClient.post<Transaction>(url, paymentRequest);
   }
 
   getCustomerDetails(customerId: string): Observable<Customer> {

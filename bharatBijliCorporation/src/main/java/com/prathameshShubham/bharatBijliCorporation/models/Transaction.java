@@ -3,11 +3,14 @@ package com.prathameshShubham.bharatBijliCorporation.models;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -30,7 +33,8 @@ public class Transaction {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @Column(nullable = false)
+    @NotNull
+    @Column(nullable = false,columnDefinition = "DOUBLE DEFAULT 0.0")
     private Double amount;
 
     @Enumerated(EnumType.STRING)
@@ -40,7 +44,14 @@ public class Transaction {
     @Lob
     private String description;
 
-    private Double transactionFee;
+    @Column(nullable = false)
+    private BigDecimal discountByDueDate;
+
+    @Column(nullable = false)
+    private BigDecimal discountByOnlinePayment;
+
+    @Column(nullable = false)
+    private LocalDate transactionDate;
 
     @Column(nullable = false)
     private String transactionReference;
