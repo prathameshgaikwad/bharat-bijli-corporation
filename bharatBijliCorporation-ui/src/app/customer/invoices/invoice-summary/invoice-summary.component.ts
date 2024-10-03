@@ -29,29 +29,22 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
   payBeforeDueDateDiscount: number = 0;
   totalAmount: number = 0;
   isBillPayable: boolean = true;
+  isLoading: boolean = false;
 
   ngOnInit(): void {
     this.calculateInvoiceDetails();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.isLoading = true;
     if (changes['invoiceDetails']) {
       this.calculateInvoiceDetails();
+      this.setElementStates();
     }
+    this.isLoading = false;
   }
 
   private calculateInvoiceDetails() {
-    this.isOverdue = this.invoiceDetails.invoiceStatus === 'OVERDUE';
-
-    if (
-      this.invoiceDetails.invoiceStatus === 'VOID' ||
-      this.invoiceDetails.invoiceStatus === 'PAID'
-    ) {
-      this.isBillPayable = false;
-    } else {
-      this.isBillPayable = true;
-    }
-
     this.billingAmount =
       this.invoiceDetails.tariff * this.invoiceDetails.unitsConsumed;
 
@@ -64,5 +57,18 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
       this.payBeforeDueDateDiscount = 0; // No discount
     }
     this.totalAmount = this.billingAmount - this.payBeforeDueDateDiscount;
+  }
+
+  setElementStates() {
+    if (
+      this.invoiceDetails.invoiceStatus === 'VOID' ||
+      this.invoiceDetails.invoiceStatus === 'PAID'
+    ) {
+      this.isBillPayable = false;
+    } else {
+      this.isBillPayable = true;
+    }
+
+    this.isOverdue = this.invoiceDetails.invoiceStatus === 'OVERDUE';
   }
 }
