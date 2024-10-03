@@ -28,6 +28,7 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
   billingAmount: number = 0;
   payBeforeDueDateDiscount: number = 0;
   totalAmount: number = 0;
+  isBillPayable: boolean = true;
 
   ngOnInit(): void {
     this.calculateInvoiceDetails();
@@ -41,6 +42,16 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
 
   private calculateInvoiceDetails() {
     this.isOverdue = this.invoiceDetails.invoiceStatus === 'OVERDUE';
+
+    if (
+      this.invoiceDetails.invoiceStatus === 'VOID' ||
+      this.invoiceDetails.invoiceStatus === 'PAID'
+    ) {
+      this.isBillPayable = false;
+    } else {
+      this.isBillPayable = true;
+    }
+
     this.billingAmount =
       this.invoiceDetails.tariff * this.invoiceDetails.unitsConsumed;
 
