@@ -1,0 +1,19 @@
+.dialog-header {
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 1.2rem;
+  }
+}
+
+.information {
+  display: block;
+  color: #646464;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
