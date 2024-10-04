@@ -127,7 +127,6 @@ export interface BillingDetails {
   totalDiscount: number;
   totalAmount: number;
 }
-
 export interface RecordPaymentRequest {
   customerId: string;
   invoiceId: string;

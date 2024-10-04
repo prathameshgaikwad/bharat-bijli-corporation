@@ -40,6 +40,7 @@ import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
 import { TransactionMethod } from '../../../shared/types/enums.types';
+import { calculateInvoiceDetails } from '../../helpers/invoice';
 
 @Component({
   selector: 'app-invoice-payment-page',
@@ -168,51 +169,15 @@ export class InvoicePaymentPageComponent implements OnInit {
         next: (invoice: Invoice) => {
           this.invoiceDetails = invoice;
           this.paymentMethodForm.patchValue({ invoiceId: this.invoiceId });
-          this.calculateInvoiceDetails();
+          this.billingDetails = calculateInvoiceDetails(
+            this.invoiceDetails,
+            this.billingDetails.isOnlinePayment
+          );
         },
         error: (error) => {
           console.error('Error fetching invoice details:', error);
         },
       });
-  }
-
-  private calculateInvoiceDetails() {
-    // Reset discounts for recalculation
-    this.billingDetails.totalDiscount = 0;
-    this.billingDetails.payBeforeDueDateDiscount = 0;
-    this.billingDetails.payByOnlineDiscount = 0;
-
-    // Calculate base billing amount
-    this.billingDetails.billingAmount =
-      this.invoiceDetails.tariff * this.invoiceDetails.unitsConsumed;
-
-    const currentDate = new Date();
-    const dueDate = new Date(this.invoiceDetails.dueDate);
-
-    // Apply discount if payment is before due date
-    if (currentDate < dueDate) {
-      this.billingDetails.payBeforeDueDateDiscount =
-        this.billingDetails.billingAmount * 0.05; // 5% discount
-      this.billingDetails.isPaymentBeforeDueDate = true;
-    } else {
-      this.billingDetails.payBeforeDueDateDiscount = 0; // No discount after due date
-      this.billingDetails.isPaymentBeforeDueDate = false;
-    }
-
-    // Apply online payment discount if applicable
-    if (this.billingDetails.isOnlinePayment) {
-      this.billingDetails.payByOnlineDiscount =
-        this.billingDetails.billingAmount * 0.05; // 5% discount for online payment
-    }
-
-    // Sum up all discounts
-    this.billingDetails.totalDiscount =
-      this.billingDetails.payBeforeDueDateDiscount +
-      this.billingDetails.payByOnlineDiscount;
-
-    // Calculate the final amount after all discounts
-    this.billingDetails.totalAmount =
-      this.billingDetails.billingAmount - this.billingDetails.totalDiscount;
   }
 
   paymentMethodChanged(selectedMethod: TransactionMethod) {
@@ -231,6 +196,9 @@ export class InvoicePaymentPageComponent implements OnInit {
     this.billingDetails.isOnlinePayment =
       !this.paymentMethodSelectionDetails.isCashSelected;
 
-    this.calculateInvoiceDetails();
+    this.billingDetails = calculateInvoiceDetails(
+      this.invoiceDetails,
+      this.billingDetails.isOnlinePayment
+    );
   }
 }

@@ -1,3 +1,9 @@
+import {
+  BillingDetails,
+  DEFAULT_BILLING_DETAILS,
+  Invoice,
+  defaultInvoice,
+} from '../../../shared/types/consumables.types';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
@@ -6,15 +12,12 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import {
-  Invoice,
-  defaultInvoice,
-} from '../../../shared/types/consumables.types';
 
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
+import { calculateInvoiceDetails } from '../../helpers/invoice';
 
 @Component({
   selector: 'app-invoice-summary',
@@ -31,35 +34,34 @@ export class InvoiceSummaryComponent implements OnInit, OnChanges {
   totalAmount: number = 0;
   isBillPayable: boolean = true;
   isLoading: boolean = false;
+  calculatedBillingDetails: BillingDetails = DEFAULT_BILLING_DETAILS;
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.calculateInvoiceDetails();
+    this.calculatedBillingDetails = calculateInvoiceDetails(
+      this.invoiceDetails
+    );
+    this.setBillingDetails();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.isLoading = true;
     if (changes['invoiceDetails']) {
-      this.calculateInvoiceDetails();
+      this.calculatedBillingDetails = calculateInvoiceDetails(
+        this.invoiceDetails
+      );
+      this.setBillingDetails();
       this.setElementStates();
     }
     this.isLoading = false;
   }
 
-  private calculateInvoiceDetails() {
-    this.billingAmount =
-      this.invoiceDetails.tariff * this.invoiceDetails.unitsConsumed;
-
-    const currentDate = new Date();
-    const dueDate = new Date(this.invoiceDetails.dueDate);
-
-    if (currentDate < dueDate) {
-      this.payBeforeDueDateDiscount = this.billingAmount * 0.05; // 5% discount
-    } else {
-      this.payBeforeDueDateDiscount = 0; // No discount
-    }
-    this.totalAmount = this.billingAmount - this.payBeforeDueDateDiscount;
+  private setBillingDetails() {
+    this.billingAmount = this.calculatedBillingDetails.billingAmount;
+    this.payBeforeDueDateDiscount =
+      this.calculatedBillingDetails.payBeforeDueDateDiscount;
+    this.totalAmount = this.calculatedBillingDetails.totalAmount;
   }
 
   setElementStates() {
