@@ -40,7 +40,7 @@ public class TransactionService {
         Transaction transaction = new Transaction();
         transaction.setCustomer(customer);
         transaction.setInvoice(invoice);
-        transaction.setAmount(request.getTotalAmount());
+        transaction.setAmount(request.getTotalAmount() != null ? request.getTotalAmount() : BigDecimal.ZERO);
         transaction.setDiscountByDueDate(request.getDiscountByDueDate() != null ? request.getDiscountByDueDate() : BigDecimal.ZERO);
         transaction.setDiscountByOnlinePayment(request.getDiscountByOnlinePayment() != null ? request.getDiscountByOnlinePayment() : BigDecimal.ZERO);
         transaction.setTransactionMethod(request.getPaymentMethod());
@@ -48,8 +48,6 @@ public class TransactionService {
         transaction.setTransactionReference(request.getTransactionReference());
         transaction.setTransactionDate(request.getTransactionDate());
         transaction.setTransactionStatus(TransactionStatus.SUCCESS); // Assuming the transaction is completed upon recording
-        System.out.println("---------------------------------- TRYING TO UPDATING INVOICE STATUS " +
-                "-------------------------------------");
         invoiceService.updateInvoiceStatus(invoice.getId(), InvoiceStatus.PAID);
         // Save the transaction
         return saveTransaction(transaction); // Call saveTransaction to persist the transaction
@@ -86,7 +84,7 @@ public class TransactionService {
     public Page<Transaction> getLatestTransactionsByCustomer(String customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Customer customer = customerService.getCustomer(customerId);
-        return transactionRepo.findByCustomerOrderByCreatedAt(customer, pageable);
+        return transactionRepo.findByCustomerOrderByTransactionDateDesc(customer, pageable);
     }
 
 

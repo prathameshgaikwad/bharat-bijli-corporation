@@ -47,7 +47,7 @@ export class PaymentsComponent {
   ): void {
     if (this.customerId) {
       this.customerService
-        .getTransactions(this.customerId, page, this.pageSize)
+        .getTransactions(this.customerId, page, size)
         .subscribe({
           next: (response: Page<Transaction>) => {
             this.transactions = response.content;

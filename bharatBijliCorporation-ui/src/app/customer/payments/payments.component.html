@@ -22,20 +22,19 @@
     <ng-template pTemplate="header">
       <tr>
         <th>#</th>
-        <th>Reference</th>
+        <th>Date</th>
         <th>Associated Bill</th>
         <th>Amount</th>
         <th>Fee</th>
         <th>Method</th>
         <th>Status</th>
-        <th>Download</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-transaction let-i="rowIndex">
       <tr>
         <td>{{ i + 1 }}</td>
         <td>
-          {{ transaction.transactionReference }}
+          {{ transaction.transactionDate | date : "EEE, d MMM yyyy" }}
         </td>
         <td>
           {{ transaction.invoice.id }}
@@ -57,9 +56,6 @@
             [severity]="getSeverity(transaction.transactionStatus)"
             [value]="transaction.transactionStatus"
           ></p-tag>
-        </td>
-        <td>
-          <p-button icon="pi pi-download" [rounded]="true" [text]="true" />
         </td>
       </tr>
     </ng-template>

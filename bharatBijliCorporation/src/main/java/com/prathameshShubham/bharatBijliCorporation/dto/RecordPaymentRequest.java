@@ -22,8 +22,8 @@ public class RecordPaymentRequest {
     private Long invoiceId;
 
     @NotNull(message = "Total amount is required")
-    @Min(value = 0, message = "Total amount must be greater than zero")
-    private Double totalAmount;
+    @DecimalMin(value = "0.0", message = "Total amount must be greater than zero")
+    private BigDecimal totalAmount;
 
     @DecimalMin(value = "0.0", message = "Discount by due date must be non-negative")
     private BigDecimal discountByDueDate;
