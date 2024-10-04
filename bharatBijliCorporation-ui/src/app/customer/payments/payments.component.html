@@ -9,6 +9,10 @@
   </div>
   <p-table
     [value]="transactions"
+    selectionMode="single"
+    [(selection)]="selectedTransaction"
+    (onRowSelect)="showTransaction($event.data)"
+    (onRowUnselect)="hideTransaction()"
     [paginator]="true"
     [rows]="this.pageSize"
     [totalRecords]="totalRecords"
@@ -31,7 +35,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-transaction let-i="rowIndex">
-      <tr>
+      <tr [pSelectableRow]="transaction">
         <td>{{ i + 1 }}</td>
         <td>
           {{ transaction.transactionDate | date : "EEE, d MMM yyyy" }}
@@ -60,4 +64,8 @@
       </tr>
     </ng-template>
   </p-table>
+  <app-payment-summary
+    [transactionDetails]="selectedTransaction"
+    [isVisible]="isTransactionSummaryVisible"
+  />
 </div>
