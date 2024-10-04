@@ -5,7 +5,9 @@ import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CustomerService } from '../services/customer.service';
+import { DEFAULT_TRANSACTION } from '../../core/helpers/constants';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
+import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
@@ -18,12 +20,15 @@ import { TagModule } from 'primeng/tag';
     TableModule,
     CommonModule,
     ButtonModule,
+    PaymentSummaryComponent,
   ],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.css',
 })
 export class PaymentsComponent {
   transactions: Transaction[] = [];
+  selectedTransaction!: Transaction;
+  isTransactionSummaryVisible: boolean = false;
   customerId: string = '';
   totalPages: number = 0;
   currentPage: number = 0;
@@ -110,5 +115,14 @@ export class PaymentsComponent {
   changePage(page: number): void {
     this.currentPage = page;
     this.loadTransactions(page);
+  }
+
+  showTransaction(transaction: Transaction) {
+    this.isTransactionSummaryVisible = true;
+    this.selectedTransaction = transaction;
+  }
+  hideTransaction() {
+    this.isTransactionSummaryVisible = false;
+    this.selectedTransaction = DEFAULT_TRANSACTION;
   }
 }

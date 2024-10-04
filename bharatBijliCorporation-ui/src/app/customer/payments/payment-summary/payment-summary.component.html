@@ -1,0 +1,48 @@
+<p-dialog
+  header="Transaction Details"
+  [modal]="true"
+  [(visible)]="isVisible"
+  [style]="{ width: '25rem' }"
+>
+  <div class="container">
+    <p>
+      Reference:
+      <span class="value">{{ transactionDetails.transactionReference }}</span>
+    </p>
+    <p>
+      Related Bill:
+      <span class="value">{{ transactionDetails.invoice.id }}</span>
+    </p>
+    <p>
+      Related Bill's Due Date:
+      <span class="value">
+        {{ transactionDetails.invoice.dueDate | date : "EEE, d MMM yy" }}</span
+      >
+    </p>
+    <p>
+      Paid on:
+      <span class="value">
+        {{ transactionDetails.transactionDate | date : "EEE, d MMM yy" }}
+      </span>
+    </p>
+    <p-divider type="dashed" align="center">
+      <p-tag
+        [icon]="getIcon(transactionDetails.transactionStatus)"
+        [severity]="getSeverity(transactionDetails.transactionStatus)"
+        [value]="transactionDetails.transactionStatus"
+      ></p-tag
+    ></p-divider>
+    <p>
+      Payment Method:
+      <span class="value">
+        {{ transactionDetails.transactionMethod }}
+      </span>
+    </p>
+    <p class="subtitle bold">
+      Total Amount Paid:
+      <span class="value">{{
+        transactionDetails.amount | currency : "INR" : "symbol" : "1.2-2"
+      }}</span>
+    </p>
+  </div>
+</p-dialog>

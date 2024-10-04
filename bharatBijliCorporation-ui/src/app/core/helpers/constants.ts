@@ -4,11 +4,15 @@ import {
   InvoiceResponse,
   PaymentDetails,
   PaymentMethodSelectionDetails,
+  Transaction,
 } from '../../shared/types/consumables.types';
 import {
   InvoiceStatus,
   TransactionMethod,
+  TransactionStatus,
 } from '../../shared/types/enums.types';
+
+import { defaultCustomer } from '../../shared/types/user.types';
 
 export const CUSTOMER_PAYMENT_OPTIONS = [
   {
@@ -83,4 +87,21 @@ export const DEFAULT_BILLING_DETAILS: BillingDetails = {
   payByOnlineDiscount: 0,
   totalDiscount: 0,
   totalAmount: 0,
+};
+
+export const DEFAULT_TRANSACTION: Transaction = {
+  id: '',
+  invoice: DEFAULT_INVOICE,
+  customer: defaultCustomer,
+  amount: 0.0,
+  transactionMethod: TransactionMethod.CREDIT_CARD,
+  transactionFee: 0.0,
+  transactionReference: '',
+  transactionStatus: TransactionStatus.PENDING,
+  transactionDate: new Date(),
+  description: '',
+  discountByDueDate: 0.0,
+  discountByOnlinePayment: 0.0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 };
