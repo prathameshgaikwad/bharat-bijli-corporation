@@ -28,6 +28,7 @@ export class PaymentsComponent {
   totalPages: number = 0;
   currentPage: number = 0;
   pageSize: number = 10;
+  totalRecords: number = 0;
 
   constructor(
     private appStateService: AppStateService,
@@ -37,11 +38,13 @@ export class PaymentsComponent {
   ngOnInit(): void {
     this.appStateService.getUserId().subscribe((userId) => {
       this.customerId = userId;
-      this.loadTransactions();
     });
   }
 
-  loadTransactions(page: number = this.currentPage): void {
+  loadTransactions(
+    page: number = this.currentPage,
+    size: number = this.pageSize
+  ): void {
     if (this.customerId) {
       this.customerService
         .getTransactions(this.customerId, page, this.pageSize)
@@ -49,12 +52,21 @@ export class PaymentsComponent {
           next: (response: Page<Transaction>) => {
             this.transactions = response.content;
             this.totalPages = response.totalPages;
+            this.totalRecords = response.totalElements;
           },
           error: (error) => {
             console.error('Error fetching invoices:', error);
           },
         });
     }
+  }
+
+  onLazyLoad(event: any): void {
+    const page = event.first / event.rows;
+    const size = event.rows;
+    this.currentPage = page;
+    this.pageSize = size;
+    this.loadTransactions(page, size);
   }
 
   getSeverity(status: string) {
