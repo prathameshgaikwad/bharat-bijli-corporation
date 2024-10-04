@@ -17,7 +17,7 @@ export interface Invoice {
   invoiceStatus: InvoiceStatus;
 }
 
-export interface InvoiceResp {
+export interface InvoiceResponse {
   customerId: string;
   unitsConsumed: number;
   tariff: number;
@@ -28,17 +28,6 @@ export interface InvoiceResp {
   employeeId: string;
 }
 
-export const defaultInvoiceResp: InvoiceResp = {
-  customerId: '',
-  unitsConsumed: 0,
-  tariff: 0,
-  periodStartDate: new Date(),
-  periodEndDate: new Date(),
-  dueDate: new Date(),
-  invoiceStatus: InvoiceStatus.PENDING,
-  employeeId: '',
-};
-
 export interface InvoiceCustResp {
   customer: Customer;
   unitsConsumed: number;
@@ -48,17 +37,6 @@ export interface InvoiceCustResp {
   dueDate: Date;
   invoiceStatus: InvoiceStatus;
 }
-
-export const defaultInvoice: Invoice = {
-  id: '',
-  customerId: '',
-  unitsConsumed: 0,
-  tariff: 0,
-  periodStartDate: new Date(),
-  periodEndDate: new Date(),
-  dueDate: new Date(),
-  invoiceStatus: InvoiceStatus.PENDING,
-};
 
 export interface PendingDuesResponse {
   pendingDuesTotal: number;
@@ -151,27 +129,3 @@ export interface PaymentMethodSelectionDetails {
   isWalletSelected: boolean;
   isCashSelected: boolean;
 }
-
-export const DEFAULT_PAYMENT_METHOD_SELECTION_DETAILS: PaymentMethodSelectionDetails =
-  {
-    isCardSelected: false,
-    isUpiSelected: false,
-    isBankTransferSelected: false,
-    isWalletSelected: false,
-    isCashSelected: false,
-  };
-
-export const DEFAULT_PAYMENT_DETAILS: PaymentDetails = {
-  paymentMethod: TransactionMethod.DEBIT_CARD,
-  paymentDescription: 'Paid by Debit Card',
-};
-
-export const DEFAULT_BILLING_DETAILS: BillingDetails = {
-  billingAmount: 0,
-  isPaymentBeforeDueDate: false,
-  isOnlinePayment: false,
-  payBeforeDueDateDiscount: 0,
-  payByOnlineDiscount: 0,
-  totalDiscount: 0,
-  totalAmount: 0,
-};

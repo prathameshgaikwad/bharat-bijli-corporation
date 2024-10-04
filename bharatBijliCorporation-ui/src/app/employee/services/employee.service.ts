@@ -1,10 +1,16 @@
 import { Customer, Employee } from '../../shared/types/user.types';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import {
+  Invoice,
+  InvoiceResponse,
+  Page,
+  Transaction,
+} from '../../shared/types/consumables.types';
+
 import { Injectable } from '@angular/core';
+import { InvoiceCustResp } from '../generate-invoices/generate-invoices.component';
 import { Observable } from 'rxjs';
 import { UsernameResponse } from '../../shared/types/auth.types';
-import { Invoice, InvoiceResp, Page, Transaction } from '../../shared/types/consumables.types';
-import { InvoiceCustResp } from '../generate-invoices/generate-invoices.component';
 
 @Injectable({
   providedIn: 'root',
@@ -45,12 +51,20 @@ export class EmployeeService {
     );
   }
 
-  generateInvoice(billingDetails : InvoiceResp) : Observable<InvoiceCustResp>{
-    return this.httpClient.post<InvoiceCustResp>(`${this.baseInvoicesUrl}`, billingDetails);
+  generateInvoice(
+    billingDetails: InvoiceResponse
+  ): Observable<InvoiceCustResp> {
+    return this.httpClient.post<InvoiceCustResp>(
+      `${this.baseInvoicesUrl}`,
+      billingDetails
+    );
   }
 
-  getPaidTransactionByInvoice(invoice : Invoice) : Observable<Transaction>{
-    return this.httpClient.post<Transaction>(`${this.baseTransactionsUrl}/invoice/paid`,invoice )
+  getPaidTransactionByInvoice(invoice: Invoice): Observable<Transaction> {
+    return this.httpClient.post<Transaction>(
+      `${this.baseTransactionsUrl}/invoice/paid`,
+      invoice
+    );
   }
 
   getPaginatedTransactions(
@@ -91,10 +105,9 @@ export class EmployeeService {
       .set('sortField', sortField)
       .set('sortOrder', sortOrder)
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Invoice>>(
-      `${this.baseInvoicesUrl}`,
-      { params }
-    );
+    return this.httpClient.get<Page<Invoice>>(`${this.baseInvoicesUrl}`, {
+      params,
+    });
   }
 
   getPaginatedCustomers(
@@ -103,16 +116,15 @@ export class EmployeeService {
     sortField: string,
     sortOrder: string = 'asc',
     searchQuery: string
-  ):Observable<Page<Customer>>{
+  ): Observable<Page<Customer>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortField', sortField)
       .set('sortOrder', sortOrder)
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Customer>>(
-      `${this.baseCustUrl}`,
-      { params }
-    );
+    return this.httpClient.get<Page<Customer>>(`${this.baseCustUrl}`, {
+      params,
+    });
   }
 }

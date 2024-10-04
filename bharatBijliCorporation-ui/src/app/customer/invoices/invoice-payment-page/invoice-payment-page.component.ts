@@ -1,15 +1,16 @@
 import {
   BillingDetails,
-  DEFAULT_BILLING_DETAILS,
-  DEFAULT_PAYMENT_DETAILS,
-  DEFAULT_PAYMENT_METHOD_SELECTION_DETAILS,
   Invoice,
   PaymentDetails,
   PaymentMethodSelectionDetails,
-  RecordPaymentRequest,
-  Transaction,
-  defaultInvoice,
 } from '../../../shared/types/consumables.types';
+import {
+  CUSTOMER_PAYMENT_OPTIONS,
+  DEFAULT_BILLING_DETAILS,
+  DEFAULT_INVOICE,
+  DEFAULT_PAYMENT_DETAILS,
+  DEFAULT_PAYMENT_METHOD_SELECTION_DETAILS,
+} from '../../../core/helpers/constants';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
@@ -40,7 +41,7 @@ import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
 import { TransactionMethod } from '../../../shared/types/enums.types';
-import { calculateInvoiceDetails } from '../../helpers/invoice';
+import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
 
 @Component({
   selector: 'app-invoice-payment-page',
@@ -69,7 +70,7 @@ export class InvoicePaymentPageComponent implements OnInit {
   invoiceId: string = '';
   paymentMethodForm: FormGroup;
   customerId!: string;
-  paymentOptions: any[] = [];
+  paymentOptions: any[] = CUSTOMER_PAYMENT_OPTIONS;
 
   customerDetails: PersonalDetails;
   invoiceDetails: Invoice;
@@ -83,7 +84,7 @@ export class InvoicePaymentPageComponent implements OnInit {
     private customerService: CustomerService,
     private activatedRoute: ActivatedRoute
   ) {
-    this.invoiceDetails = defaultInvoice;
+    this.invoiceDetails = DEFAULT_INVOICE;
     this.customerDetails = defaultCustomer.personalDetails;
     this.paymentDetails = DEFAULT_PAYMENT_DETAILS;
     this.billingDetails = DEFAULT_BILLING_DETAILS;
@@ -107,35 +108,6 @@ export class InvoicePaymentPageComponent implements OnInit {
         this.fetchInvoiceDetails(this.customerId, this.invoiceId);
       }
     });
-
-    this.paymentOptions = [
-      {
-        label: 'Credit Card',
-        value: TransactionMethod.CREDIT_CARD,
-        icon: 'pi pi-credit-card',
-      },
-      {
-        label: 'Debit Card',
-        value: TransactionMethod.DEBIT_CARD,
-        icon: 'pi pi-credit-card',
-      },
-      { label: 'UPI', value: TransactionMethod.UPI, icon: 'pi pi-qrcode' },
-      {
-        label: 'Bank Transfer',
-        value: TransactionMethod.BANK_TRANSFER,
-        icon: 'pi pi-building-columns',
-      },
-      {
-        label: 'Wallet',
-        value: TransactionMethod.WALLET,
-        icon: 'pi pi-wallet',
-      },
-      {
-        label: 'Cash',
-        value: TransactionMethod.CASH,
-        icon: 'pi pi-money-bill',
-      },
-    ];
 
     this.paymentMethodForm
       .get('paymentMethod')

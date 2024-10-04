@@ -2,13 +2,13 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   Invoice,
   InvoicesByStatusResponse,
-  defaultInvoice,
 } from '../../shared/types/consumables.types';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../services/customer.service';
+import { DEFAULT_INVOICE } from '../../core/helpers/constants';
 import { DialogModule } from 'primeng/dialog';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { InvoiceSummaryComponent } from '../invoices/invoice-summary/invoice-summary.component';
@@ -56,7 +56,7 @@ export class DynamicInvoiceMessage implements OnInit {
   totalPages: number = 0;
   currentPage: number = 0;
   pageSize: number = 10;
-  selectedInvoiceDetails: Invoice = defaultInvoice;
+  selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
 
   constructor(
     private appStateService: AppStateService,
@@ -89,7 +89,7 @@ export class DynamicInvoiceMessage implements OnInit {
               ) {
                 this.selectedInvoiceDetails = response.invoices.content[0];
               } else {
-                this.selectedInvoiceDetails = defaultInvoice;
+                this.selectedInvoiceDetails = DEFAULT_INVOICE;
               }
               this.isLoading = false;
             }
