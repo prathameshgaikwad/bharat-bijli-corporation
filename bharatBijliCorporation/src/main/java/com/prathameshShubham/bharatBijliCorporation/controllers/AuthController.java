@@ -4,7 +4,7 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidIdFormatEx
 import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Employee;
-import com.prathameshShubham.bharatBijliCorporation.models.LoginRequest;
+import com.prathameshShubham.bharatBijliCorporation.dto.LoginRequest;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;

@@ -9,8 +9,7 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormat
 import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
-import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
-import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
+import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

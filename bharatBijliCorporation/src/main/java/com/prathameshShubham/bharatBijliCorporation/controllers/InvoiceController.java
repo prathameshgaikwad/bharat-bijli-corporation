@@ -4,10 +4,10 @@ import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
-import com.prathameshShubham.bharatBijliCorporation.models.InvoiceRequest;
-import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
+import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.PDFService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -36,7 +35,7 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<Invoice> saveInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+    public ResponseEntity<Invoice> saveInvoice(@RequestBody @Valid InvoiceRequest invoiceRequest) {
         return ResponseEntity.ok(invoiceService.saveInvoice(invoiceRequest));
     }
 
