@@ -1,225 +1,126 @@
-/* General */
-/* Main font size */
-html {
+/* General Page Styles */
+html, body {
   height: 100%;
-}
-
-/* Border radius of layout elements like card, sidebar */
-:root {
-  --border-radius: 12px;
-  --transition-duration: 0.2s;
-}
-
-/* Transition duration of layout elements like sidebar, overlay menus */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: var(--font-family, Arial, sans-serif);
-  color: var(--text-color, #333);
-  background-color: var(--surface-ground, #f8f9fa);
   margin: 0;
   padding: 0;
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-family, Arial, sans-serif);
+  background-color: var(--surface-ground, #f8f9fa);
 }
 
-/* Preloader */
-.preloader {
-  position: fixed;
-  z-index: 999999;
-  background: #edf1f5;
-  width: 100%;
-  height: 100%;
-}
-
-.preloader-content {
-  width: 150px;
-  height: 150px;
-  position: absolute;
-  top: calc(50vh - 75px);
-  left: calc(50vw - 75px);
-  border-radius: 50%;
-}
-
-.preloader-content:before,
-.preloader-content:after {
-  content: "";
-  border: 1em solid var(--primary-color);
-  border-radius: 50%;
-  width: inherit;
-  height: inherit;
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: loader 2s linear infinite;
-  opacity: 0;
-}
-
-.preloader-content:before {
-  animation-delay: 0.5s;
-}
-
-@keyframes loader {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0;
-  }
-}
-
-/* Layout Wrapper */
+/* Wrapper takes full viewport height */
 .layout-wrapper {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
 /* Topbar */
 .layout-topbar {
   position: fixed;
-  height: 5rem;
-  width: 100%;
   top: 0;
   left: 0;
-  padding: 0 2rem;
+  width: 100%;
+  height: 5rem;
   background-color: var(--surface-card, #fff);
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02),
-    0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08);
+              0px 0px 2px rgba(0, 0, 0, 0.05),
+              0px 1px 4px rgba(0, 0, 0, 0.08);
   z-index: 997;
 }
 
-.layout-topbar .layout-topbar-logo {
+.layout-main-container {
   display: flex;
-  align-items: center;
-  font-weight: 500;
-  color: var(--surface-900);
-}
-
-.layout-topbar .layout-topbar-button {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--text-color-secondary, #666);
-  transition: background-color var(--transition-duration);
-}
-
-.layout-topbar .layout-topbar-button:hover {
-  background-color: var(--surface-hover, #f1f1f1);
-  color: var(--text-color, #333);
+  margin-top: 3rem; /* Space for the fixed topbar */
+  height: calc(100vh - 5rem); /* Height below the topbar */
+  overflow: auto;
 }
 
 /* Sidebar */
 .layout-sidebar {
   width: 300px;
-  position: fixed;
-  top: 7rem;
-  left: 2rem;
-  padding: 0.5rem 1.5rem;
   background-color: var(--surface-card, #fff);
-  border-radius: var(--border-radius);
-  transition: transform var(--transition-duration);
+  padding: 1rem;
+  border-right: 1px solid var(--surface-border, #ddd);
+  height: 100%; /* Full height below the topbar */
+  position: fixed;
+  top: 4rem; /* Positioned below the topbar */
+  left: 0;
+  overflow-y: auto; /* Scroll if content overflows */
+  z-index: 996;
 }
 
 /* Main Content Area */
-.layout-main-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  margin-left: 320px; /* Accounts for sidebar width */
-  padding: 7rem 2rem 2rem 4rem;
-}
-
-.layout-main {
-  flex: 1 1 auto;
+.main-container {
+  flex: 1;
+  margin-left: 300px; /* Matches the sidebar width */
   padding: 2rem;
+  background-color: var(--surface-ground, #f8f9fa);
+  height: 100%;
 }
 
-/* Footer */
-.layout-footer {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
-  border-top: 1px solid var(--surface-border, #ddd);
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 1024px) {
+  /* Smaller tablets and desktops */
+  .layout-sidebar {
+    width: 240px;
+  }
+
+  .main-container {
+    margin-left: 240px;
+    padding: 1rem;
+  }
 }
 
-/* Card */
-.card {
-  background: var(--surface-card, #fff);
-  border: 1px solid var(--surface-border, #ddd);
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+@media screen and (max-width: 768px) {
+  /* Tablets */
+  .layout-sidebar {
+    width: 200px;
+  }
+
+  .main-container {
+    margin-left: 200px;
+    padding: 1rem;
+  }
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  margin: 1.5rem 0 1rem 0;
-  font-weight: 500;
-  color: var(--surface-900, #222);
+@media screen and (max-width: 600px) {
+  /* Mobile devices */
+  .layout-sidebar {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 5rem;
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .layout-sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-container {
+    margin-left: 0;
+    padding: 1rem;
+    width: 100%;
+  }
 }
 
-p {
-  margin: 0 0 1rem 0;
-  line-height: 1.5;
-}
-
-/* Mark */
-mark {
-  background: #fff8e1;
-  padding: 0.25rem 0.4rem;
-  border-radius: var(--border-radius);
-  font-family: monospace;
-}
-
-/* Blockquote */
-blockquote {
-  margin: 1rem 0;
-  padding: 0 2rem;
-  border-left: 4px solid #90a4ae;
-}
-
-/* Horizontal Rule */
-hr {
-  border-top: solid var(--surface-border, #ddd);
-  border-width: 1px 0 0 0;
-  margin: 1rem 0;
-}
-
-/* Links */
-a {
-  color: var(--primary-color, #007bff);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--primary-color-hover, #0056b3);
-}
-
-/* Utility classes */
-.layout-config-button {
+/* Utility for toggling sidebar in mobile view */
+.sidebar-toggle {
+  display: none;
   position: fixed;
-  width: 3rem;
-  height: 3rem;
-  top: 50%;
-  right: 0;
-  background: var(--primary-color, #007bff);
+  top: 5rem;
+  left: 0;
+  background-color: #b8bcc1;
   color: #fff;
-  text-align: center;
+  padding: 1rem;
   cursor: pointer;
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
-  transition: background-color var(--transition-duration);
+  border: none;
+}
+
+@media screen and (max-width: 600px) {
+  .sidebar-toggle {
+    display: block;
+  }
 }
