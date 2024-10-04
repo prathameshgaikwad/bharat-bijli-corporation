@@ -9,8 +9,10 @@ import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
+import com.prathameshShubham.bharatBijliCorporation.services.OtpService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -39,6 +41,9 @@ public class AuthController {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private OtpService otpService;
+
     @GetMapping("/test")
     public ResponseEntity<String> getTest(){
         return ResponseEntity.ok("Testing Successful.");
@@ -47,16 +52,14 @@ public class AuthController {
     @GetMapping(value = "/getOtp", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, String>> getOtp(@RequestParam String id) {
         String email;
-        String generatedOtp;
+        String generatedOtp = otpService.generateOtp(id);
         try {
             email = getEmailById(id);
         } catch (UserNotFoundException | InvalidIdFormatException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));  // Return error message
         }
 
-        generatedOtp = String.valueOf((int) ((Math.random() * 900000) + 100000));  // Random 6-digit OTP
-        // sendEmail(email, generatedOtp);
-        storeOtp.put(id, generatedOtp);
+        //TODO: sendEmail(email, generatedOtp);
         return ResponseEntity.ok(
                 Map.of(
                         "message", "OTP sent to email: " + email,
@@ -66,10 +69,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest, HttpServletResponse httpServletResponse) {
-
-        // Verify the OTP
-        if (!loginRequest.getOtp().equals(storeOtp.get(loginRequest.getUserId()))) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequest loginRequest,
+                                                     HttpServletResponse httpServletResponse) {
+        boolean isValidOtp = otpService.validateOtp(loginRequest.getUserId(), loginRequest.getOtp());
+        if (!isValidOtp) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     Map.of("message", "Invalid OTP")
             );
@@ -87,6 +90,7 @@ public class AuthController {
 
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
+        otpService.invalidateOtp(loginRequest.getUserId());
 //        return sendResponseWithHttpOnlyJwtCookie(token, httpServletResponse);
         return sendResponseWithJwt(token, httpServletResponse);
     }
@@ -209,7 +213,6 @@ public class AuthController {
     ) {
         Cookie jwtCookie = getHttpOnlyJwtCookie(token);
         httpServletResponse.addCookie(jwtCookie);
-        storeOtp.clear();
         return ResponseEntity.ok(
                 Map.of(
                         "message","Login successful",
