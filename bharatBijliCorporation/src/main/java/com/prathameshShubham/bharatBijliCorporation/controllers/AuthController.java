@@ -22,14 +22,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+
 import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
 public class AuthController {
 
-    private HashMap<String, String>storeOtp = new HashMap<String, String>();;
     private String role;
 
     @Autowired
