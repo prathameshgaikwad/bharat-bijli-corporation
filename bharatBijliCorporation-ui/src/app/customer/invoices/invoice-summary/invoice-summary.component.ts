@@ -1,8 +1,6 @@
 import {
   BillingDetails,
-  DEFAULT_BILLING_DETAILS,
   Invoice,
-  defaultInvoice,
 } from '../../../shared/types/consumables.types';
 import { CommonModule, DatePipe } from '@angular/common';
 import {
@@ -12,12 +10,16 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
+import {
+  DEFAULT_BILLING_DETAILS,
+  DEFAULT_INVOICE,
+} from '../../../core/helpers/constants';
 
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
-import { calculateInvoiceDetails } from '../../helpers/invoice';
+import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
 
 @Component({
   selector: 'app-invoice-summary',
@@ -27,7 +29,7 @@ import { calculateInvoiceDetails } from '../../helpers/invoice';
   styleUrl: './invoice-summary.component.css',
 })
 export class InvoiceSummaryComponent implements OnInit, OnChanges {
-  @Input() invoiceDetails: Invoice = defaultInvoice;
+  @Input() invoiceDetails: Invoice = DEFAULT_INVOICE;
   isOverdue: boolean = false;
   billingAmount: number = 0;
   payBeforeDueDateDiscount: number = 0;

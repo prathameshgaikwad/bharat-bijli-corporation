@@ -1,28 +1,29 @@
-import { Component } from '@angular/core';
-import { EmployeeService } from '../services/employee.service';
-import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
-import { ChipModule } from 'primeng/chip';
-import { PaginatorModule } from 'primeng/paginator';
-import { SortEvent } from 'primeng/api';
 import {
-  defaultInvoice,
   Invoice,
   Page,
   Transaction,
 } from '../../shared/types/consumables.types';
-import { MessagesModule } from 'primeng/messages';
-import { DynamicInvoiceMessage } from '../../customer/dynamic-invoice-message/dynamic-invoice-message.component';
-import { InvoiceSummaryComponent } from '../../customer/invoices/invoice-summary/invoice-summary.component';
+import { Router, RouterLink } from '@angular/router';
+
+import { ButtonModule } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { DEFAULT_INVOICE } from '../../core/helpers/constants';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
+import { DynamicInvoiceMessage } from '../../customer/dynamic-invoice-message/dynamic-invoice-message.component';
+import { EmployeeService } from '../services/employee.service';
+import { FormsModule } from '@angular/forms';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputTextModule } from 'primeng/inputtext';
 import { InvoiceStatus } from '../../shared/types/enums.types';
+import { InvoiceSummaryComponent } from '../../customer/invoices/invoice-summary/invoice-summary.component';
+import { MessagesModule } from 'primeng/messages';
+import { PaginatorModule } from 'primeng/paginator';
+import { SortEvent } from 'primeng/api';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-invoices',
@@ -64,7 +65,7 @@ export class EmpInvoicesComponent {
   previousSortOrder: string = 'asc'; // Track previous sort order
   searchQuery = '';
 
-  selectedInvoiceDetails: Invoice = defaultInvoice;
+  selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
   showBox = false;
 
   constructor(
@@ -153,8 +154,7 @@ export class EmpInvoicesComponent {
     } else {
       this.isOverdue = false;
       this.isPaid = false;
-      console.log("No OverDue");
-      
+      console.log('No OverDue');
     }
     this.calculateInvoiceDetails();
     this.showBox = true;
@@ -170,7 +170,7 @@ export class EmpInvoicesComponent {
   toggle() {
     this.isPaid = false;
     this.showBox = false;
-    this.selectedInvoiceDetails = defaultInvoice;
+    this.selectedInvoiceDetails = DEFAULT_INVOICE;
   }
 
   private calculateInvoiceDetails() {
@@ -199,11 +199,10 @@ export class EmpInvoicesComponent {
     }
     this.totalAmount = this.billingAmount - this.payBeforeDueDateDiscount;
     console.log(this.isOverdue);
-    
   }
 
   hideInvoice() {
-    this.selectedInvoiceDetails = defaultInvoice;
+    this.selectedInvoiceDetails = DEFAULT_INVOICE;
     this.isPaid = false;
     this.showBox = false;
     console.log(this.isPaid);

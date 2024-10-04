@@ -2,13 +2,15 @@ import {} from '../invoice-payment-page.component';
 
 import {
   BillingDetails,
-  DEFAULT_BILLING_DETAILS,
-  DEFAULT_PAYMENT_DETAILS,
   PaymentDetails,
   RecordPaymentRequest,
   Transaction,
 } from '../../../../shared/types/consumables.types';
 import { Component, Input, OnInit } from '@angular/core';
+import {
+  DEFAULT_BILLING_DETAILS,
+  DEFAULT_PAYMENT_DETAILS,
+} from '../../../../core/helpers/constants';
 import {
   FormBuilder,
   FormGroup,

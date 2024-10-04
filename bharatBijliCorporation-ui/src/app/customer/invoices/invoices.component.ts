@@ -1,14 +1,11 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import {
-  Invoice,
-  Page,
-  defaultInvoice,
-} from '../../shared/types/consumables.types';
+import { Invoice, Page } from '../../shared/types/consumables.types';
 
 import { AppStateService } from '../../core/services/app-state.service';
 import { ButtonModule } from 'primeng/button';
 import { CustomerService } from '../services/customer.service';
+import { DEFAULT_INVOICE } from '../../core/helpers/constants';
 import { DialogModule } from 'primeng/dialog';
 import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
@@ -51,7 +48,7 @@ export class InvoicesComponent implements OnInit {
   overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
   pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
   isInvoiceSummaryVisible: boolean = false;
-  selectedInvoiceDetails: Invoice = defaultInvoice;
+  selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
 
   constructor(
     private appStateService: AppStateService,
@@ -153,6 +150,6 @@ export class InvoicesComponent implements OnInit {
   }
   hideInvoice() {
     this.isInvoiceSummaryVisible = false;
-    this.selectedInvoiceDetails = defaultInvoice;
+    this.selectedInvoiceDetails = DEFAULT_INVOICE;
   }
 }
