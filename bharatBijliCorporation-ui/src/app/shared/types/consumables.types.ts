@@ -25,10 +25,10 @@ export interface InvoiceResp {
   periodEndDate: Date;
   dueDate: Date;
   invoiceStatus: InvoiceStatus;
-  employeeId : string;
+  employeeId: string;
 }
 
-export const defaultInvoiceResp:  InvoiceResp = {
+export const defaultInvoiceResp: InvoiceResp = {
   customerId: '',
   unitsConsumed: 0,
   tariff: 0,
@@ -36,11 +36,11 @@ export const defaultInvoiceResp:  InvoiceResp = {
   periodEndDate: new Date(),
   dueDate: new Date(),
   invoiceStatus: InvoiceStatus.PENDING,
-  employeeId : ''
+  employeeId: '',
 };
 
 export interface InvoiceCustResp {
-  customer : Customer
+  customer: Customer;
   unitsConsumed: number;
   tariff: number;
   periodStartDate: Date;
@@ -48,7 +48,6 @@ export interface InvoiceCustResp {
   dueDate: Date;
   invoiceStatus: InvoiceStatus;
 }
-
 
 export const defaultInvoice: Invoice = {
   id: '',
@@ -77,11 +76,15 @@ export interface Transaction {
   customer: Customer;
   amount: number;
   transactionMethod: TransactionMethod;
-  description: string;
-  transactionFee: number;
+  transactionFee: number | null;
   transactionReference: string;
   transactionStatus: TransactionStatus;
+  transactionDate: Date;
+  description: string | null;
+  discountByDueDate: number | null;
+  discountByOnlinePayment: number | null;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 interface Pageable {
