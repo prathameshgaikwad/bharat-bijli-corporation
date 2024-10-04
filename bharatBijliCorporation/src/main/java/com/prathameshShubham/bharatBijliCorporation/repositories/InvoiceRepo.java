@@ -13,7 +13,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Long> {
 
-    Page<Invoice> findByCustomerOrderByCreatedAt(Customer customer, Pageable pageable);
+    @Query("SELECT i FROM Invoice i WHERE i.customer = :customer ORDER BY i.dueDate DESC")
+    Page<Invoice> findByCustomerSortedByDueDate(Customer customer, Pageable pageable);
     Page<Invoice> findByGeneratedByEmployeeId(String employeeId, Pageable pageable);
     Page<Invoice> findByCustomerIdAndInvoiceStatus(String customerId, InvoiceStatus status, Pageable pageable);
 

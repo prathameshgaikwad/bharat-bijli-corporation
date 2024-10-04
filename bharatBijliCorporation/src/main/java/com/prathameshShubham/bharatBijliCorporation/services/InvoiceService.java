@@ -73,7 +73,7 @@ public class InvoiceService {
     public Page<Invoice> getLatestInvoicesForCustomer(String customerId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Customer customer = customerService.getCustomer(customerId);
-        return invoiceRepo.findByCustomerOrderByCreatedAt(customer, pageable);
+        return invoiceRepo.findByCustomerSortedByDueDate(customer, pageable);
     }
 
     public InvoicesByStatusResponse getInvoicesByStatus(String customerId, InvoiceStatus invoiceStatus, int page, int size) {
