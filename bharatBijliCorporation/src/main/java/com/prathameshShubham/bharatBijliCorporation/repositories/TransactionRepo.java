@@ -13,8 +13,8 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
-
-    Page<Transaction> findByCustomerOrderByCreatedAt(Customer customer, Pageable pageable);
+    @Query("SELECT t FROM Transaction t WHERE t.customer = :customer ORDER BY t.transactionDate DESC")
+    Page<Transaction> findByCustomerOrderByTransactionDateDesc(Customer customer, Pageable pageable);
 
     Page<Transaction> findByOrderByCreatedAtDesc(Pageable pageable);
 

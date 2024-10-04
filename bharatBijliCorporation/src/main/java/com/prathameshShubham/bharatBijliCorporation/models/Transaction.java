@@ -34,20 +34,22 @@ public class Transaction {
     private Customer customer;
 
     @NotNull
-    @Column(nullable = false,columnDefinition = "DOUBLE DEFAULT 0.0")
-    private Double amount;
+    @Column(nullable = false, columnDefinition = "DECIMAL(10, 2) DEFAULT 0.00") // Updated to BigDecimal
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionMethod transactionMethod;
 
     @Lob
-    private String description;
+    private String description = "";
 
-    @Column(nullable = false)
+    // TODO: Add fee field
+
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private BigDecimal discountByDueDate;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private BigDecimal discountByOnlinePayment;
 
     @Column(nullable = false)
