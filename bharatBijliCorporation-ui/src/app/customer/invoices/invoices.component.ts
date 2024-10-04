@@ -13,9 +13,11 @@ import { DialogModule } from 'primeng/dialog';
 import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { InvoiceSummaryComponent } from './invoice-summary/invoice-summary.component';
+import { MessageService } from 'primeng/api';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-invoices',
@@ -31,14 +33,17 @@ import { TagModule } from 'primeng/tag';
     DynamicInvoiceMessage,
     DialogModule,
     InvoiceSummaryComponent,
+    ToastModule,
   ],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
+  providers: [MessageService],
 })
 export class InvoicesComponent implements OnInit {
   invoices: Invoice[] = [];
   customerId: string = '';
   totalPages: number = 0;
+  totalElements: number = 0;
   currentPage: number = 0;
   pageSize: number = 10;
   isBillGenerated: boolean = true;
@@ -50,29 +55,32 @@ export class InvoicesComponent implements OnInit {
 
   constructor(
     private appStateService: AppStateService,
-    private customerService: CustomerService
+    private customerService: CustomerService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     this.appStateService.getUserId().subscribe((userId) => {
       this.customerId = userId;
-      this.loadInvoices();
     });
   }
 
-  loadInvoices(page: number = this.currentPage): void {
+  loadInvoices(page: number = 0, size: number = 10): void {
     if (this.customerId) {
-      this.customerService
-        .getInvoices(this.customerId, page, this.pageSize)
-        .subscribe({
-          next: (response: Page<Invoice>) => {
-            this.invoices = response.content;
-            this.totalPages = response.totalPages;
-          },
-          error: (error) => {
-            console.error('Error fetching invoices:', error);
-          },
-        });
+      this.customerService.getInvoices(this.customerId, page, size).subscribe({
+        next: (response: Page<Invoice>) => {
+          this.invoices = response.content;
+          this.totalPages = response.totalPages;
+          this.totalElements = response.totalElements;
+        },
+        error: (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error fetching invoices',
+          });
+        },
+      });
     }
   }
 
@@ -89,7 +97,11 @@ export class InvoicesComponent implements OnInit {
         window.URL.revokeObjectURL(url); // Clean up
       },
       error: (err) => {
-        console.error('Error downloading PDF:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error downloading bill pdf',
+        });
       },
     });
   }
@@ -128,11 +140,13 @@ export class InvoicesComponent implements OnInit {
     }
   }
 
-  changePage(page: number): void {
+  onLazyLoad(event: any): void {
+    const page = event.first / event.rows; // Calculate 0-based page index
+    const size = event.rows;
     this.currentPage = page;
-    this.loadInvoices(page);
+    this.pageSize = size;
+    this.loadInvoices(page, size);
   }
-
   showInvoice(invoice: Invoice) {
     this.isInvoiceSummaryVisible = true;
     this.selectedInvoiceDetails = invoice;
