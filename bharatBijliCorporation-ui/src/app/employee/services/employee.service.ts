@@ -1,5 +1,4 @@
 import { Customer, Employee } from '../../shared/types/user.types';
-import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   Invoice,
   InvoiceResponse,
@@ -7,10 +6,11 @@ import {
   Transaction,
 } from '../../shared/types/consumables.types';
 
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { InvoiceCustResp } from '../generate-invoices/generate-invoices.component';
 import { Observable } from 'rxjs';
 import { UsernameResponse } from '../../shared/types/auth.types';
+import { InvoiceCustResp } from '../invoice-template/generate-invoices/generate-invoices.component';
 
 @Injectable({
   providedIn: 'root',
@@ -126,5 +126,15 @@ export class EmployeeService {
     return this.httpClient.get<Page<Customer>>(`${this.baseCustUrl}`, {
       params,
     });
+  }
+
+  postBulkCsvCust(file : File) : Observable<string>{
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+
+    return this.httpClient.post<string>(`${this.baseUrl}/customers/bulk-csv-upload`, formData, { responseType: 'text' as 'json' })
   }
 }
