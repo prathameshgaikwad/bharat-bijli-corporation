@@ -1,0 +1,69 @@
+<div class="card">
+  <p-messages [(value)]="message" [enableService]="true" />
+  <!-- File Input for CSV -->
+  <div class="uploader-container">
+    <div class="csv-upload" style="align-items: center">
+      <label for="csv-file" [ngClass]="{ pulse: uploadLabel }">{{
+        uploadLabel
+      }}</label>
+      <input
+        type="file"
+        id="csv-file"
+        accept=".csv"
+        (change)="onFileSelected($event)"
+        #fileInput
+      />
+      <div class="file-name">{{ fileName }}</div>
+      <p-button
+        icon="pi pi-upload"
+        type="button"
+        (onClick)="addToDB()"
+        label="SUBMIT"
+        severity="info"
+        [style]="{ width: '350px' }"
+      />
+    </div>
+  </div>
+
+  <!-- PrimeNG Toast for messages -->
+
+  <!-- Table to display CSV data -->
+  <p-table
+    [value]="csvData"
+    [paginator]="true"
+    [rows]="10"
+    responsiveLayout="stack"
+    [breakpoint]="'960px'"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    *ngIf="csvData.length > 0"
+    styleClass="p-datatable-striped  p-datatable-lg p-datatable-gridlines"
+    selectionMode="single"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email ID</th>
+        <th>Phone Number</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Pincode</th>
+        <th>Date of Birth</th>
+        <th>State</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td>{{ rowData.firstName }}</td>
+        <td>{{ rowData.lastName }}</td>
+        <td>{{ rowData.emailId }}</td>
+        <td>{{ rowData.phoneNumber }}</td>
+        <td>{{ rowData.address }}</td>
+        <td>{{ rowData.city }}</td>
+        <td>{{ rowData.pincode }}</td>
+        <td>{{ rowData.dateOfBirth }}</td>
+        <td>{{ rowData.state }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

@@ -1,32 +1,32 @@
+import { Component } from '@angular/core';
+import { EmployeeService } from '../../services/employee.service';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
+import { ChipModule } from 'primeng/chip';
+import { PaginatorModule } from 'primeng/paginator';
+import { SortEvent } from 'primeng/api';
+
+import { MessagesModule } from 'primeng/messages';
+import { DynamicInvoiceMessage } from '../../../customer/dynamic-invoice-message/dynamic-invoice-message.component';
+import { InvoiceSummaryComponent } from '../../../customer/invoices/invoice-summary/invoice-summary.component';
+import { DialogModule } from 'primeng/dialog';
+import { DividerModule } from 'primeng/divider';
+import { InvoiceStatus } from '../../../shared/types/enums.types';
 import {
   Invoice,
   Page,
   Transaction,
-} from '../../shared/types/consumables.types';
-import { Router, RouterLink } from '@angular/router';
-
-import { ButtonModule } from 'primeng/button';
-import { ChipModule } from 'primeng/chip';
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { DEFAULT_INVOICE } from '../../core/helpers/constants';
-import { DialogModule } from 'primeng/dialog';
-import { DividerModule } from 'primeng/divider';
-import { DynamicInvoiceMessage } from '../../customer/dynamic-invoice-message/dynamic-invoice-message.component';
-import { EmployeeService } from '../services/employee.service';
-import { FormsModule } from '@angular/forms';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputTextModule } from 'primeng/inputtext';
-import { InvoiceStatus } from '../../shared/types/enums.types';
-import { InvoiceSummaryComponent } from '../../customer/invoices/invoice-summary/invoice-summary.component';
-import { MessagesModule } from 'primeng/messages';
-import { PaginatorModule } from 'primeng/paginator';
-import { SortEvent } from 'primeng/api';
-import { TableModule } from 'primeng/table';
+} from '../../../shared/types/consumables.types';
+import { DEFAULT_INVOICE } from '../../../core/helpers/constants';
 
 @Component({
-  selector: 'app-invoices',
+  selector: 'app-invoices-emp',
   standalone: true,
   imports: [
     TableModule,
@@ -45,8 +45,8 @@ import { TableModule } from 'primeng/table';
     InvoiceSummaryComponent,
     DividerModule,
   ],
-  templateUrl: './invoices.component.html',
-  styleUrl: './invoices.component.css',
+  templateUrl: './invoices-emp.component.html',
+  styleUrl: './invoices-emp.component.css',
 })
 export class EmpInvoicesComponent {
   invoices: any[] = [];
@@ -57,7 +57,7 @@ export class EmpInvoicesComponent {
   totalRecords: number = 0;
   rowsPerPage: number = 10;
 
-  rows = this.invoices.length;
+  // rows = this.invoices.length;
   first = 0;
   sortField: string = '';
   sortOrder: string = '';
@@ -141,6 +141,9 @@ export class EmpInvoicesComponent {
   }
 
   showInvoice(invoice: Invoice) {
+    this.isPaid = false;
+    this.isOverdue = false;
+
     this.selectedInvoiceDetails = invoice;
     console.log(new Date(), new Date(this.selectedInvoiceDetails.dueDate));
 
@@ -154,7 +157,6 @@ export class EmpInvoicesComponent {
     } else {
       this.isOverdue = false;
       this.isPaid = false;
-      console.log('No OverDue');
     }
     this.calculateInvoiceDetails();
     this.showBox = true;
@@ -167,13 +169,11 @@ export class EmpInvoicesComponent {
   isPaid = false;
   paidAt: Date = new Date();
 
-  toggle() {
-    this.isPaid = false;
-    this.showBox = false;
-    this.selectedInvoiceDetails = DEFAULT_INVOICE;
-  }
-
   private calculateInvoiceDetails() {
+    this.billingAmount =
+      this.selectedInvoiceDetails.tariff *
+      this.selectedInvoiceDetails.unitsConsumed;
+
     if (this.isPaid) {
       this.invoiceService
         .getPaidTransactionByInvoice(this.selectedInvoiceDetails)
@@ -185,9 +185,6 @@ export class EmpInvoicesComponent {
         });
       return;
     }
-    this.billingAmount =
-      this.selectedInvoiceDetails.tariff *
-      this.selectedInvoiceDetails.unitsConsumed;
 
     const currentDate = new Date();
     const dueDate = new Date(this.selectedInvoiceDetails.dueDate);

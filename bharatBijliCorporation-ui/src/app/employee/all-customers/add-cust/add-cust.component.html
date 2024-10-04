@@ -1,0 +1,113 @@
+<div class="form-container">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <p-floatLabel>
+            <input
+              id="firstName"
+              type="text"
+              pInputText
+              name="firstName"
+              formControlName="firstName"
+            />
+            <label for="firstName">First Name</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input
+              id="lastName"
+              type="text"
+              pInputText
+              name="lastName"
+              formControlName="lastName"
+            />
+            <label for="lastName">Last Name</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input
+              id="emailId"
+              type="email"
+              pInputText
+              name="emailId"
+              formControlName="emailId"
+            />
+            <label for="emailId">Email</label>
+          </p-floatLabel>
+          <p-inputGroup>
+            <p-inputGroupAddon>+91</p-inputGroupAddon>
+            <p-floatLabel>
+              <input
+                id="phoneNumber"
+                type="number"
+                pInputText
+                name="phoneNumber"
+                formControlName="phoneNumber"
+                class="phone-number-input"
+              />
+              <label for="phoneNumber">Phone Number</label>
+            </p-floatLabel>
+          </p-inputGroup>
+          <div class="address">
+            <p-floatLabel>
+              <input
+                id="address"
+                type="text"
+                pInputText
+                name="address"
+                formControlName="address"
+              />
+              <label for="address">Address Line 1</label>
+            </p-floatLabel>
+          </div>
+          <p-floatLabel>
+            <input
+              id="city"
+              type="text"
+              pInputText
+              name="city"
+              formControlName="city"
+            />
+            <label for="city">City</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input
+              id="state"
+              type="text"
+              pInputText
+              name="state"
+              formControlName="state"
+            />
+            <label for="state">State</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input
+              id="pincode"
+              type="number"
+              pInputText
+              name="pincode"
+              formControlName="pincode"
+            />
+            <label for="pincode">Pincode</label>
+          </p-floatLabel>
+          <p-inputGroup class="date-input-group">
+            <p-inputGroupAddon>DOB</p-inputGroupAddon>
+            <p-floatLabel>
+              <p-calendar
+                name="dateOfBirth"
+                formControlName="dateOfBirth"
+                inputId="dateOfBirth"
+              />
+              <label for="dateOfBirth">dd/mm/yyyy</label>
+            </p-floatLabel>
+          </p-inputGroup>
+        </div>
+        <div style="display: flex">
+          <p-button
+            label="Continue"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [rounded]="true"
+            type="submit"
+            [disabled]="registrationForm.invalid"
+          />
+        </div>
+      </form>
+</div>

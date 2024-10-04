@@ -1,4 +1,3 @@
-import { AddCustComponent } from './employee/add-cust/add-cust.component';
 import { CustomerGuard } from './core/guards/customer.guard';
 import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
 import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
@@ -7,11 +6,16 @@ import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Routes } from '@angular/router';
+import { AddCustComponent } from './employee/all-customers/add-cust/add-cust.component';
 import { TransactionsComponent } from './employee/transactions/transactions.component';
-import { InvoicesComponent } from './customer/invoices/invoices.component';
-import { EmpInvoicesComponent } from './employee/invoices/invoices.component';
-import { GenerateInvoicesComponent } from './employee/generate-invoices/generate-invoices.component';
+import { InvoicesComponent } from './customer/invoices/invoices.component';;
+import { GenerateInvoicesComponent } from './employee/invoice-template/generate-invoices/generate-invoices.component';
 import { InvoiceTemplateComponent } from './employee/invoice-template/invoice-template.component';
+import { EmpInvoicesComponent } from './employee/invoice-template/invoices-emp/invoices-emp.component';
+import { AllCustomersComponent } from './employee/all-customers/all-customers.component';
+import { ViewCustomersComponent } from './employee/all-customers/view-customers/view-customers.component';
+import { BulkCustComponent } from './employee/all-customers/bulk-cust/bulk-cust.component';
+import { BulkInvoiceComponent } from './employee/invoice-template/bulk-invoice/bulk-invoice.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -71,7 +75,21 @@ export const routes: Routes = [
       },
       {
         path: 'customer',
-        component: AddCustComponent,
+        component: AllCustomersComponent,
+        children:[
+          {
+            path: '',
+            component:ViewCustomersComponent
+          },
+          {
+            path:'add',
+            component:AddCustComponent
+          },
+          {
+            path:'bulk-add',
+            component:BulkCustComponent
+          }
+        ]
       },
       {
         path: 'transactions',
@@ -89,6 +107,10 @@ export const routes: Routes = [
             path: 'add',
             component: GenerateInvoicesComponent,
           },
+          {
+            path:'bulk-upload',
+            component:BulkInvoiceComponent
+          }
         ],
       },
     ],

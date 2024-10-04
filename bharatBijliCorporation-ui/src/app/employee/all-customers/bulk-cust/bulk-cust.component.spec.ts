@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EmpInvoicesComponent } from './invoices.component';
+import { BulkCustComponent } from './bulk-cust.component';
 
-describe('EmpInvoicesComponent', () => {
-  let component: EmpInvoicesComponent;
-  let fixture: ComponentFixture<EmpInvoicesComponent>;
+describe('BulkCustComponent', () => {
+  let component: BulkCustComponent;
+  let fixture: ComponentFixture<BulkCustComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmpInvoicesComponent]
+      imports: [BulkCustComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EmpInvoicesComponent);
+    fixture = TestBed.createComponent(BulkCustComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

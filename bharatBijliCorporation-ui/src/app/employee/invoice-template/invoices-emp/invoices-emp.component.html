@@ -44,20 +44,17 @@
       }}</span>
     </p>
     @if(isPaid){
+    <p-divider type="dashed" align="center"></p-divider>
     <p class="subtitle bold">
       Total Amount Paid :
       <span class="value">{{
         totalAmount | currency : "INR" : "symbol" : "1.2-2"
       }}</span>
     </p>
-
     <p class="subtitle">
-      Payment At : :
+      Payment done at :
       <span class="value">{{ paidAt | date : "d MMM yy" }}</span>
     </p>
-
-    <hr />
-    <p-button (click)="toggle()">Already Paid</p-button>
     } @else{
     <p-divider type="dashed" align="center" *ngIf="!isOverdue"
       ><p>{{ "Discount" }}</p></p-divider

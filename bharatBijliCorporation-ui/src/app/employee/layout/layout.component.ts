@@ -20,4 +20,17 @@ import { StatsComponent } from '../stats/stats.component';
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.css',
 })
-export class LayoutComponent {}
+export class LayoutComponent {
+  isSidebarActive: boolean = false;
+  toggleSidebar() {
+    this.isSidebarActive = !this.isSidebarActive;
+    const sidebar = document.querySelector('.layout-sidebar');
+    if (sidebar) {
+      if (this.isSidebarActive) {
+        sidebar.classList.add('active');
+      } else {
+        sidebar.classList.remove('active');
+      }
+    }
+  }
+}
