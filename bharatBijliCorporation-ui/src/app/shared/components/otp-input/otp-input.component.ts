@@ -57,7 +57,8 @@ export class OtpInputComponent {
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
           this.isLoading = false;
-          const role = this.authService.getUserRole();
+          const role = this.authService.getCurrentUserRole();
+
           if (role === 'CUSTOMER') {
             this.router.navigate(['/customer/dashboard']);
           } else {

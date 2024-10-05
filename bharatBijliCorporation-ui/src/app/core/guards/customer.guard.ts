@@ -18,8 +18,7 @@ export class CustomerGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authService.isAuthenticated() && this.authService.isCustomer())
-      return true;
+    if (this.authService.getCurrentUserRole() === 'CUSTOMER') return true;
 
     this.router.navigate(['/login']);
     return false;

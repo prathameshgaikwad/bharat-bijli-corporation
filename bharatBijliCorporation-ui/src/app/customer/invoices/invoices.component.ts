@@ -2,7 +2,7 @@ import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Invoice, Page } from '../../shared/types/consumables.types';
 
-import { AppStateService } from '../../core/services/app-state.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CustomerService } from '../services/customer.service';
 import { DEFAULT_INVOICE } from '../../core/helpers/constants';
@@ -51,15 +51,13 @@ export class InvoicesComponent implements OnInit {
   selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
 
   constructor(
-    private appStateService: AppStateService,
+    private authService: AuthService,
     private customerService: CustomerService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    this.appStateService.getUserId().subscribe((userId) => {
-      this.customerId = userId;
-    });
+    this.customerId = this.authService.getCurrentUserId();
   }
 
   loadInvoices(page: number = 0, size: number = 10): void {

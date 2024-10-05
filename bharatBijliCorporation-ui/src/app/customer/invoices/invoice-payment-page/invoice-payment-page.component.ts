@@ -117,7 +117,7 @@ export class InvoicePaymentPageComponent implements OnInit {
   }
 
   private getCustomerId(): void {
-    this.customerId = this.authService.getUserId()!;
+    this.customerId = this.authService.getCurrentUserId();
     this.paymentMethodForm.patchValue({
       customerId: this.customerId,
     });

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ActionsPanelComponent } from './actions-panel/actions-panel.component';
-import { AppStateService } from '../../core/services/app-state.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
@@ -38,16 +38,14 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
   overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
   pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
 
-  constructor(private appStateService: AppStateService) {
+  constructor(private authService: AuthService) {
     this.isOverdueBill = true;
     this.isPendingBill = true;
     this.isActionRequired = true;
   }
 
   ngOnInit(): void {
-    this.appStateService.getUserId().subscribe((id) => {
-      this.customerId = id;
-    });
+    this.customerId = this.authService.getCurrentUserId();
   }
 
   onPendingInvoicesChecked(hasPending: boolean): void {

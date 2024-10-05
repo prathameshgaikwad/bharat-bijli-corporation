@@ -1,3 +1,4 @@
+import { AuthService, AuthState } from '../../../../core/services/auth.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   ConfirmationService,
@@ -7,8 +8,6 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
-import { AppStateService } from '../../../../core/services/app-state.service';
-import { AuthService } from '../../../../core/services/auth.service';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -42,31 +41,19 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private appStateService: AppStateService,
     private customerService: CustomerService,
     private employeeService: EmployeeService
   ) {}
 
   ngOnInit() {
-    this.appStateService
-      .getUserId()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((userId) => {
-        if (userId) {
-          this.userId = userId;
-          this.appStateService
-            .getRole()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((role) => {
-              this.role = role;
-            });
-          if (this.role === 'CUSTOMER') {
-            this.fetchCustomerUsername(userId);
-          } else {
-            this.fetchEmployeeUsername(userId);
-          }
-        }
-      });
+    this.userId = this.authService.getCurrentUserId();
+    this.role = this.authService.getCurrentUserRole();
+
+    if (this.role === 'CUSTOMER') {
+      this.fetchCustomerUsername(this.userId);
+    } else {
+      this.fetchEmployeeUsername(this.userId);
+    }
 
     const customerActionsMenu: MenuItem[] = [
       {
@@ -121,7 +108,11 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.username = response.username;
-          this.appStateService.setUsername(this.username);
+          const newState: AuthState = {
+            username: response.username,
+            ...this.authService.getAuthState(),
+          };
+          this.authService.updateAuthState(newState);
         },
         error: (err) => {
           console.error('Failed to fetch customer username:', err);
@@ -136,7 +127,11 @@ export class ActionsMenuComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.username = response.username;
-          this.appStateService.setUsername(this.username);
+          const newState: AuthState = {
+            username: response.username,
+            ...this.authService.getAuthState(),
+          };
+          this.authService.updateAuthState(newState);
         },
         error: (err) => {
           console.error('Failed to fetch employee username:', err);

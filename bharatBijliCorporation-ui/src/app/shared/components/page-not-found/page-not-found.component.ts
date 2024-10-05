@@ -14,14 +14,10 @@ export class PageNotFoundComponent {
   constructor(private router: Router, private authService: AuthService) {}
 
   navigateHome() {
-    if (this.authService.isAuthenticated()) {
-      if (this.authService.isCustomer()) {
-        this.router.navigate(['/customer/dashboard']);
-      } else {
-        this.router.navigate(['/employee/dashboard']);
-      }
+    if (this.authService.getCurrentUserRole() === 'CUSTOMER') {
+      this.router.navigate(['/customer/dashboard']);
     } else {
-      this.router.navigate(['/']);
+      this.router.navigate(['/employee/dashboard']);
     }
   }
 }
