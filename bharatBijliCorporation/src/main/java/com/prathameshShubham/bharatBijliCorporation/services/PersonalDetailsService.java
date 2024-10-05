@@ -15,4 +15,23 @@ public class PersonalDetailsService {
     public PersonalDetails savePersonalDetails(PersonalDetails personalDetails) {
         return personalDetailsRepo.save(personalDetails);
     }
+
+    public boolean checkIfEmailExists(String email){
+        return personalDetailsRepo.findByEmailId(email).isPresent();
+    }
+
+    public PersonalDetails updatePersonalDetails(PersonalDetails personalDetails, PersonalDetails updatedDetails) {
+        personalDetails.setFirstName(updatedDetails.getFirstName());
+        personalDetails.setLastName(updatedDetails.getLastName());
+        personalDetails.setEmailId(updatedDetails.getEmailId());
+        personalDetails.setPhoneNumber(updatedDetails.getPhoneNumber());
+        personalDetails.setAddress(updatedDetails.getAddress());
+        personalDetails.setCity(updatedDetails.getCity());
+        personalDetails.setPincode(updatedDetails.getPincode());
+        personalDetails.setState(updatedDetails.getState());
+        personalDetails.setDateOfBirth(updatedDetails.getDateOfBirth());
+
+        // Save the updated personal details
+        return personalDetailsRepo.save(personalDetails);
+    }
 }

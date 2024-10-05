@@ -1,105 +1,174 @@
-<!-- <div class="table-cont">
-    <p-messages [(value)]="messages" [enableService]="false" />
-    <div class="search-bar">
-      <div class="search-container">
-        <div class="card flex justify-content-center" style="margin-bottom: 30px">
-          <p-inputGroup [style]="{ height: '45px' }">
-            <input
-              pInputText
-              placeholder="Search Customer"
-              [(ngModel)]="searchQuery"
-            />
-            <p-inputGroupAddon (click)="onSearch()">
-              <button
-                pButton
-                type="button"
-                icon="pi pi-search"
-                (click)="onSearch()"
-                [style]="{ 'background-color': 'white', color: 'blue' }"
-              ></button>
-            </p-inputGroupAddon>
-          </p-inputGroup>
-        </div>
+<p-dialog
+  [(visible)]="showBox"
+  header="Edit Customer Profile"
+  [modal]="true"
+  [draggable]="false"
+  styleClass="custom-dialog"
+  (onHide)="hideCustomer()"
+>
+  <div class="container">
+    <form #customerForm="ngForm">
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          id="firstName"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.firstName"
+          name="firstName"
+          required
+        />
       </div>
-      <div class="add-invoices">
-        <p-button
-          label="Add Invoices"
-          icon="pi pi-file"
-          (click)="navigateToAddInvoice()"
-          [text]="true"
-          [raised]="true"
-          severity="success"
-          [style]="{ height: '45px' }"
-        >
-        </p-button>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input
+          type="text"
+          id="lastName"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.lastName"
+          name="lastName"
+          required
+        />
       </div>
-    </div>
-    <div class="main-body">
-      <div class="card">
-        <p-table
-          [value]="invoices"
-          [rows]="rowsPerPage"
-          [totalRecords]="totalRecords"
-          responsiveLayout="scroll"
-          (onSort)="onSort($event)"
-          styleClass="p-datatable-striped"
-          [tableStyle]="{ 'min-width': '50rem' }"
-          selectionMode="single"
-          [(selection)]="selectedInvoiceDetails"
-          (onRowSelect)="showInvoice($event.data)"
-          (onRowUnselect)="hideInvoice()"
-        >
-          >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="customer">
-                Customer
-                <p-sortIcon field="customer"></p-sortIcon>
-              </th>
-              <th>Period</th>
-              <th pSortableColumn="dueDate">
-                Due on
-                <p-sortIcon field="dueDate"></p-sortIcon>
-              </th>
-              <th pSortableColumn="unitsConsumed">
-                Consumption
-                <p-sortIcon field="unitsConsumed"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoiceStatus">
-                Status
-                <p-sortIcon field="invoiceStatus"></p-sortIcon>
-              </th>
-              <th pSortableColumn="tariff">
-                Tarrif
-                <p-sortIcon field="tariff"></p-sortIcon>
-              </th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-rowData>
-            <tr [pSelectableRow]="rowData">
-              <td>
-                {{ rowData.customer.personalDetails.firstName }}
-                {{ rowData.customer.personalDetails.lastName }}
-              </td>
-              <td>
-                {{ rowData.periodStartDate | date : "d MMM yy" }} -
-                {{ rowData.periodEndDate | date : "d MMM yy" }}
-              </td>
-              <td>{{ rowData.dueDate | date : "EEE, d MMM yyyy" }}</td>
-              <td>{{ rowData.unitsConsumed | number : "1.2-2" }} units</td>
-              <td>
-                <p-chip
-                  [style]="{
-                    color: getStatusColor(rowData.invoiceStatus)
-                  }"
-                  icon="{{ getStatusIcon(rowData.invoiceStatus) }}"
-                  label="{{ rowData.invoiceStatus }}"
-                ></p-chip>
-              </td>
-              <td>
-                {{ rowData.tariff }}
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </div> -->
+
+      <div class="form-group">
+        <label for="emailId">Email</label>
+        <input
+          type="email"
+          id="emailId"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.emailId"
+          name="emailId"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input
+          type="text"
+          id="phoneNumber"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.phoneNumber"
+          name="phoneNumber"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input
+          type="text"
+          id="address"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.address"
+          name="address"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="city">City</label>
+        <input
+          type="text"
+          id="city"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.city"
+          name="city"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="pincode">PinCode</label>
+        <input
+          type="text"
+          id="pincode"
+          pInputText
+          [(ngModel)]="selectedCustomerDetails.personalDetails.pincode"
+          name="pincode"
+          required
+        />
+      </div>
+      <div class="form-actions">
+        <p-inputGroupAddon (click)="onSearch()">
+          <button
+            pButton
+            label="Save"
+            (click)="saveCustomerDetails()"
+            [disabled]="!customerForm.form.valid"
+          ></button>
+          <button
+            pButton
+            label="Cancel"
+            class="p-button-secondary"
+            (click)="hideCustomer()"
+          ></button>
+        </p-inputGroupAddon>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+<div class="search-container">
+  <div class="card flex justify-content-center" style="margin-bottom: 30px">
+    <p-inputGroup [style]="{ height: '45px' }">
+      <input
+        pInputText
+        placeholder="Search Customer"
+        [(ngModel)]="searchQuery"
+      />
+      <p-inputGroupAddon (click)="onSearch()">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-search"
+          (click)="onSearch()"
+          severity="info"
+        ></button>
+      </p-inputGroupAddon>
+    </p-inputGroup>
+  </div>
+</div>
+<p-table
+  [value]="customers"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
+  selectionMode="single"
+  [(selection)]="selectedCustomerDetails"
+  (onRowSelect)="showCustomer($event.data)"
+  (onRowUnselect)="hideCustomer()"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Customer ID</th>
+      <th>Customer</th>
+      <th>Address</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rowData>
+    <tr [pSelectableRow]="rowData">
+      <td>
+        {{ rowData.id }}
+      </td>
+      <td>
+        {{ rowData.personalDetails.firstName }}
+        {{ rowData.personalDetails.lastName }}
+      </td>
+      <td>
+        {{ rowData.personalDetails.address }}
+        {{ rowData.personalDetails.city }}
+        {{ rowData.personalDetails.state }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-paginator
+  [rows]="rowsPerPage"
+  [totalRecords]="totalRecords"
+  [first]="first"
+  (onPageChange)="onPageChange($event)"
+  [rowsPerPageOptions]="[5, 10, 20]"
+>
+</p-paginator>

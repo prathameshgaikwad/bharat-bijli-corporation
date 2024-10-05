@@ -5,20 +5,22 @@ import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatu
 import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
+import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CustomerService {
@@ -115,10 +117,6 @@ public class CustomerService {
                     System.err.println("Duplicate entry for row: " + row + " - " + e.getMessage());
                     resultSummary.append("Duplicate entry for row: ").append(row).append("\n");
                     failureCount++;  // Increment on failure
-                } catch (Exception e) {
-                    System.err.println("Unexpected error for row: " + row + " - " + e.getMessage());
-                    resultSummary.append("Unexpected error for row: ").append(row).append("\n");
-                    failureCount++;  // Increment on failure
                 }
             }
         } catch (InvalidFileFormatException | EmptyCsvFileException e) {
@@ -135,16 +133,45 @@ public class CustomerService {
     }
 
     private void validateRow(Map<String, String> rowData) throws MissingFieldException {
-        if (rowData.get("dateOfBirth") == null ||
-                rowData.get("city") == null ||
-                rowData.get("address") == null ||
-                rowData.get("emailId") == null ||
-                rowData.get("pincode") == null ||
-                rowData.get("firstName") == null ||
-                rowData.get("lastName") == null ||
-                rowData.get("phoneNumber") == null ||
-                rowData.get("state") == null) {
+        String firstName = rowData.get("firstName");
+        String lastName = rowData.get("lastName");
+        String emailId = rowData.get("emailId");
+        String phoneNumber = rowData.get("phoneNumber");
+        String address = rowData.get("address");
+        String city = rowData.get("city");
+        String pincode = rowData.get("pincode");
+        String dateOfBirth = rowData.get("dateOfBirth");
+        String state = rowData.get("state");
+
+        // Check for missing fields
+        if (firstName == null || lastName == null || emailId == null || phoneNumber == null ||
+                address == null || city == null || pincode == null || dateOfBirth == null || state == null) {
             throw new MissingFieldException("Missing required fields in row: " + rowData);
+        }
+
+        // Validate first and last name (non-empty and alphabetical)
+        if (!firstName.matches("[A-Za-z]+") || !lastName.matches("[A-Za-z]+")) {
+            throw new MissingFieldException("Invalid name format in row: " + rowData);
+        }
+
+        // Validate email format
+        if (!emailId.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw new MissingFieldException("Invalid email format in row: " + rowData);
+        }
+
+        // Validate phone number format (Indian 10-digit phone number)
+        if (!phoneNumber.matches("^\\d{10}$")) {
+            throw new MissingFieldException("Invalid phone number format in row: " + rowData);
+        }
+
+        // Validate pincode format (Indian 6-digit pincode)
+        if (!pincode.matches("^\\d{6}$")) {
+            throw new MissingFieldException("Invalid pincode format in row: " + rowData);
+        }
+
+        // Validate date of birth format (YYYY-MM-DD format assumed here)
+        if (!dateOfBirth.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            throw new MissingFieldException("Invalid date of birth format in row: " + rowData);
         }
     }
 
@@ -170,10 +197,42 @@ public class CustomerService {
     }
 
     private boolean checkIfEmailExists(String emailId) {
-        return false; // Placeholder return statement
+        return personalDetailsService.checkIfEmailExists(emailId); // Placeholder return statement
     }
 
     public Long getCountOfCustomers() {
         return customerRepo.count();
+    }
+
+    public Page<Customer> getPaginatedCustomer(int pageNo, int size, String sortField, String sortOrder, String search) {
+        if ("customer".equals(sortField)) {
+            sortField = "customer.personalDetails.firstName";
+        }
+        Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNo, size, sort);
+        Page<Customer> page;
+
+        if (search != null && !search.isEmpty()) {
+            page =  customerRepo.searchByCustomerName(search, pageable);
+
+            if(page.isEmpty()){
+                page = customerRepo.findByIdContainingIgnoreCase(search, pageable);
+            }
+        } else {
+            page =  customerRepo.findAll(pageable);
+        }
+        return  page;
+    }
+
+    public PersonalDetails updateCustomer(Customer updatedCustomerDetails) {
+        Optional<Customer> customerOptional = customerRepo.findById(updatedCustomerDetails.getId());
+
+        if (customerOptional.isPresent()) {
+            Customer customer = customerOptional.get();
+            PersonalDetails personalDetails = customer.getPersonalDetails();
+            return personalDetailsService.updatePersonalDetails(personalDetails, updatedCustomerDetails.getPersonalDetails());
+        } else {
+            throw new IllegalArgumentException("Customer not found with ID: " + updatedCustomerDetails.getId());
+        }
     }
 }

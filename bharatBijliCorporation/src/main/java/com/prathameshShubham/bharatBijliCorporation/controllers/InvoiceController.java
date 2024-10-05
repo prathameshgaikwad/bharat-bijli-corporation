@@ -74,14 +74,15 @@ public class InvoiceController {
         return ResponseEntity.ok(invoices);
     }
 
-    @PostMapping("/bulk-csv-upload")
-    public ResponseEntity<String> saveInvoices(@RequestParam("file") MultipartFile file) {
+    @PostMapping("{employeeId}/bulk-csv-upload")
+    public ResponseEntity<String> saveInvoices(@RequestParam("file") MultipartFile file,
+                                               @PathVariable String employeeId) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
         }
 
         try {
-            String result = invoiceService.uploadCsv(file);
+            String result = invoiceService.uploadCsv(file, employeeId);
             return ResponseEntity.status(HttpStatus.OK).body(result); // Return OK if processing was successful
         } catch (InvalidFileFormatException | EmptyCsvFileException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

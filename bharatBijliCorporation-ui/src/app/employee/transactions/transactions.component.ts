@@ -34,7 +34,7 @@ import { MessagesModule } from 'primeng/messages';
   styleUrl: './transactions.component.css',
 })
 export class TransactionsComponent {
-  transactions: any[] = [];
+  transactions: Transaction[] = [];
   totalRecords: number = 0;
   rowsPerPage: number = 10;
 

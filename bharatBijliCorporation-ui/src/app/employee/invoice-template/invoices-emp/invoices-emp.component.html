@@ -74,6 +74,21 @@
       }}</span>
     </p>
     }
+    <button pButton *ngIf="!isPaid; else paidButton" (click)="onPayClick()">
+      Pay Now
+      <i class="pi pi-arrow-right"></i>
+    </button>
+    <ng-template #paidButton>
+      <button
+        pButton
+        severity="success"
+        style="pointer-events: none"
+        class="paidButton"
+      >
+        <i class="pi pi-check"></i>
+        Paid
+      </button>
+    </ng-template>
   </div>
 </p-dialog>
 <div class="table-cont">
@@ -96,23 +111,33 @@
               type="button"
               icon="pi pi-search"
               (click)="onSearch()"
-              [style]="{ 'background-color': 'white', color: 'blue' }"
+              severity="info"
             ></button>
           </p-inputGroupAddon>
         </p-inputGroup>
       </div>
     </div>
     <div class="add-invoices">
-      <p-button
-        label="Add Invoices"
+      <button
+        pButton
+        label="Generate Invoices"
         icon="pi pi-file"
         (click)="navigateToAddInvoice()"
         [text]="true"
         [raised]="true"
         severity="success"
-        [style]="{ height: '45px' }"
-      >
-      </p-button>
+        class="button-btn-1"
+      ></button>
+      <button
+        pButton
+        label="Invoices Bulk Entry"
+        icon="pi pi-upload"
+        [routerLink]="['bulk-upload']"
+        [text]="true"
+        [raised]="true"
+        severity="success"
+        class="button btn-2"
+      ></button>
     </div>
   </div>
   <div class="main-body">
@@ -189,6 +214,7 @@
       [totalRecords]="totalRecords"
       [first]="first"
       (onPageChange)="onPageChange($event)"
+      [rowsPerPageOptions]="[5, 10, 20]"
     >
     </p-paginator>
   </div>

@@ -27,4 +27,6 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     Page<Transaction> searchByCustomerName(String search, Pageable pageable);
 
     Transaction findByInvoiceIdAndTransactionStatus(Long invoiceId, TransactionStatus transactionStatus);
+
+    Page<Transaction> findByCustomerId(String customerId, Pageable pageable);
 }

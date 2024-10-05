@@ -37,10 +37,6 @@
               Amount
               <p-sortIcon field="amount"></p-sortIcon>
             </th>
-            <th pSortableColumn="transactionFee">
-              Fee
-              <p-sortIcon field="transactionFee"></p-sortIcon>
-            </th>
             <th pSortableColumn="transactionMethod">
               Method
               <p-sortIcon field="transactionMethod"></p-sortIcon>
@@ -61,8 +57,9 @@
               {{ rowData.customer.personalDetails.firstName }}
               {{ rowData.customer.personalDetails.lastName }}
             </td>
-            <td>{{ rowData.amount }}</td>
-            <td>{{ rowData.transactionFee }}</td>
+            <td>{{ rowData.amount 
+              | currency : "INR" : "symbol" : "1.2-2"
+          }}</td>
             <td>{{ rowData.transactionMethod }}</td>
             <td>
               <p-chip
@@ -83,6 +80,7 @@
       [totalRecords]="totalRecords"
       [first]="first"
       (onPageChange)="onPageChange($event)"
+      [rowsPerPageOptions]="[5, 10, 20]"
     >
     </p-paginator>
   </div>
