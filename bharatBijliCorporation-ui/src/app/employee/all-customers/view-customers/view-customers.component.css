@@ -1,0 +1,65 @@
+/* Custom dialog styles */
+.custom-dialog {
+  width: 500px; /* Adjust as needed */
+  max-width: 100%; /* Responsive width */
+}
+
+.container {
+  padding: 20px;
+  background-color: #fff; /* White background for better readability */
+  border-radius: 8px; /* Rounded corners */
+}
+
+.customer-form {
+  display: flex;
+  flex-direction: column; /* Arrange items vertically */
+}
+
+.form-group {
+  margin-bottom: 15px; /* Space between form fields */
+}
+
+label {
+  font-weight: bold; /* Bold labels */
+  margin-bottom: 5px; /* Space below label */
+}
+
+input {
+  border: 1px solid #ced4da; /* Light border */
+  border-radius: 4px; /* Rounded input fields */
+  padding: 10px; /* Padding for input */
+  font-size: 14px; /* Font size */
+}
+
+input:focus {
+  border-color: #80bdff; /* Border color on focus */
+  outline: none; /* Remove default outline */
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between; /* Space between buttons */
+}
+
+button {
+  flex: 1; /* Allow buttons to grow equally */
+  margin: 0 5px; /* Margin between buttons */
+  padding: 10px 15px; /* Padding for buttons */
+  font-size: 14px; /* Font size for buttons */
+}
+
+/* Style for secondary button */
+.p-button-secondary {
+  background-color: #f8f9fa; /* Light grey background */
+  border: 1px solid #ced4da; /* Light border */
+}
+
+/* Style for the primary button */
+.p-button {
+  background-color: #007bff; /* Blue background */
+  color: white; /* White text */
+}
+
+.p-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}

@@ -1,6 +1,5 @@
 <div class="card">
   <p-messages [(value)]="message" [enableService]="true" />
-  <!-- File Input for CSV -->
   <div class="uploader-container">
     <div class="csv-upload" style="align-items: center">
       <label for="csv-file" [ngClass]="{ pulse: uploadLabel }">{{
@@ -25,16 +24,10 @@
     </div>
   </div>
 
-  <!-- PrimeNG Toast for messages -->
-
-  <!-- Table to display CSV data -->
   <p-table
     [value]="csvData"
     [paginator]="true"
     [rows]="10"
-    responsiveLayout="stack"
-    [breakpoint]="'960px'"
-    [tableStyle]="{ 'min-width': '50rem' }"
     *ngIf="csvData.length > 0"
     styleClass="p-datatable-striped  p-datatable-lg p-datatable-gridlines"
     selectionMode="single"

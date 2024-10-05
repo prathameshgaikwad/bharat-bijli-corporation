@@ -13,23 +13,9 @@ import { CommonModule } from '@angular/common';
 })
 export class AllCustomersComponent {
   isUp = true;
-  add = false;
-  view = false;
-  bulk = false;
-  
+
   eleviateUp() {
     this.isUp = this.isUp ? false : true;
   }
-  
-  addUp() {
-    this.add = this.add ? false : true;
-  }
-  
-  viewUp() {
-    this.view = this.view ? false : true;
-  }
-  
-  bulkUp() {
-    this.bulk = this.bulk ? false : true;
-  }
+
 }
