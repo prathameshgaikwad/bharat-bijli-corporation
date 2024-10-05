@@ -1,8 +1,9 @@
-import { Customer, Employee } from '../../shared/types/user.types';
+import { Customer, Employee, PersonalDetails } from '../../shared/types/user.types';
 import {
   Invoice,
   InvoiceResponse,
   Page,
+  RecordPaymentRequest,
   Transaction,
 } from '../../shared/types/consumables.types';
 
@@ -19,7 +20,6 @@ export class EmployeeService {
   private baseUrl = 'http://localhost:8080/employees';
   private baseTransactionsUrl = 'http://localhost:8080/transactions';
   private baseInvoicesUrl = 'http://localhost:8080/invoices';
-  private baseCustUrl = 'http://localhost:8080/customers';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -120,10 +120,10 @@ export class EmployeeService {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
-      .set('sortField', sortField)
-      .set('sortOrder', sortOrder)
+      .set('sortField', 'id')
+      .set('sortOrder', sortOrder)  
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Customer>>(`${this.baseCustUrl}`, {
+    return this.httpClient.get<Page<Customer>>(`${this.baseUrl}/getAll/Customers`, {
       params,
     });
   }
@@ -136,5 +136,26 @@ export class EmployeeService {
     headers.append('Content-Type', 'multipart/form-data');
 
     return this.httpClient.post<string>(`${this.baseUrl}/customers/bulk-csv-upload`, formData, { responseType: 'text' as 'json' })
+  }
+
+  postBulkCsvInv(file : File) : Observable<string>{
+    const formData: FormData = new FormData();
+    formData.append('file', file);
+
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+     const empId = "EMP000001"
+    return this.httpClient.post<string>(`${this.baseInvoicesUrl}/${empId}/bulk-csv-upload`, formData, { responseType: 'text' as 'json' })
+  }
+
+  updateCustomer(updatedDetails : Customer) : Observable<PersonalDetails>{
+    console.log(updatedDetails);
+    
+    return this.httpClient.put<PersonalDetails>(`${this.baseUrl}/update/customer`, updatedDetails);
+  }
+
+  addCashPayment(paymentRequest: RecordPaymentRequest): Observable<Transaction> {
+    const url = `${this.baseUrl}/record-payment`;
+    return this.httpClient.post<Transaction>(url, paymentRequest);
   }
 }
