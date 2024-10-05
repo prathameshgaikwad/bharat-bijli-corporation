@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import java.time.LocalDateTime;
+
 
 @Repository
 public interface InvoiceRepo extends JpaRepository<Invoice, Long> {
@@ -29,4 +31,6 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Long> {
     Page<Invoice> searchByCustomerName(String search, Pageable pageable);
 
     Page<Invoice> findByCustomerId(String customerId, Pageable pageable);
+
+    boolean existsByCustomerIdAndPeriodStartDateAndPeriodEndDate(String customerId, LocalDateTime periodStartDate, LocalDateTime periodEndDate);
 }

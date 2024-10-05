@@ -15,11 +15,15 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { InvoiceResponse } from '../../../shared/types/consumables.types';
 import { InvoiceStatus } from '../../../shared/types/enums.types';
-import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
+import { AppStateService } from '../../../core/services/app-state.service';
+import { EmployeeService } from '../../services/employee.service';
+import { Customer } from '../../../shared/types/user.types';
+import { ButtonModule } from 'primeng/button';
 
 export interface InvoiceCustResp {
   customer: Customer;
@@ -37,6 +41,9 @@ export interface InvoiceCustResp {
     ToastModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterLink,
+    RouterLinkActive,
+    ButtonModule
   ],
   templateUrl: './generate-invoices.component.html',
   styleUrl: './generate-invoices.component.css',

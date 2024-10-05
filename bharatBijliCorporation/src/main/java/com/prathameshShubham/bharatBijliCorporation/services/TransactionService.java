@@ -99,6 +99,9 @@ public class TransactionService {
 
         if (search != null && !search.isEmpty()) {
             page =  transactionRepo.searchByCustomerName(search, pageable);
+            if(page.isEmpty()){
+                page = transactionRepo.findByCustomerId(search, pageable);
+            }
         } else {
             page =  transactionRepo.findAll(pageable);
         }

@@ -17,13 +17,43 @@ import { DynamicInvoiceMessage } from '../../../customer/dynamic-invoice-message
 import { InvoiceSummaryComponent } from '../../../customer/invoices/invoice-summary/invoice-summary.component';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
-import { InvoiceStatus } from '../../../shared/types/enums.types';
 import {
+  InvoiceStatus,
+  TransactionMethod,
+} from '../../../shared/types/enums.types';
+import {
+  BillingDetails,
   Invoice,
   Page,
+  RecordPaymentRequest,
   Transaction,
 } from '../../../shared/types/consumables.types';
-import { DEFAULT_INVOICE } from '../../../core/helpers/constants';
+import {
+  DEFAULT_BILLING_DETAILS,
+  DEFAULT_INVOICE,
+} from '../../../core/helpers/constants';
+import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
+import { Customer, defaultCustomer } from '../../../shared/types/user.types';
+
+export interface InvoiceForPayment {
+  customer: Customer;
+  unitsConsumed: number;
+  tariff: number;
+  periodStartDate: Date;
+  periodEndDate: Date;
+  dueDate: Date;
+  invoiceStatus: InvoiceStatus;
+}
+
+export const DEFAULT_INVOICE_PAY_RESPONSE: InvoiceForPayment = {
+  customer: defaultCustomer,
+  unitsConsumed: 0,
+  tariff: 0,
+  periodStartDate: new Date(),
+  periodEndDate: new Date(),
+  dueDate: new Date(),
+  invoiceStatus: InvoiceStatus.PENDING,
+};
 
 @Component({
   selector: 'app-invoices-emp',
@@ -132,7 +162,6 @@ export class EmpInvoicesComponent {
       .subscribe({
         next: (response: Page<Invoice>) => {
           this.invoices = response.content;
-          this.totalRecords = response.totalElements;
         },
         error: (error) => {
           this.error = [{ severity: 'error', detail: 'Invalid Req' }];
@@ -140,13 +169,20 @@ export class EmpInvoicesComponent {
       });
   }
 
-  showInvoice(invoice: Invoice) {
-    this.isPaid = false;
-    this.isOverdue = false;
+  isOverdue: boolean = false;
+  billingAmount: number = 0;
+  payBeforeDueDateDiscount: number = 0;
+  totalAmount: number = 0;
+  isPaid = false;
+  paidAt: Date = new Date();
+  calculatedBillingDetails: BillingDetails = DEFAULT_BILLING_DETAILS;
+  customerId = '';
+  invoiceToPay: InvoiceForPayment = DEFAULT_INVOICE_PAY_RESPONSE;
 
+  showInvoice(invoice: any) {
+    this.invoiceToPay = invoice;
     this.selectedInvoiceDetails = invoice;
-    console.log(new Date(), new Date(this.selectedInvoiceDetails.dueDate));
-
+    this.selectedInvoiceDetails.customerId = this.invoiceToPay.customer.id;
     if (this.selectedInvoiceDetails.invoiceStatus == 'PAID') {
       this.isPaid = true;
     } else if (
@@ -162,40 +198,15 @@ export class EmpInvoicesComponent {
     this.showBox = true;
   }
 
-  isOverdue: boolean = false;
-  billingAmount: number = 0;
-  payBeforeDueDateDiscount: number = 0;
-  totalAmount: number = 0;
-  isPaid = false;
-  paidAt: Date = new Date();
-
   private calculateInvoiceDetails() {
-    this.billingAmount =
-      this.selectedInvoiceDetails.tariff *
-      this.selectedInvoiceDetails.unitsConsumed;
+    this.calculatedBillingDetails = calculateInvoiceDetails(
+      this.selectedInvoiceDetails
+    );
 
-    if (this.isPaid) {
-      this.invoiceService
-        .getPaidTransactionByInvoice(this.selectedInvoiceDetails)
-        .subscribe({
-          next: (response: Transaction) => {
-            this.totalAmount = response.amount;
-            this.paidAt = response.createdAt;
-          },
-        });
-      return;
-    }
-
-    const currentDate = new Date();
-    const dueDate = new Date(this.selectedInvoiceDetails.dueDate);
-
-    if (currentDate < dueDate) {
-      this.payBeforeDueDateDiscount = this.billingAmount * 0.05; // 5% discount
-    } else {
-      this.payBeforeDueDateDiscount = 0; // No discount
-    }
-    this.totalAmount = this.billingAmount - this.payBeforeDueDateDiscount;
-    console.log(this.isOverdue);
+    this.billingAmount = this.calculatedBillingDetails.billingAmount;
+    this.payBeforeDueDateDiscount =
+      this.calculatedBillingDetails.payBeforeDueDateDiscount;
+    this.totalAmount = this.calculatedBillingDetails.totalAmount;
   }
 
   hideInvoice() {
@@ -203,6 +214,29 @@ export class EmpInvoicesComponent {
     this.isPaid = false;
     this.showBox = false;
     console.log(this.isPaid);
+  }
+
+  onPayClick() {
+    const paymentRequest: RecordPaymentRequest = {
+      customerId: this.selectedInvoiceDetails.customerId,
+      invoiceId: this.selectedInvoiceDetails.id,
+      paymentMethod: TransactionMethod.CASH,
+      totalAmount: this.billingAmount,
+      transactionDate: new Date(),
+      transactionReference: `TXNREF${this.selectedInvoiceDetails.customerId}INV${this.selectedInvoiceDetails.id}`,
+      discountByDueDate: this.payBeforeDueDateDiscount,
+      discountByOnlinePayment: 0,
+      paymentDescription: `Paid by Cash`,
+    };
+    console.log(this.selectedInvoiceDetails);
+
+    this.invoiceService.addCashPayment(paymentRequest).subscribe({
+      next: (response) => {
+        console.log('Success');
+        this.loadInvoices();
+        this.showBox = false;
+      },
+    });
   }
 
   getStatusColor(status: string): string {

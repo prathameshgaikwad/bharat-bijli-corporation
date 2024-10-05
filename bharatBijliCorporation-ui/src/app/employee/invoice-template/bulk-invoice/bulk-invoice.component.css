@@ -1,0 +1,78 @@
+.csv-upload {
+    background: #f9f9f9; /* Light background color */
+    border-radius: 8px;
+    padding: 30px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.08);
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .uploader-container {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    display: grid;
+    justify-items: center;
+  }
+
+  label {
+    display: block;
+    padding: 12px 20px;
+    background: #5b8dc3; /* Primary color */
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+  }
+
+  label:hover {
+    background: #0056b3; /* Darker shade on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+  }
+
+  .file-name {
+    background: #e9ecef; /* Light gray for file name area */
+    padding: 10px;
+    border-radius: 4px;
+    word-break: break-all;
+    min-height: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6; /* Slightly darker border */
+    color: #495057; /* Dark gray text */
+  }
+
+  .p-button {
+    background: #17a2b8; /* Light blue button */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 10px 20px; /* Padding for button */
+    border-radius: 4px; /* Rounded corners */
+    transition: background 0.3s ease; /* Transition for background color */
+  }
+
+  .p-button:hover {
+    background: #138496; /* Darker shade on hover */
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    }
+  }
+
+  .pulse {
+    animation: pulse 1.5s infinite;
+  }

@@ -1,1 +1,54 @@
-<p>bulk-invoice works!</p>
+<div class="card">
+  <p-messages [(value)]="message" [enableService]="true" />
+  <div class="uploader-container">
+    <div class="csv-upload" style="align-items: center">
+      <label for="csv-file" [ngClass]="{ pulse: uploadLabel }">{{
+        uploadLabel
+      }}</label>
+      <input
+        type="file"
+        id="csv-file"
+        accept=".csv"
+        (change)="onFileSelected($event)"
+        #fileInput
+      />
+      <div class="file-name">{{ fileName }}</div>
+      <p-button
+        icon="pi pi-upload"
+        type="button"
+        (onClick)="addToDB()"
+        label="SUBMIT"
+        severity="info"
+        [style]="{ width: '350px' }"
+      />
+    </div>
+  </div>
+
+  <p-table
+    [value]="csvData"
+    [paginator]="true"
+    [rows]="10"
+    *ngIf="csvData.length > 0"
+    styleClass="p-datatable-striped  p-datatable-lg p-datatable-gridlines"
+    selectionMode="single"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>CustomerId</th>
+        <th>Due Date</th>
+        <th>Duration</th>
+        <th>Tariff</th>
+        <th>unitsConsumed</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData>
+      <tr>
+        <td>{{ rowData.customerId }}</td>
+        <td>{{ rowData.dueDate }}</td>
+        <td>{{ rowData.periodEndDate }} - {{ rowData.periodEndDate }}</td>
+        <td>{{ rowData.tariff }}</td>
+        <td>{{ rowData.unitsConsumed }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
