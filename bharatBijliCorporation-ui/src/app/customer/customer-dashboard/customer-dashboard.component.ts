@@ -30,7 +30,7 @@ import { UsageChartComponent } from './usage-chart/usage-chart.component';
 })
 export class CustomerDashboardComponent implements OnInit, OnDestroy {
   customerId: string = '';
-  username: string = '';
+  walletBalance: number = 1258.3;
   private destroy$ = new Subject<void>();
   isPendingBill: boolean;
   isOverdueBill: boolean;
@@ -45,9 +45,6 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.appStateService.getUsername().subscribe((username) => {
-      this.username = username;
-    });
     this.appStateService.getUserId().subscribe((id) => {
       this.customerId = id;
     });

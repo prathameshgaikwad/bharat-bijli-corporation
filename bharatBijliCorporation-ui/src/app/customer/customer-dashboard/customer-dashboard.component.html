@@ -1,16 +1,11 @@
 <app-navbar></app-navbar>
 <div class="page">
-  <div class="page-header greeting-container">
-    <h1 class="heading username">
-      Good Morning, <span>{{ username }}!</span>
-    </h1>
-  </div>
-
   <div class="grid">
     <app-actions-panel
       [isActionRequired]="isActionRequired"
       [isPendingBill]="isPendingBill"
       [isOverdueBill]="isOverdueBill"
+      [walletBalance]="walletBalance"
       (pendingInvoicesChecked)="onPendingInvoicesChecked($event)"
       (overdueInvoicesChecked)="onOverdueInvoicesChecked($event)"
     ></app-actions-panel>
