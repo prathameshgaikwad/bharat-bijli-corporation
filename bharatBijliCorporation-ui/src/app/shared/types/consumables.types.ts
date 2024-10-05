@@ -129,3 +129,9 @@ export interface PaymentMethodSelectionDetails {
   isWalletSelected: boolean;
   isCashSelected: boolean;
 }
+
+export interface MonthlyUsageDetails {
+  month: string;
+  year: string;
+  unitsConsumed: number;
+}

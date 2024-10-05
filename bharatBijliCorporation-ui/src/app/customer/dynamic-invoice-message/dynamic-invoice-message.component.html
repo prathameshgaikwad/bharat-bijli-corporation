@@ -1,8 +1,16 @@
 <p-messages severity="{{ severity }}" closable="false" *ngIf="totalAmount > 0">
   <ng-template pTemplate>
     <div class="content">
-      <h3 *ngIf="title">{{ title }}</h3>
-      <p *ngIf="message">
+      <h3
+        *ngIf="title"
+        [ngStyle]="{
+          'font-size': isHomeReferrer && '1rem',
+          'font-weight': isHomeReferrer && 600
+        }"
+      >
+        {{ title }}
+      </h3>
+      <p *ngIf="message && !isHomeReferrer">
         {{ message }}
         <span class="amount">{{
           totalAmount | currency : "INR" : "symbol" : "1.2-2"

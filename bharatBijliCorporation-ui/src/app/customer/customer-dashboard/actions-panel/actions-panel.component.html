@@ -1,0 +1,42 @@
+<p-panel *ngIf="isActionRequired">
+  <ng-template pTemplate="header">
+    <div class="custom-header">
+      <i
+        class="pi pi-exclamation-circle"
+        style="color: #ef4444; font-size: 1.2rem"
+      ></i>
+      <h3 class="heading">Action Required</h3>
+    </div>
+  </ng-template>
+  <app-dynamic-invoice-message
+    *ngIf="isOverdueBill"
+    [invoiceStatus]="overDueInvoiceStatus"
+    title="Overdue Bills"
+    message="You've missed the due date on some bills. Total overdue ->"
+    buttonLabel="See More"
+    severity="error"
+    [isHomeReferrer]="true"
+    (invoicesPresenceChecked)="overdueInvoicesChecked.emit($event)"
+  ></app-dynamic-invoice-message>
+  <app-dynamic-invoice-message
+    *ngIf="isPendingBill"
+    [invoiceStatus]="pendingInvoiceStatus"
+    title="Latest Bill Generated"
+    message="Your bill is generated. Amount to be paid -> "
+    buttonLabel="View Bill"
+    severity="info"
+    [isHomeReferrer]="true"
+    (invoicesPresenceChecked)="pendingInvoicesChecked.emit($event)"
+  ></app-dynamic-invoice-message>
+</p-panel>
+<p-panel *ngIf="!isActionRequired">
+  <ng-template pTemplate="header">
+    <div class="custom-header">
+      <h3 class="heading">You're all caught up</h3>
+      <i class="pi pi-check" style="color: #44ef55"></i>
+    </div>
+  </ng-template>
+  <div class="message-container">
+    <p>Thank you for being our valued customer!</p>
+  </div>
+</p-panel>

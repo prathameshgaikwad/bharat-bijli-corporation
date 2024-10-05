@@ -1,9 +1,10 @@
 .username {
   text-align: start;
-  padding: 0;
+  padding: 0.5rem 0;
 
   span {
     font-weight: 300;
+    margin-left: 3px;
   }
 
   i {
@@ -18,4 +19,36 @@
   align-items: flex-end;
   width: 100%;
   justify-content: space-between;
+}
+
+:host ::ng-deep .p-panel .p-panel-header {
+  padding: 0.8rem;
+}
+
+.description {
+  font-size: 0.9rem;
+  color: #556;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.chart-container {
+  grid-column: span 2;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-container {
+    grid-column: span 1;
+  }
 }

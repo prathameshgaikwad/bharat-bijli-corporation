@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   Invoice,
   InvoicesByStatusResponse,
+  MonthlyUsageDetails,
   Page,
   PendingDuesResponse,
   RecordPaymentRequest,
@@ -73,6 +74,11 @@ export class CustomerService {
   recordPayment(paymentRequest: RecordPaymentRequest): Observable<Transaction> {
     const url = `${this.baseUrl}/record-payment`;
     return this.httpClient.post<Transaction>(url, paymentRequest);
+  }
+
+  getMonthlyUsageData(customerId: string): Observable<MonthlyUsageDetails[]> {
+    const url = `${this.baseUrl}/${customerId}/usage-last-year`;
+    return this.httpClient.get<MonthlyUsageDetails[]>(url);
   }
 
   getCustomerDetails(customerId: string): Observable<Customer> {

@@ -79,6 +79,23 @@ body {
   scale: 0.9;
 }
 
+.custom-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-weight: 650;
+
+  h3 {
+    font-size: 1.2rem;
+    margin: 0.5rem;
+    font-weight: 600;
+  }
+  i {
+    font-weight: bold;
+  }
+}
+
 @media (max-width: 968px) {
   .heading {
     font-size: 2rem;
