@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
+import com.prathameshShubham.bharatBijliCorporation.dto.MonthlyUsageDTO;
 import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -110,5 +112,10 @@ public class CustomerController {
         Transaction savedTransaction = transactionService.savePaymentByCustomer(request, customer, invoice);
 
         return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{customerId}/usage-last-year")
+    public List<MonthlyUsageDTO> getCustomerMonthlyUsageForLastYear(@PathVariable String customerId) {
+        return invoiceService.getMonthlyUsageLastYear(customerId);
     }
 }

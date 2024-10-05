@@ -3,6 +3,7 @@ package com.prathameshShubham.bharatBijliCorporation.services;
 import com.opencsv.CSVReader;
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceDTO;
+import com.prathameshShubham.bharatBijliCorporation.dto.MonthlyUsageDTO;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
@@ -19,9 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -214,5 +216,35 @@ public class InvoiceService {
         }
 
         return page;
+    }
+
+    public List<MonthlyUsageDTO> getMonthlyUsageLastYear(String customerId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = now.minusYears(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endDate = now.withDayOfMonth(now.getDayOfMonth()).withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        List<Invoice> invoices = invoiceRepo.findByCustomerIdAndPeriodStartDateBetween(customerId, startDate,
+                endDate);
+
+        Map<String, Double> monthlyUsageMap = new HashMap<>();
+
+        for (Invoice invoice : invoices) {
+            LocalDateTime periodStartDate = invoice.getPeriodStartDate();
+            String monthYearKey = periodStartDate.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + periodStartDate.getYear();
+            monthlyUsageMap.merge(monthYearKey, invoice.getUnitsConsumed(), Double::sum);
+        }
+
+        List<MonthlyUsageDTO> monthlyUsageList = new ArrayList<>();
+
+        YearMonth startMonth = YearMonth.from(startDate);
+        YearMonth endMonth = YearMonth.from(endDate);
+
+        for (YearMonth targetMonth = startMonth; !targetMonth.isAfter(endMonth); targetMonth = targetMonth.plusMonths(1)) {
+            String monthName = targetMonth.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+            Double unitsConsumed = monthlyUsageMap.getOrDefault(monthName + " " + targetMonth.getYear(), 0.0);
+
+            monthlyUsageList.add(new MonthlyUsageDTO(monthName, targetMonth.getYear(), unitsConsumed));
+        }
+
+        return monthlyUsageList;
     }
 }

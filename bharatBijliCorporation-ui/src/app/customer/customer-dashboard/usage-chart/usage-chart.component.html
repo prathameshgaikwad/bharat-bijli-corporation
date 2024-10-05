@@ -1,0 +1,40 @@
+<p-panel>
+  <ng-template pTemplate="header">
+    <div class="custom-header">
+      <h3 class="heading">Monthly Consumption</h3>
+    </div>
+  </ng-template>
+  <p-chart type="line" [data]="chartData" [options]="chartOptions" #chart />
+  <ng-template pTemplate="footer">
+    <div
+      style="
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      "
+    >
+      <p style="font-size: 0.85rem; text-align: start">
+        Monthly change ->
+        <span style="font-weight: 600">
+          {{
+            monthlyConsumptionChange === 0
+              ? "NA"
+              : (monthlyConsumptionChange || 0 | percent)
+          }}</span
+        >
+      </p>
+      <p-divider layout="vertical"></p-divider>
+      <p style="font-size: 0.85rem; text-align: start">
+        Yearly change ->
+        <span style="font-weight: 600">
+          {{
+            yearlyConsumptionChange === 0
+              ? "NA"
+              : (yearlyConsumptionChange || 0 | percent)
+          }}</span
+        >
+      </p>
+    </div>
+  </ng-template>
+</p-panel>

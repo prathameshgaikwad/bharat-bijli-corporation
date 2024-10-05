@@ -5,14 +5,17 @@
       Good Morning, <span>{{ username }}!</span>
     </h1>
   </div>
-  <div>
-    <app-dynamic-invoice-message
-      *ngIf="isBillsOverdue"
-      [invoiceStatus]="overDueInvoiceStatus"
-      title="Overdue Bills"
-      message="You've missed the due date on some bills. Total overdue ->"
-      buttonLabel="Pay Dues"
-      severity="error"
-    ></app-dynamic-invoice-message>
+
+  <div class="grid">
+    <app-actions-panel
+      [isActionRequired]="isActionRequired"
+      [isPendingBill]="isPendingBill"
+      [isOverdueBill]="isOverdueBill"
+      (pendingInvoicesChecked)="onPendingInvoicesChecked($event)"
+      (overdueInvoicesChecked)="onOverdueInvoicesChecked($event)"
+    ></app-actions-panel>
+    <div class="chart-container">
+      <app-usage-chart [customerId]="customerId"></app-usage-chart>
+    </div>
   </div>
 </div>
