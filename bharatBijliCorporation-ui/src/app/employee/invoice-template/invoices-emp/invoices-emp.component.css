@@ -18,13 +18,18 @@ input{
 
 .add-invoices{
     margin-left: 10px;
+
+
+    .button-btn-1 {
+      margin-right: 15px;
+    }
 }
 
 .container {
     display: flex;
     flex-direction: column;
     width: 100%;
-  
+
     p {
       display: inline-flex;
       margin: 0.4rem 0;
