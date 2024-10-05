@@ -1,5 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.prathameshShubham.bharatBijliCorporation.config.CookieAuthenticationFilter;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidIdFormatException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
@@ -10,7 +11,10 @@ import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.EmployeeService;
 import com.prathameshShubham.bharatBijliCorporation.jwt.JwtUtil;
 import com.prathameshShubham.bharatBijliCorporation.services.OtpService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -90,8 +95,48 @@ public class AuthController {
         // Generate a JWT token for the user with role
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
         otpService.invalidateOtp(loginRequest.getUserId());
-//        return sendResponseWithHttpOnlyJwtCookie(token, httpServletResponse);
-        return sendResponseWithJwt(token, httpServletResponse);
+        return sendResponseWithHttpOnlyJwtCookie(token, httpServletResponse, loginRequest.getUserId());
+//        return sendResponseWithJwt(token, httpServletResponse);
+    }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<?> validateToken(HttpServletRequest request) {
+        try {
+            Cookie[] cookies = request.getCookies();
+            String jwtToken = extractTokenFromCookies(cookies);
+
+            if (jwtToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token found");
+            }
+
+            Claims claims = JwtUtil.extractClaims(jwtToken);
+            String userId = claims.getSubject();
+
+            if (JwtUtil.validateToken(jwtToken, userId)) {
+                String role = JwtUtil.extractRole(jwtToken);
+                Map<String, Object> response = new HashMap<>();
+                response.put("valid", true);
+                response.put("userId", userId);
+                response.put("role", role);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            }
+        } catch (ExpiredJwtException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token has expired");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error validating token");
+        }
+    }
+    private String extractTokenFromCookies(Cookie[] cookies) {
+        if(cookies != null) {
+            for(Cookie cookie : cookies) {
+                if(cookie.getName().equals(CookieAuthenticationFilter.COOKIE_NAME)) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     @PostMapping("/register")
@@ -120,7 +165,6 @@ public class AuthController {
     public ResponseEntity<?> logout(HttpServletResponse httpServletResponse) {
         Cookie invalidatedJwtCookie = getInvalidatedJwtCookie();
         httpServletResponse.addCookie(invalidatedJwtCookie);
-
         return ResponseEntity.ok(Map.of(
                 "message", "Logout successful"
         ));
@@ -155,7 +199,7 @@ public class AuthController {
     }
 
     private Cookie getHttpOnlyJwtCookie(String token) {
-        Cookie jwtCookie = new Cookie("jwt",token);
+        Cookie jwtCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME,token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");          // make accessible across entire app
         jwtCookie.setMaxAge(60*60);      // 1 hour expiry
@@ -163,7 +207,7 @@ public class AuthController {
     }
 
     private Cookie getInvalidatedJwtCookie() {
-        Cookie jwtCookie = new Cookie("jwt", null);
+        Cookie jwtCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME, null);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setPath("/");         // Ensure cookie is for entire app
         jwtCookie.setMaxAge(0);         // Set max age to 0 to delete the cookie
@@ -208,14 +252,16 @@ public class AuthController {
 
     private ResponseEntity<Map<String, String>> sendResponseWithHttpOnlyJwtCookie(
             String token,
-            HttpServletResponse httpServletResponse
+            HttpServletResponse httpServletResponse,
+            String userId
     ) {
         Cookie jwtCookie = getHttpOnlyJwtCookie(token);
         httpServletResponse.addCookie(jwtCookie);
         return ResponseEntity.ok(
                 Map.of(
                         "message","Login successful",
-                        "role",role
+                        "role",role,
+                        "userId",userId
                 )
         );
     }

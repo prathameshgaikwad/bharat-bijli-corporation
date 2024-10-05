@@ -18,8 +18,7 @@ export class EmployeeGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authService.isAuthenticated() && this.authService.isEmployee())
-      return true;
+    if (this.authService.getCurrentUserRole() === 'EMPLOYEE') return true;
 
     this.router.navigate(['/login']);
     return false;

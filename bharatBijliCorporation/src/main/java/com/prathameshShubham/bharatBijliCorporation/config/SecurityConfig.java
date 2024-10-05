@@ -30,6 +30,10 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .logout(logout -> logout
+//                        .logoutUrl("/auth/logout")
+//                        .deleteCookies(CookieAuthenticationFilter.COOKIE_NAME)
+//                        .clearAuthentication(true))
                 .authorizeHttpRequests(auth -> auth
                         // permit all requests to /auth/**
                         .requestMatchers("/auth/**").permitAll()
@@ -38,7 +42,9 @@ public class SecurityConfig {
                         // other endpoints accessible to EMPLOYEE role
                         .requestMatchers("/**").hasAuthority("EMPLOYEE")
                         .anyRequest().authenticated())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new CookieAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+;
 
         return http.build();
     }

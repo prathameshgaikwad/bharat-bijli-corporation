@@ -19,7 +19,6 @@ public class CorsConfig  {
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST","PUT","DELETE"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         corsConfiguration.setAllowCredentials(true);        // allow cookies, authorization headers
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",corsConfiguration);         // apply to all endpoints
 

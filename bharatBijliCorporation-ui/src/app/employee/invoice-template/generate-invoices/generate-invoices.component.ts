@@ -6,10 +6,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
+import { AuthService } from '../../../core/services/auth.service';
 import { CalendarModule } from 'primeng/calendar';
+import { Customer } from '../../../shared/types/user.types';
+import { EmployeeService } from '../../services/employee.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
@@ -64,18 +68,14 @@ export class GenerateInvoicesComponent implements OnInit {
   });
 
   constructor(
-    private appState: AppStateService,
+    private authService: AuthService,
     private invoiceGen: EmployeeService,
     private messageService: MessageService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.appState.getUserId().subscribe({
-      next: (response) => {
-        this.empId = response;
-      },
-    });
+    this.empId = this.authService.getCurrentUserId();
   }
 
   empId = '';

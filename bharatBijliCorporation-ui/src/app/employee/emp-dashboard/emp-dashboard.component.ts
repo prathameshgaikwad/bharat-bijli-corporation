@@ -1,16 +1,14 @@
+import { AuthService, AuthState } from '../../core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { StatsComponent } from '../stats/stats.component';
-import { ListingComponent } from '../../shared/components/listing/listing.component';
-import { EmployeeService } from '../services/employee.service';
-import { HttpClient } from '@angular/common/http';
 import { Page, Transaction } from '../../shared/types/consumables.types';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { SortEvent } from 'primeng/api';
-import { AppStateService } from '../../core/services/app-state.service';
-import { Subscription } from 'rxjs';
+
 import { ChipModule } from 'primeng/chip';
-import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import { EmployeeService } from '../services/employee.service';
+import { ListingComponent } from '../../shared/components/listing/listing.component';
+import { StatsComponent } from '../stats/stats.component';
+import { TableModule } from 'primeng/table';
 
 @Component({
   selector: 'app-emp-dashboard',
@@ -21,35 +19,41 @@ import { CommonModule } from '@angular/common';
     PaginatorModule,
     ChipModule,
     TableModule,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './emp-dashboard.component.html',
   styleUrl: './emp-dashboard.component.css',
 })
 export class EmpDashboardComponent implements OnInit {
-  customerId: string = '';
   username: string = '';
   transactions: any[] = [];
-  private subscription!: Subscription;
   totalRecords: number = 44;
   rowsPerPage: number = 10;
 
   constructor(
     private empService: EmployeeService,
-    private appStateService: AppStateService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.subscription = this.appStateService
-      .getUsername()
-      .subscribe((username) => {
-        this.username = username;
+    this.empService
+      .getEmployeeUsername(this.authService.getCurrentUserId())
+      .subscribe({
+        next: (response) => {
+          this.username = response.username;
+          const newState: AuthState = {
+            username: response.username,
+            ...this.authService.getAuthState(),
+          };
+          this.authService.updateAuthState(newState);
+        },
+        error: (err) => {
+          console.error('Failed to fetch employee username:', err);
+        },
       });
 
     this.empService.getRecentTransactions().subscribe({
       next: (response: Page<Transaction>) => {
-        console.log(response);
-
         this.transactions = response.content;
       },
       error: (error) => {

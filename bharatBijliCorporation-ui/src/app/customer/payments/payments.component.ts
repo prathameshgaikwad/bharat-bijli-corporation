@@ -1,6 +1,6 @@
 import { Page, Transaction } from '../../shared/types/consumables.types';
 
-import { AppStateService } from '../../core/services/app-state.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
@@ -36,14 +36,12 @@ export class PaymentsComponent {
   totalRecords: number = 0;
 
   constructor(
-    private appStateService: AppStateService,
+    private authService: AuthService,
     private customerService: CustomerService
   ) {}
 
   ngOnInit(): void {
-    this.appStateService.getUserId().subscribe((userId) => {
-      this.customerId = userId;
-    });
+    this.customerId = this.authService.getCurrentUserId();
   }
 
   loadTransactions(

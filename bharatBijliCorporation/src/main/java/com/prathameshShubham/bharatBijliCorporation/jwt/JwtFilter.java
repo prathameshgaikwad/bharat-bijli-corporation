@@ -1,5 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.jwt;
 
+import com.prathameshShubham.bharatBijliCorporation.config.CookieAuthenticationFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -28,19 +29,19 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-//        String jwtToken = extractTokenFromCookies(request.getCookies());
-        String jwtToken = extractTokenFromAuthorizationHeader(request.getHeader("Authorization"));
+        String jwtToken = extractTokenFromCookies(request.getCookies());
+//        String jwtToken = extractTokenFromAuthorizationHeader(request.getHeader("Authorization"));
 
         String userId = JwtUtil.extractClaims(jwtToken).getSubject();  // Extract user ID from token
 
-        if (JwtUtil.validateToken(jwtToken, userId)) {  // Validate token
+        if (JwtUtil.validateToken(jwtToken, userId)) {
             String role = JwtUtil.extractRole(jwtToken);
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userId, null, getRoleAuth(role) );
-            SecurityContextHolder.getContext().setAuthentication(authentication);  // Set authentication
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response);  // Continue the filter chain
+        filterChain.doFilter(request, response);
     }
 
     public Collection< ? extends GrantedAuthority> getRoleAuth(String role){
@@ -50,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String extractTokenFromCookies(Cookie[] cookies) {
         if(cookies != null) {
             for(Cookie cookie : cookies) {
-                if(cookie.getName().equals("jwt")) {
+                if(cookie.getName().equals(CookieAuthenticationFilter.COOKIE_NAME)) {
                    return cookie.getValue();
                 }
             }

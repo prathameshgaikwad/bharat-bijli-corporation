@@ -12,6 +12,8 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   token: string;
+  role: string;
+  userId: string;
 }
 
 export interface RegistrationResponse {

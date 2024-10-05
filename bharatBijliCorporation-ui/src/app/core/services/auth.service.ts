@@ -1,4 +1,10 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+  HttpParams,
+} from '@angular/common/http';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import {
   LoginRequest,
@@ -7,9 +13,7 @@ import {
   RegistrationResponse,
   UsernameResponse,
 } from '../../shared/types/auth.types';
-import { Observable, tap } from 'rxjs';
 
-import { AppStateService } from './app-state.service';
 import { Injectable } from '@angular/core';
 import { PersonalDetails } from '../../shared/types/user.types';
 
@@ -17,7 +21,19 @@ export interface DecodedToken extends JwtPayload {
   sub: string;
   role: string;
 }
+export interface AuthState {
+  isAuthenticated: boolean;
+  userId?: string;
+  role?: string;
+  username?: string;
+}
 
+interface TokenValidationResponse {
+  valid: boolean;
+  userId: string;
+  role: string;
+  username: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -25,72 +41,76 @@ export class AuthService {
   private readonly AUTH_API = 'http://localhost:8080/auth';
   private readonly CUSTOMER_API = 'http://localhost:8080/customers';
   private readonly EMPLOYEE_API = 'http://localhost:8080/employees';
-  private readonly tokenKey = 'token';
+  private authStateSubject = new BehaviorSubject<AuthState>({
+    isAuthenticated: false,
+    role: 'GUEST',
+    username: 'GUEST',
+    userId: '',
+  });
 
-  constructor(
-    private http: HttpClient,
-    private appStateService: AppStateService
-  ) {}
+  constructor(private http: HttpClient) {}
 
-  setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+  checkAuthState(): Observable<boolean> {
+    return this.http
+      .get<TokenValidationResponse>(`${this.AUTH_API}/validate-token`)
+      .pipe(
+        map((response) => {
+          const newState: AuthState = {
+            isAuthenticated: response.valid,
+            userId: response.userId,
+            role: response.role,
+            username: response.username,
+          };
+          this.authStateSubject.next(newState);
+          return true;
+        }),
+        catchError((error: HttpErrorResponse) => {
+          const newState: AuthState = {
+            isAuthenticated: false,
+            role: 'GUEST',
+            username: 'GUEST',
+          };
+          this.authStateSubject.next(newState);
+          console.error('Auth Error:', error);
+          return [false];
+        })
+      );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  get authState$(): Observable<AuthState> {
+    return this.authStateSubject.asObservable();
   }
 
-  clearToken(): void {
-    localStorage.removeItem(this.tokenKey);
+  get isAuthenticated$(): Observable<boolean> {
+    return this.authState$.pipe(map((state) => state.isAuthenticated));
   }
 
-  getDecodedToken(): DecodedToken | null {
-    const token = this.getToken();
-    if (!token) {
-      return null;
-    }
-
-    try {
-      const decoded: DecodedToken = jwtDecode<DecodedToken>(token);
-      return decoded;
-    } catch (error) {
-      console.error('Invalid token:', error);
-      return null;
-    }
+  getCurrentUserRole(): string {
+    return this.authStateSubject.value.role || 'GUEST';
   }
 
-  getUserRole(): string | null {
-    const decoded = this.getDecodedToken();
-    return decoded?.role ?? null;
+  getCurrentUserId(): string {
+    return this.authStateSubject.value.userId || '';
   }
 
-  getUserId(): string | null {
-    const decoded = this.getDecodedToken();
-    return decoded?.sub || null;
+  getCurrentUsername(): string {
+    return this.authStateSubject.value.username || 'GUEST';
   }
 
-  isTokenExpired(): boolean {
-    const decoded = this.getDecodedToken();
-    if (!decoded || !decoded.exp) {
-      return true;
-    }
-
-    const currentTime = Math.floor(Date.now() / 1000);
-    return decoded.exp < currentTime;
+  updateAuthState(newState: AuthState): void {
+    this.authStateSubject.next(newState);
   }
 
-  isCustomer(): boolean {
-    const decoded = this.getDecodedToken();
-    return decoded?.role === 'CUSTOMER';
+  getAuthState(): AuthState {
+    return this.authStateSubject.value;
   }
 
-  isEmployee(): boolean {
-    const decoded = this.getDecodedToken();
-    return decoded?.role === 'EMPLOYEE';
-  }
-
-  isAuthenticated(): boolean {
-    return this.getToken() !== null;
+  clearState() {
+    this.authStateSubject.next({
+      isAuthenticated: false,
+      role: 'GUEST',
+      username: 'GUEST',
+    });
   }
 
   getOtp(userId: string): Observable<OtpResponse> {
@@ -113,22 +133,24 @@ export class AuthService {
   }
 
   private handleLoginResponse(loginResponse: LoginResponse): void {
-    this.setToken(loginResponse.token);
-    const decodedToken = this.getDecodedToken();
-    if (decodedToken) {
-      const userId = decodedToken.sub!;
-      const role = decodedToken.role;
-      this.appStateService.setUserId(userId);
-      this.appStateService.setRole(role);
-      this.fetchUsername(role, userId);
-    }
+    const partialState: AuthState = {
+      isAuthenticated: true,
+      userId: loginResponse.userId,
+      role: loginResponse.role,
+    };
+    this.authStateSubject.next(partialState);
+    this.fetchUsername(loginResponse.role, loginResponse.userId);
   }
 
   private fetchUsername(role: string, userId: string): void {
     if (role === 'CUSTOMER') {
       this.getCustomerUsername(userId).subscribe({
         next: (response: UsernameResponse) => {
-          this.appStateService.setUsername(response.username);
+          const newState: AuthState = {
+            username: response.username,
+            ...this.authStateSubject.value,
+          };
+          this.updateAuthState(newState);
         },
         error: (err) => {
           console.error('Failed to fetch customer username:', err);
@@ -137,7 +159,13 @@ export class AuthService {
     } else if (role === 'EMPLOYEE') {
       this.getEmployeeUsername(userId).subscribe({
         next: (response: UsernameResponse) => {
-          this.appStateService.setUsername(response.username);
+          console.log(response.username);
+
+          const newState: AuthState = {
+            username: response.username,
+            ...this.authStateSubject.value,
+          };
+          this.updateAuthState(newState);
         },
         error: (err) => {
           console.error('Failed to fetch employee username:', err);
@@ -172,8 +200,7 @@ export class AuthService {
       )
       .pipe(
         tap(() => {
-          this.clearToken();
-          this.appStateService.clearState();
+          this.clearState();
         })
       );
   }

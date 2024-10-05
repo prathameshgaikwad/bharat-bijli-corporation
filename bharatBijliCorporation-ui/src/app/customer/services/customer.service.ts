@@ -4,7 +4,6 @@ import {
   InvoicesByStatusResponse,
   MonthlyUsageDetails,
   Page,
-  PendingDuesResponse,
   RecordPaymentRequest,
   Transaction,
 } from '../../shared/types/consumables.types';

@@ -4,7 +4,7 @@ import {
   InvoicesByStatusResponse,
 } from '../../shared/types/consumables.types';
 
-import { AppStateService } from '../../core/services/app-state.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../services/customer.service';
@@ -62,7 +62,7 @@ export class DynamicInvoiceMessage implements OnInit {
   selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
 
   constructor(
-    private appStateService: AppStateService,
+    private authService: AuthService,
     private customerService: CustomerService,
     private messageService: MessageService,
     private router: Router
@@ -70,10 +70,8 @@ export class DynamicInvoiceMessage implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = true;
-    this.appStateService.getUserId().subscribe((userId) => {
-      this.customerId = userId;
-      this.loadPendingDues();
-    });
+    this.customerId = this.authService.getCurrentUserId();
+    this.loadPendingDues();
     this.setButtonSeverity();
   }
 
