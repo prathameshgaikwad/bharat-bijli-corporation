@@ -45,7 +45,6 @@ public class Transaction {
     private String description = "";
 
     // TODO: Add fee field
-
     @Column(nullable = false, columnDefinition = "DECIMAL(10,2) DEFAULT 0.00")
     private BigDecimal discountByDueDate;
 
