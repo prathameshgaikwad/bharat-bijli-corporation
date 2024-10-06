@@ -23,6 +23,15 @@ public class JwtUtil {
                 .compact();
     }
 
+    public static String generateRefreshToken(String userId) {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days expiry
+                .signWith(SECRET_KEY)
+                .compact();
+    }
+
     public static Claims extractClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)

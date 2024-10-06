@@ -216,4 +216,8 @@ export class AuthService {
       `${this.EMPLOYEE_API}/${employeeId}/username`
     );
   }
+
+  refreshToken() {
+    return this.http.post(`${this.AUTH_API}/refresh`, {});
+  }
 }

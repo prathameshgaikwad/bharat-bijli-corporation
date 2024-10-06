@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
     public static final String COOKIE_NAME = "jwt-cookie";
+    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
