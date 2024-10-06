@@ -98,7 +98,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/record-payment")
-    public ResponseEntity<Transaction> recordPayment(@Valid @RequestBody RecordPaymentRequest request) {
+    public ResponseEntity<Transaction> recordPayment(@Valid @RequestBody RecordPaymentRequest request) throws Exception {
         // Fetch the customer
         var customer = customerService.getCustomer(request.getCustomerId());
 

@@ -6,6 +6,7 @@ import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.InsufficientFundsException;
 import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
@@ -101,17 +102,16 @@ public class CustomerController {
     }
 
     @PostMapping("/record-payment")
-    public ResponseEntity<Transaction> recordPayment(@Valid @RequestBody RecordPaymentRequest request) {
-        // Fetch the customer
-        var customer = customerService.getCustomer(request.getCustomerId());
+    public ResponseEntity<?> recordPayment(@Valid @RequestBody RecordPaymentRequest request) throws Exception {
+        Customer customer = customerService.getCustomer(request.getCustomerId());
+        Invoice invoice = invoiceService.getInvoice(request.getInvoiceId());
 
-        // Fetch the invoice
-        var invoice = invoiceService.getInvoice(request.getInvoiceId());
-
-        // Call the service to create the transaction
-        Transaction savedTransaction = transactionService.savePaymentByCustomer(request, customer, invoice);
-
-        return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
+        try {
+            Transaction savedTransaction = transactionService.savePaymentByCustomer(request, customer, invoice);
+            return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
+        } catch (InsufficientFundsException e) {
+            return ResponseEntity.badRequest().body(Map.of("message","Insufficient Funds"));
+        }
     }
 
     @GetMapping("/{customerId}/usage-last-year")
