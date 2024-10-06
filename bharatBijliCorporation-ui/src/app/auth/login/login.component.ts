@@ -39,7 +39,11 @@ export class LoginComponent {
   showOtpComponent: boolean = false;
   isLoading: boolean = false;
   protected loginForm = new FormGroup({
-    userId: new FormControl('', [Validators.required]),
+    userId: new FormControl('', [
+      Validators.required,
+      Validators.minLength(9),
+      Validators.maxLength(10),
+    ]),
   });
 
   constructor(
@@ -71,11 +75,19 @@ export class LoginComponent {
       },
       error: (error) => {
         this.isLoading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error.error.error,
-        });
+        if (error.status === 403) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Invalid Username',
+            detail: 'Please enter the correct username',
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.error,
+          });
+        }
       },
     });
   }
