@@ -5,20 +5,18 @@ import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatu
 import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.PersonalDetails;
-import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
 import com.prathameshShubham.bharatBijliCorporation.repositories.CustomerRepo;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -234,5 +232,11 @@ public class CustomerService {
         } else {
             throw new IllegalArgumentException("Customer not found with ID: " + updatedCustomerDetails.getId());
         }
+    }
+
+    public BigDecimal getWalletBalance(String customerId) {
+        Customer customer = customerRepo.findById(customerId)
+                .orElseThrow(() -> new UserNotFoundException("Customer not found with ID: " + customerId));
+        return customer.getWalletBalance();
     }
 }

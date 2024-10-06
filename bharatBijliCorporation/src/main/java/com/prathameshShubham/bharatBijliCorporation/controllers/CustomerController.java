@@ -118,4 +118,10 @@ public class CustomerController {
     public List<MonthlyUsageDTO> getCustomerMonthlyUsageForLastYear(@PathVariable String customerId) {
         return invoiceService.getMonthlyUsageLastYear(customerId);
     }
+
+    @GetMapping("/{customerId}/wallet-balance")
+    public ResponseEntity<Map<String,BigDecimal>> getWalletBalance(@PathVariable String customerId) {
+        BigDecimal balance = customerService.getWalletBalance(customerId);
+        return ResponseEntity.ok(Map.of("balance",balance));
+    }
 }

@@ -5,12 +5,14 @@ import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
+import { CustomerService } from '../services/customer.service';
 import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { PanelModule } from 'primeng/panel';
 import { Subject } from 'rxjs';
 import { UsageChartComponent } from './usage-chart/usage-chart.component';
+import { WalletService } from '../services/wallet.service';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -30,7 +32,7 @@ import { UsageChartComponent } from './usage-chart/usage-chart.component';
 })
 export class CustomerDashboardComponent implements OnInit, OnDestroy {
   customerId: string = '';
-  walletBalance: number = 1258.3;
+  walletBalance: number = 0.0;
   private destroy$ = new Subject<void>();
   isPendingBill: boolean;
   isOverdueBill: boolean;
@@ -38,7 +40,10 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
   overDueInvoiceStatus: InvoiceStatus = InvoiceStatus.OVERDUE;
   pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
 
-  constructor(private authService: AuthService) {
+  constructor(
+    private authService: AuthService,
+    private walletService: WalletService
+  ) {
     this.isOverdueBill = true;
     this.isPendingBill = true;
     this.isActionRequired = true;
@@ -46,6 +51,14 @@ export class CustomerDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.customerId = this.authService.getCurrentUserId();
+
+    if (this.customerId) {
+      this.walletService.loadWalletBalance(this.customerId).subscribe({
+        next: (balance) => {
+          this.walletBalance = balance;
+        },
+      });
+    }
   }
 
   onPendingInvoicesChecked(hasPending: boolean): void {

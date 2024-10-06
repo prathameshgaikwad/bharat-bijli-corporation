@@ -3,15 +3,9 @@ import { AllCustomersComponent } from './employee/all-customers/all-customers.co
 import { AuthGuard } from './core/guards/auth.guard';
 import { BulkCustComponent } from './employee/all-customers/bulk-cust/bulk-cust.component';
 import { BulkInvoiceComponent } from './employee/invoice-template/bulk-invoice/bulk-invoice.component';
-import { CustomerGuard } from './core/guards/customer.guard';
-import { EmpDashboardComponent } from './employee/emp-dashboard/emp-dashboard.component';
 import { EmpInvoicesComponent } from './employee/invoice-template/invoices-emp/invoices-emp.component';
-import { EmpSidebarComponent } from './employee/emp-sidebar/emp-sidebar.component';
-import { EmployeeGuard } from './core/guards/employee.guard';
 import { GenerateInvoicesComponent } from './employee/invoice-template/generate-invoices/generate-invoices.component';
 import { InvoiceTemplateComponent } from './employee/invoice-template/invoice-template.component';
-import { InvoicesComponent } from './customer/invoices/invoices.component';
-import { LayoutComponent } from './employee/layout/layout.component';
 import { LoginComponent } from './auth/login/login.component';
 import { PageNotFoundComponent } from './shared/components/page-not-found/page-not-found.component';
 import { Role } from './shared/types/auth.types';
