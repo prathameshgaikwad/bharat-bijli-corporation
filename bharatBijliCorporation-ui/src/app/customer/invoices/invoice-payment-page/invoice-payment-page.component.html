@@ -38,6 +38,10 @@
               {{ invoiceDetails.periodEndDate | date : "d MMM yy" }}
             </p>
             <p class="details-paragraph">
+              <span class="detailsItem">Due on:</span>
+              {{ invoiceDetails.dueDate | date : "EEE, d MMM yy" }}
+            </p>
+            <p class="details-paragraph">
               <span class="detailsItem">Consumption:</span>
               {{ invoiceDetails.unitsConsumed }} units
             </p>
