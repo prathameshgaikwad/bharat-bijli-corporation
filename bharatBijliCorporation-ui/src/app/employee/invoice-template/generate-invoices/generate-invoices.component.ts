@@ -6,8 +6,10 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AuthService } from '../../../core/services/auth.service';
+import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { Customer } from '../../../shared/types/user.types';
 import { EmployeeService } from '../../services/employee.service';
@@ -15,15 +17,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputTextModule } from 'primeng/inputtext';
-import { ToastModule } from 'primeng/toast';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { InvoiceResponse } from '../../../shared/types/consumables.types';
 import { InvoiceStatus } from '../../../shared/types/enums.types';
-import { AppStateService } from '../../../core/services/app-state.service';
-import { EmployeeService } from '../../services/employee.service';
-import { Customer } from '../../../shared/types/user.types';
-import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 export interface InvoiceCustResp {
   customer: Customer;
@@ -43,7 +40,7 @@ export interface InvoiceCustResp {
     ReactiveFormsModule,
     RouterLink,
     RouterLinkActive,
-    ButtonModule
+    ButtonModule,
   ],
   templateUrl: './generate-invoices.component.html',
   styleUrl: './generate-invoices.component.css',
