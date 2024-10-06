@@ -7,20 +7,28 @@ import {
 
 import { AuthService } from '../services/auth.service';
 import { Injectable } from '@angular/core';
+import { Role } from '../../shared/types/auth.types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EmployeeGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authService.getCurrentUserRole() === 'EMPLOYEE') return true;
+    const requiredRole = next.data['role'] as Role;
+    const currentRole = this.authService.getCurrentUserRole() as Role;
 
-    this.router.navigate(['/login']);
+    if (currentRole === requiredRole) {
+      return true;
+    }
+
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: state.url },
+    });
     return false;
   }
 }
