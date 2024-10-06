@@ -1,6 +1,5 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
-import com.prathameshShubham.bharatBijliCorporation.config.CookieAuthenticationFilter;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidIdFormatException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
@@ -29,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.prathameshShubham.bharatBijliCorporation.constants.SecurityConstants.*;
 
 @RestController
 @RequestMapping("auth")
@@ -92,19 +93,18 @@ public class AuthController {
             );
         }
 
-        // Generate a JWT token for the user with role
+        otpService.invalidateOtp(loginRequest.getUserId());
+
         String token = JwtUtil.generateToken(loginRequest.getUserId(), role);
         String refreshToken = JwtUtil.generateRefreshToken(loginRequest.getUserId());
-        otpService.invalidateOtp(loginRequest.getUserId());
-        return sendResponseWithHttpOnlyJwtCookie(token, refreshToken, httpServletResponse, loginRequest.getUserId());
-//        return sendResponseWithJwt(token, httpServletResponse);
+        return sendResponseWithCookies(token, refreshToken, httpServletResponse, loginRequest.getUserId());
     }
 
     @GetMapping("/validate-token")
     public ResponseEntity<?> validateToken(HttpServletRequest request) {
         try {
             Cookie[] cookies = request.getCookies();
-            String jwtToken = extractTokenFromCookies(cookies, CookieAuthenticationFilter.COOKIE_NAME);
+            String jwtToken = JwtUtil.extractTokenFromCookies(cookies, JWT_COOKIE_NAME);
 
             if (jwtToken == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No token found");
@@ -129,25 +129,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error validating token");
         }
     }
-    private String extractTokenFromCookies(Cookie[] cookies, String type) {
-        if(cookies != null) {
-            for(Cookie cookie : cookies) {
-                if(cookie.getName().equals(type)) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
+
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = extractTokenFromCookies(request.getCookies(), CookieAuthenticationFilter.REFRESH_TOKEN_COOKIE_NAME);
+        String refreshToken = JwtUtil.extractTokenFromCookies(request.getCookies(), REFRESH_TOKEN_COOKIE_NAME);
 
         if (JwtUtil.validateToken(refreshToken, JwtUtil.extractClaims(refreshToken).getSubject())) {
             String userId = JwtUtil.extractClaims(refreshToken).getSubject();
             String newAccessToken = JwtUtil.generateToken(userId, role);
-            Cookie newJwtCookie = getHttpOnlyJwtCookie(newAccessToken);
+            Cookie newJwtCookie = JwtUtil.getHttpOnlyJwtCookie(newAccessToken);
             response.addCookie(newJwtCookie);
             return ResponseEntity.ok(Map.of("message", "Token refreshed successfully!"));
         } else {
@@ -179,8 +170,8 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse httpServletResponse) {
-        Cookie invalidatedJwtCookie = getInvalidatedJwtCookie();
-        Cookie invalidatedRefreshTokenCookie = getInvalidatedRefreshTokenCookie();
+        Cookie invalidatedJwtCookie = JwtUtil.getInvalidatedJwtCookie();
+        Cookie invalidatedRefreshTokenCookie = JwtUtil.getInvalidatedRefreshTokenCookie();
         httpServletResponse.addCookie(invalidatedJwtCookie);
         httpServletResponse.addCookie(invalidatedRefreshTokenCookie);
         return ResponseEntity.ok(Map.of(
@@ -214,36 +205,6 @@ public class AuthController {
             return getUserWithCustomerRole(id);
         else
             throw new IllegalArgumentException("Invalid User ID");
-    }
-
-    private Cookie getHttpOnlyJwtCookie(String token) {
-        Cookie jwtCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME,token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");          // make accessible across entire app
-        jwtCookie.setMaxAge(60*60);      // 1 hour expiry
-        return jwtCookie;
-    }
-
-    private Cookie getHttpOnlyRefreshCookie(String refreshToken) {
-        Cookie refreshCookie = new Cookie(CookieAuthenticationFilter.REFRESH_TOKEN_COOKIE_NAME, refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setMaxAge(60*60*24*7);  // 7 days
-       return refreshCookie;
-    }
-
-    private Cookie getInvalidatedJwtCookie() {
-        Cookie jwtCookie = new Cookie(CookieAuthenticationFilter.COOKIE_NAME, null);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");         // Ensure cookie is for entire app
-        jwtCookie.setMaxAge(0);         // Set max age to 0 to delete the cookie
-        return jwtCookie;
-    }
-
-    private Cookie getInvalidatedRefreshTokenCookie() {
-        Cookie cookie = new Cookie(CookieAuthenticationFilter.REFRESH_TOKEN_COOKIE_NAME, null);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0); // Expire the cookie immediately
-        return cookie;
     }
 
     private Employee getUserWithEmployeeRole(String id) {
@@ -282,14 +243,14 @@ public class AuthController {
         return customer.getPersonalDetails().getEmailId();
     }
 
-    private ResponseEntity<Map<String, String>> sendResponseWithHttpOnlyJwtCookie(
+    private ResponseEntity<Map<String, String>> sendResponseWithCookies(
             String token,
             String refreshToken,
             HttpServletResponse httpServletResponse,
             String userId
     ) {
-        Cookie jwtCookie = getHttpOnlyJwtCookie(token);
-        Cookie refreshCookie = getHttpOnlyRefreshCookie(refreshToken);
+        Cookie jwtCookie = JwtUtil.getHttpOnlyJwtCookie(token);
+        Cookie refreshCookie = JwtUtil.getHttpOnlyRefreshCookie(refreshToken);
 
         httpServletResponse.addCookie(refreshCookie);
         httpServletResponse.addCookie(jwtCookie);
@@ -302,15 +263,4 @@ public class AuthController {
         );
     }
 
-    private ResponseEntity<Map<String, String>> sendResponseWithJwt(
-            String token,
-            HttpServletResponse httpServletResponse
-    ) {
-        return ResponseEntity.ok(
-                Map.of(
-                        "message","Login successful",
-                        "token",token
-                )
-        );
-    }
 }

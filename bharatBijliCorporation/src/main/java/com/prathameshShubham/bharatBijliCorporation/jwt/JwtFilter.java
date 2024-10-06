@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.jwt;
 
 import com.prathameshShubham.bharatBijliCorporation.config.CookieAuthenticationFilter;
+import com.prathameshShubham.bharatBijliCorporation.constants.SecurityConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static com.prathameshShubham.bharatBijliCorporation.constants.SecurityConstants.JWT_COOKIE_NAME;
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -30,7 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String jwtToken = extractTokenFromCookies(request.getCookies());
-//        String jwtToken = extractTokenFromAuthorizationHeader(request.getHeader("Authorization"));
+//        String jwtToken = extractTokenFromAuthHeader(request.getHeader("Authorization"));
 
         String userId = JwtUtil.extractClaims(jwtToken).getSubject();  // Extract user ID from token
 
@@ -51,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private String extractTokenFromCookies(Cookie[] cookies) {
         if(cookies != null) {
             for(Cookie cookie : cookies) {
-                if(cookie.getName().equals(CookieAuthenticationFilter.COOKIE_NAME)) {
+                if(cookie.getName().equals(JWT_COOKIE_NAME)) {
                    return cookie.getValue();
                 }
             }
@@ -59,7 +62,7 @@ public class JwtFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private String extractTokenFromAuthorizationHeader(String authorizationHeader) {
+    private String extractTokenFromAuthHeader(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7);
         }
