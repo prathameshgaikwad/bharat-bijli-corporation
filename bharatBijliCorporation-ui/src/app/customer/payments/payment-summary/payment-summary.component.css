@@ -18,6 +18,38 @@
   font-weight: 700;
 }
 
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  border: 2px dashed #979797;
+  padding: 2rem;
+  border-radius: 10px;
+
+  button {
+    font-weight: bold;
+    scale: 1.5;
+    padding: 0;
+    outline: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  h2 {
+    padding: 0;
+    margin-top: 2rem;
+    letter-spacing: -0.03rem;
+  }
+
+  p {
+    padding: 0;
+    margin: 0;
+  }
+}
+
 :host ::ng-deep .p-divider.p-divider-horizontal:before {
   border-top: 2px dashed #979797;
 }

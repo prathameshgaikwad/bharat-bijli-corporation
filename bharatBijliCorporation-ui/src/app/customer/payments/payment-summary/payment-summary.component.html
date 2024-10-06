@@ -1,48 +1,126 @@
 <p-dialog
-  header="Transaction Details"
+  [header]="
+    isPaymentPageReferrer ? 'Transaction Complete' : 'Transaction Details'
+  "
   [modal]="true"
   [(visible)]="isVisible"
-  [style]="{ width: '25rem' }"
+  [style]="{ width: isPaymentPageReferrer ? '35rem' : '28rem' }"
+  [closable]="!isPaymentPageReferrer"
 >
-  <div class="container">
-    <p>
-      Reference:
-      <span class="value">{{ transactionDetails.transactionReference }}</span>
-    </p>
-    <p>
-      Related Bill:
-      <span class="value">{{ transactionDetails.invoice.id }}</span>
-    </p>
-    <p>
-      Related Bill's Due Date:
-      <span class="value">
-        {{ transactionDetails.invoice.dueDate | date : "EEE, d MMM yy" }}</span
-      >
-    </p>
-    <p>
-      Paid on:
-      <span class="value">
-        {{ transactionDetails.transactionDate | date : "EEE, d MMM yy" }}
-      </span>
-    </p>
-    <p-divider type="dashed" align="center">
-      <p-tag
-        [icon]="getIcon(transactionDetails.transactionStatus)"
-        [severity]="getSeverity(transactionDetails.transactionStatus)"
-        [value]="transactionDetails.transactionStatus"
-      ></p-tag
-    ></p-divider>
-    <p>
-      Payment Method:
-      <span class="value">
-        {{ transactionDetails.transactionMethod }}
-      </span>
-    </p>
-    <p class="subtitle bold">
-      Total Amount Paid:
-      <span class="value">{{
-        transactionDetails.amount | currency : "INR" : "symbol" : "1.2-2"
-      }}</span>
-    </p>
+  <div class="confirmation-container" *ngIf="isPaymentPageReferrer">
+    <button
+      pButton
+      size="large"
+      [severity]="getSeverity(transactionDetails.transactionStatus)"
+      text="true"
+      [icon]="getIcon(transactionDetails.transactionStatus)"
+    ></button>
+    <h2>We've received your payment</h2>
+    <p>with the below details</p>
   </div>
+  <p-accordion>
+    <p-accordionTab
+      header="Transaction Details"
+      *ngIf="isPaymentPageReferrer; else content"
+    >
+      <div class="container">
+        <p>
+          Reference:
+          <span class="value">{{
+            transactionDetails.transactionReference
+          }}</span>
+        </p>
+        <p>
+          Related Bill:
+          <span class="value">{{ transactionDetails.invoice.id }}</span>
+        </p>
+        <p>
+          Related Bill's Due Date:
+          <span class="value">
+            {{
+              transactionDetails.invoice.dueDate | date : "EEE, d MMM yy"
+            }}</span
+          >
+        </p>
+        <p>
+          Paid on:
+          <span class="value">
+            {{ transactionDetails.transactionDate | date : "EEE, d MMM yy" }}
+          </span>
+        </p>
+        <p-divider type="dashed" align="center">
+          <p-tag
+            [icon]="getIcon(transactionDetails.transactionStatus)"
+            [severity]="getSeverity(transactionDetails.transactionStatus)"
+            [value]="transactionDetails.transactionStatus"
+          ></p-tag
+        ></p-divider>
+        <p>
+          Payment Method:
+          <span class="value">
+            {{ transactionDetails.transactionMethod }}
+          </span>
+        </p>
+        <p class="subtitle bold">
+          Total Amount Paid:
+          <span class="value">{{
+            transactionDetails.amount | currency : "INR" : "symbol" : "1.2-2"
+          }}</span>
+        </p>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+  <ng-template #content>
+    <div class="container">
+      <p>
+        Reference:
+        <span class="value">{{ transactionDetails.transactionReference }}</span>
+      </p>
+      <p>
+        Related Bill:
+        <span class="value">{{ transactionDetails.invoice.id }}</span>
+      </p>
+      <p>
+        Related Bill's Due Date:
+        <span class="value">
+          {{
+            transactionDetails.invoice.dueDate | date : "EEE, d MMM yy"
+          }}</span
+        >
+      </p>
+      <p>
+        Paid on:
+        <span class="value">
+          {{ transactionDetails.transactionDate | date : "EEE, d MMM yy" }}
+        </span>
+      </p>
+      <p-divider type="dashed" align="center">
+        <p-tag
+          [icon]="getIcon(transactionDetails.transactionStatus)"
+          [severity]="getSeverity(transactionDetails.transactionStatus)"
+          [value]="transactionDetails.transactionStatus"
+        ></p-tag
+      ></p-divider>
+      <p>
+        Payment Method:
+        <span class="value">
+          {{ transactionDetails.transactionMethod }}
+        </span>
+      </p>
+      <p class="subtitle bold">
+        Total Amount Paid:
+        <span class="value">{{
+          transactionDetails.amount | currency : "INR" : "symbol" : "1.2-2"
+        }}</span>
+      </p>
+    </div>
+  </ng-template>
+  <button
+    pButton
+    (click)="onClick()"
+    *ngIf="isPaymentPageReferrer"
+    style="display: block; width: 100%; margin-top: 2rem; text-align: center"
+  >
+    Okay
+  </button>
 </p-dialog>
