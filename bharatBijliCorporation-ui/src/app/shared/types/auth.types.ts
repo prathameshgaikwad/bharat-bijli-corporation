@@ -23,3 +23,8 @@ export interface RegistrationResponse {
 export interface UsernameResponse {
   username: string;
 }
+
+export enum Role {
+  CUSTOMER = 'CUSTOMER',
+  EMPLOYEE = 'EMPLOYEE',
+}
