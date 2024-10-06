@@ -52,3 +52,8 @@
   </div>
 </form>
 <p-toast></p-toast>
+<app-payment-summary
+  [isVisible]="isPaymentSummary"
+  [transactionDetails]="completedTransaction"
+  [isPaymentPageReferrer]="true"
+></app-payment-summary>

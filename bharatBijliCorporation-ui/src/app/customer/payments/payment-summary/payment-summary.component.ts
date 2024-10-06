@@ -1,22 +1,40 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
+import { AccordionModule } from 'primeng/accordion';
+import { ButtonModule } from 'primeng/button';
 import { DEFAULT_TRANSACTION } from '../../../core/helpers/constants';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
+import { Router } from '@angular/router';
 import { TagModule } from 'primeng/tag';
 import { Transaction } from '../../../shared/types/consumables.types';
 
 @Component({
   selector: 'app-payment-summary',
   standalone: true,
-  imports: [DialogModule, TagModule, CommonModule, DatePipe, DividerModule],
+  imports: [
+    DialogModule,
+    TagModule,
+    CommonModule,
+    DatePipe,
+    DividerModule,
+    ButtonModule,
+    AccordionModule,
+  ],
   templateUrl: './payment-summary.component.html',
   styleUrl: './payment-summary.component.css',
 })
 export class PaymentSummaryComponent {
   @Input({}) isVisible: boolean = false;
+  @Input({}) isPaymentPageReferrer: boolean = false;
   @Input({}) transactionDetails: Transaction = DEFAULT_TRANSACTION;
+
+  constructor(private router: Router) {}
+
+  onClick() {
+    this.router.navigate(['/customer/invoices']);
+  }
 
   getSeverity(status: string) {
     switch (status) {

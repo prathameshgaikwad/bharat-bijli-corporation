@@ -10,6 +10,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import {
   DEFAULT_BILLING_DETAILS,
   DEFAULT_PAYMENT_DETAILS,
+  DEFAULT_TRANSACTION,
 } from '../../../../core/helpers/constants';
 import {
   FormBuilder,
@@ -22,11 +23,13 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
 import { CustomerService } from '../../../services/customer.service';
+import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { PasswordModule } from 'primeng/password';
+import { PaymentSummaryComponent } from '../../../payments/payment-summary/payment-summary.component';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
@@ -42,6 +45,8 @@ import { ToastModule } from 'primeng/toast';
     PasswordModule,
     CalendarModule,
     ToastModule,
+    DialogModule,
+    PaymentSummaryComponent,
   ],
   templateUrl: './card-payment.component.html',
   styleUrl: './card-payment.component.css',
@@ -54,6 +59,8 @@ export class CardPaymentComponent implements OnInit {
   @Input({ required: true }) paymentDetails: PaymentDetails;
   cardDetails: FormGroup;
   minDate: Date;
+  isPaymentSummary: boolean = false;
+  completedTransaction: Transaction = DEFAULT_TRANSACTION;
 
   constructor(
     private fb: FormBuilder,
@@ -102,11 +109,8 @@ export class CardPaymentComponent implements OnInit {
 
       this.customerService.recordPayment(paymentRequest).subscribe({
         next: (transaction: Transaction) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Payment Successful',
-            detail: `Payment has been recorded successfully.`,
-          });
+          this.completedTransaction = transaction;
+          this.isPaymentSummary = true;
         },
         error: (error) => {
           this.messageService.add({
