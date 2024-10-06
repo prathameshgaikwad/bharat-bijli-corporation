@@ -41,6 +41,8 @@ import { PanelModule } from 'primeng/panel';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
 import { TransactionMethod } from '../../../shared/types/enums.types';
+import { WalletPaymentComponent } from './wallet-payment/wallet-payment.component';
+import { WalletService } from '../../services/wallet.service';
 import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
 
 @Component({
@@ -62,6 +64,7 @@ import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
     TooltipModule,
     CardPaymentComponent,
     CashPaymentComponent,
+    WalletPaymentComponent,
   ],
   templateUrl: './invoice-payment-page.component.html',
   styleUrl: './invoice-payment-page.component.css',
@@ -72,6 +75,7 @@ export class InvoicePaymentPageComponent implements OnInit {
   customerId!: string;
   paymentOptions: any[] = CUSTOMER_PAYMENT_OPTIONS;
 
+  walletBalance: number;
   customerDetails: PersonalDetails;
   invoiceDetails: Invoice;
   paymentDetails: PaymentDetails;
@@ -82,6 +86,7 @@ export class InvoicePaymentPageComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private customerService: CustomerService,
+    private walletService: WalletService,
     private activatedRoute: ActivatedRoute
   ) {
     this.invoiceDetails = DEFAULT_INVOICE;
@@ -90,6 +95,7 @@ export class InvoicePaymentPageComponent implements OnInit {
     this.billingDetails = DEFAULT_BILLING_DETAILS;
     this.paymentMethodSelectionDetails =
       DEFAULT_PAYMENT_METHOD_SELECTION_DETAILS;
+    this.walletBalance = 0;
 
     this.paymentMethodForm = this.fb.group({
       paymentMethod: ['', Validators.required],
@@ -103,6 +109,7 @@ export class InvoicePaymentPageComponent implements OnInit {
       this.invoiceId = params['invoiceId'];
       if (this.customerId) {
         this.fetchCustomerDetails(this.customerId);
+        this.fetchWalletBalance(this.customerId);
       }
       if (this.invoiceId) {
         this.fetchInvoiceDetails(this.customerId, this.invoiceId);
@@ -120,6 +127,14 @@ export class InvoicePaymentPageComponent implements OnInit {
     this.customerId = this.authService.getCurrentUserId();
     this.paymentMethodForm.patchValue({
       customerId: this.customerId,
+    });
+  }
+
+  private fetchWalletBalance(customerId: string): void {
+    this.walletService.loadWalletBalance(customerId).subscribe({
+      next: (balance) => {
+        this.walletBalance = balance;
+      },
     });
   }
 

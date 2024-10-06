@@ -4,6 +4,7 @@ import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionMethod;
 import com.prathameshShubham.bharatBijliCorporation.enums.TransactionStatus;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.InsufficientFundsException;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
@@ -36,7 +37,11 @@ public class TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    public Transaction savePaymentByCustomer(RecordPaymentRequest request, Customer customer, Invoice invoice) {
+    public Transaction savePaymentByCustomer(RecordPaymentRequest request, Customer customer, Invoice invoice) throws Exception {
+        if(request.getPaymentMethod().equals(TransactionMethod.WALLET)) {
+            customerService.updateBalance(customer.getId(), request.getTotalAmount());
+        }
+
         Transaction transaction = new Transaction();
         transaction.setCustomer(customer);
         transaction.setInvoice(invoice);

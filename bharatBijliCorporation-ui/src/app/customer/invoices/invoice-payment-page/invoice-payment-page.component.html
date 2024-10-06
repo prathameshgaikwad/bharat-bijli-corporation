@@ -77,6 +77,14 @@
             [billingDetails]="billingDetails"
             [paymentDetails]="paymentDetails"
           ></app-card-payment>
+          <app-wallet-payment
+            *ngIf="paymentMethodSelectionDetails.isWalletSelected"
+            [customerId]="customerId"
+            [invoiceId]="invoiceId"
+            [billingDetails]="billingDetails"
+            [paymentDetails]="paymentDetails"
+            [walletBalance]="walletBalance"
+          ></app-wallet-payment>
         </form>
       </div>
       <div class="checkout section">

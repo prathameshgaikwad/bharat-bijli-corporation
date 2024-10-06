@@ -239,4 +239,20 @@ public class CustomerService {
                 .orElseThrow(() -> new UserNotFoundException("Customer not found with ID: " + customerId));
         return customer.getWalletBalance();
     }
+
+    public void updateBalance(String customerId, BigDecimal transactionAmount) throws Exception {
+        Customer customer = customerRepo.findById(customerId)
+                .orElseThrow(() -> new UserNotFoundException("Customer not found with ID:" + customerId));
+
+        BigDecimal currentBalance = customer.getWalletBalance();
+        BigDecimal newBalance = currentBalance.subtract(transactionAmount);
+
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InsufficientFundsException();
+        }
+
+        customer.setWalletBalance(newBalance);
+        customerRepo.save(customer);
+
+    }
 }

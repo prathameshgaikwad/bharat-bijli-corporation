@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-top: 1rem;
+  width: 100%;
+  padding: 2rem;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+
+  h3 {
+    width: 100%;
+    display: inline-flex;
+
+    span {
+      margin-left: auto;
+    }
+  }
+
+  button {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-weight: bold;
+  }
+}

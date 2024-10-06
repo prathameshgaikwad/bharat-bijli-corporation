@@ -1,0 +1,26 @@
+<div class="container">
+  <h3>
+    Wallet Balance:
+    <span [ngStyle]="{ color: isSufficientBalance ? '#22c55e' : '#ef4444' }">{{
+      this.walletBalance | currency : "INR" : "symbol" : "1.2-2"
+    }}</span>
+  </h3>
+  <button
+    pButton
+    [severity]="isSufficientBalance ? 'primary' : 'danger'"
+    [disabled]="!isSufficientBalance"
+    (click)="onMakePayment()"
+  >
+    {{ isSufficientBalance ? "Pay Now" : "Not Enough Balance" }}
+    <i
+      [class]="
+        isSufficientBalance ? 'pi pi-arrow-right' : 'pi pi-exclamation-circle'
+      "
+    ></i>
+  </button>
+</div>
+<app-payment-summary
+  [isVisible]="isPaymentSummary"
+  [transactionDetails]="completedTransaction"
+  [isPaymentPageReferrer]="true"
+></app-payment-summary>
