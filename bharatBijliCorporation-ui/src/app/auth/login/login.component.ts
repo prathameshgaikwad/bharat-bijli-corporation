@@ -1,3 +1,4 @@
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,7 +11,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { CompanyOverviewComponent } from '../../shared/components/company-overview/company-overview.component';
-import { Component } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { OtpInputComponent } from '../../shared/components/otp-input/otp-input.component';
@@ -35,9 +35,16 @@ import { ToastModule } from 'primeng/toast';
   styleUrl: './login.component.css',
   providers: [MessageService],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
+  private static readonly maxResends = 3;
+  static resendCount: number = 0;
+
   showOtpComponent: boolean = false;
   isLoading: boolean = false;
+  isResendButtonDisabled: boolean = true;
+  isResendVisible: boolean = true;
+  timeLeft: number = 30;
+  countdownInterval: any;
   protected loginForm = new FormGroup({
     userId: new FormControl('', [
       Validators.required,
@@ -59,10 +66,33 @@ export class LoginComponent {
     this.showOtpComponent = true;
   }
 
-  onSubmit() {
+  startCountdown() {
+    this.isResendButtonDisabled = true;
+    this.timeLeft = 30;
+    this.countdownInterval = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        clearInterval(this.countdownInterval);
+        this.isResendButtonDisabled = false;
+      }
+    }, 1000);
+  }
+
+  onResend() {
+    LoginComponent.resendCount++;
+    this.submitOtpRequest();
+  }
+
+  handleResendButtonVisibility() {
+    if (LoginComponent.resendCount >= LoginComponent.maxResends) {
+      this.isResendVisible = false;
+    }
+  }
+
+  submitOtpRequest() {
     this.isLoading = true;
     const userId = this.loginForm.get('userId')?.value || '';
-
     this.authService.getOtp(userId).subscribe({
       next: (response) => {
         this.isLoading = false;
@@ -72,6 +102,9 @@ export class LoginComponent {
           summary: 'Success',
           detail: `OTP received:  ${response.otp}`,
         });
+
+        this.startCountdown();
+        this.handleResendButtonVisibility();
       },
       error: (error) => {
         this.isLoading = false;
@@ -90,5 +123,11 @@ export class LoginComponent {
         }
       },
     });
+  }
+
+  ngOnDestroy() {
+    if (this.countdownInterval) {
+      clearInterval(this.countdownInterval);
+    }
   }
 }

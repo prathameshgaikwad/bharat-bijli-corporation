@@ -14,7 +14,7 @@
     <form
       *ngIf="!showOtpComponent"
       [formGroup]="loginForm"
-      (ngSubmit)="onSubmit()"
+      (ngSubmit)="submitOtpRequest()"
     >
       <input
         id="userId"
@@ -42,7 +42,28 @@
       <p>Don't have an account?</p>
       <a routerLink="/register">Sign Up</a>
       } @else {
-      <p>For your security, do not share this OTP with anyone.</p>
+      <div
+        style="
+          display: inline-flex;
+          flex-direction: column;
+          align-items: center;
+        "
+      >
+        <p-button
+          *ngIf="isResendVisible"
+          [text]="true"
+          [label]="
+            isResendButtonDisabled
+              ? 'Resend OTP in (' + timeLeft + 's)'
+              : 'Resend OTP'
+          "
+          size="small"
+          [severity]="isResendButtonDisabled ? 'secondary' : 'primary'"
+          [disabled]="isResendButtonDisabled"
+          (onClick)="onResend()"
+        ></p-button>
+        <p>For your security, do not share this OTP with anyone.</p>
+      </div>
       }
     </span>
   </div>
