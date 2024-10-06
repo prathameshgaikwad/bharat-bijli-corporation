@@ -7,11 +7,11 @@ import {
   RecordPaymentRequest,
   Transaction,
 } from '../../shared/types/consumables.types';
+import { Observable, map } from 'rxjs';
 
 import { Customer } from '../../shared/types/user.types';
 import { Injectable } from '@angular/core';
 import { InvoiceStatus } from '../../shared/types/enums.types';
-import { Observable } from 'rxjs';
 import { UsernameResponse } from '../../shared/types/auth.types';
 
 @Injectable({
@@ -88,5 +88,12 @@ export class CustomerService {
   getCustomerUsername(customerId: string): Observable<UsernameResponse> {
     const url = `${this.baseUrl}/${customerId}/username`;
     return this.httpClient.get<UsernameResponse>(url);
+  }
+
+  getWalletBalance(customerId: string): Observable<number> {
+    const url = `${this.baseUrl}/${customerId}/wallet-balance`;
+    return this.httpClient
+      .get<{ balance: number }>(url)
+      .pipe(map((response) => response.balance));
   }
 }
