@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.prathameshShubham.bharatBijliCorporation.constants.SecurityConstants.*;
+
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
-    public static final String COOKIE_NAME = "jwt-cookie";
-    public static final String REFRESH_TOKEN_COOKIE_NAME = "refresh-token";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Optional<Cookie> cookieAuth = Stream.of(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
-                .filter(cookie -> COOKIE_NAME.equals(cookie.getName()))
+                .filter(cookie -> cookie.getName().equals(JWT_COOKIE_NAME))
                 .findFirst();
 
         cookieAuth.ifPresent(cookie -> SecurityContextHolder.getContext().setAuthentication(new PreAuthenticatedAuthenticationToken(cookie.getValue(), null)));
