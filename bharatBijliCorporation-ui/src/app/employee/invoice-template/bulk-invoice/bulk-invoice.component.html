@@ -1,5 +1,16 @@
+<p-dialog [(visible)] = "errorBox">
+  <div class="error-container">
+    <h3>These records conflict:</h3>
+    <ul>
+      <li *ngFor="let item of errorLogs">
+        {{ item }}
+      </li>
+    </ul>
+  </div>
+</p-dialog>
 <div class="card">
-  <p-messages [(value)]="message" [enableService]="true" />
+  <h1 class="title">Add CSV Data for Invoice Generation</h1>
+  <p-messages [(value)]="message" [enableService]="true"></p-messages>
   <div class="uploader-container">
     <div class="csv-upload" style="align-items: center">
       <label for="csv-file" [ngClass]="{ pulse: uploadLabel }">{{
@@ -19,7 +30,7 @@
         (onClick)="addToDB()"
         label="SUBMIT"
         severity="info"
-        [style]="{ width: '350px' }"
+        [style]="{ width: '100%' }"
       />
     </div>
   </div>
@@ -29,7 +40,7 @@
     [paginator]="true"
     [rows]="10"
     *ngIf="csvData.length > 0"
-    styleClass="p-datatable-striped  p-datatable-lg p-datatable-gridlines"
+    styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
     selectionMode="single"
   >
     <ng-template pTemplate="header">
@@ -38,14 +49,14 @@
         <th>Due Date</th>
         <th>Duration</th>
         <th>Tariff</th>
-        <th>unitsConsumed</th>
+        <th>Units Consumed</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-rowData>
       <tr>
         <td>{{ rowData.customerId }}</td>
         <td>{{ rowData.dueDate }}</td>
-        <td>{{ rowData.periodEndDate }} - {{ rowData.periodEndDate }}</td>
+        <td>{{ rowData.periodStartDate }} - {{ rowData.periodEndDate }}</td>
         <td>{{ rowData.tariff }}</td>
         <td>{{ rowData.unitsConsumed }}</td>
       </tr>

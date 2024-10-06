@@ -7,7 +7,7 @@
   (onHide)="hideCustomer()"
 >
   <div class="container">
-    <form #customerForm="ngForm">
+    <form #customerForm="ngForm" novalidate>
       <div class="form-group">
         <label for="firstName">First Name</label>
         <input
@@ -17,7 +17,24 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.firstName"
           name="firstName"
           required
+          minlength="2"
+          maxlength="50"
+          #firstName="ngModel"
+          class="form-control"
         />
+        <div
+          *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+        >
+          <small *ngIf="firstName.errors?.['required']" class="text-danger"
+            >First Name is required.</small
+          >
+          <small *ngIf="firstName.errors?.['minlength']" class="text-danger"
+            >First Name must be at least 2 characters long.</small
+          >
+          <small *ngIf="firstName.errors?.['maxlength']" class="text-danger"
+            >First Name cannot be longer than 50 characters.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -29,7 +46,22 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.lastName"
           name="lastName"
           required
+          minlength="2"
+          maxlength="50"
+          #lastName="ngModel"
+          class="form-control"
         />
+        <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)">
+          <small *ngIf="lastName.errors?.['required']" class="text-danger"
+            >Last Name is required.</small
+          >
+          <small *ngIf="lastName.errors?.['minlength']" class="text-danger"
+            >Last Name must be at least 2 characters long.</small
+          >
+          <small *ngIf="lastName.errors?.['maxlength']" class="text-danger"
+            >Last Name cannot be longer than 50 characters.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -41,7 +73,18 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.emailId"
           name="emailId"
           required
+          email
+          #emailId="ngModel"
+          class="form-control"
         />
+        <div *ngIf="emailId.invalid && (emailId.dirty || emailId.touched)">
+          <small *ngIf="emailId.errors?.['required']" class="text-danger"
+            >Email is required.</small
+          >
+          <small *ngIf="emailId.errors?.['email']" class="text-danger"
+            >Invalid email format.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -53,7 +96,22 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.phoneNumber"
           name="phoneNumber"
           required
+          pattern="^[0-9]{10}$"
+          #phoneNumber="ngModel"
+          class="form-control"
         />
+        <div
+          *ngIf="
+            phoneNumber.invalid && (phoneNumber.dirty || phoneNumber.touched)
+          "
+        >
+          <small *ngIf="phoneNumber.errors?.['required']" class="text-danger"
+            >Phone number is required.</small
+          >
+          <small *ngIf="phoneNumber.errors?.['pattern']" class="text-danger"
+            >Phone number must be a 10-digit number.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -65,7 +123,22 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.address"
           name="address"
           required
+          minlength="5"
+          maxlength="100"
+          #address="ngModel"
+          class="form-control"
         />
+        <div *ngIf="address.invalid && (address.dirty || address.touched)">
+          <small *ngIf="address.errors?.['required']" class="text-danger"
+            >Address is required.</small
+          >
+          <small *ngIf="address.errors?.['minlength']" class="text-danger"
+            >Address must be at least 5 characters long.</small
+          >
+          <small *ngIf="address.errors?.['maxlength']" class="text-danger"
+            >Address cannot be longer than 100 characters.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -77,7 +150,18 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.city"
           name="city"
           required
+          minlength="2"
+          #city="ngModel"
+          class="form-control"
         />
+        <div *ngIf="city.invalid && (city.dirty || city.touched)">
+          <small *ngIf="city.errors?.['required']" class="text-danger"
+            >City is required.</small
+          >
+          <small *ngIf="city.errors?.['minlength']" class="text-danger"
+            >City must be at least 2 characters long.</small
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -89,23 +173,34 @@
           [(ngModel)]="selectedCustomerDetails.personalDetails.pincode"
           name="pincode"
           required
+          pattern="^[1-9][0-9]{5}$"
+          #pincode="ngModel"
+          class="form-control"
         />
+        <div *ngIf="pincode.invalid && (pincode.dirty || pincode.touched)">
+          <small *ngIf="pincode.errors?.['required']" class="text-danger"
+            >PinCode is required.</small
+          >
+          <small *ngIf="pincode.errors?.['pattern']" class="text-danger"
+            >PinCode must be a 6-digit number.</small
+          >
+        </div>
       </div>
+
       <div class="form-actions">
-        <p-inputGroupAddon (click)="onSearch()">
-          <button
-            pButton
-            label="Save"
-            (click)="saveCustomerDetails()"
-            [disabled]="!customerForm.form.valid"
-          ></button>
-          <button
-            pButton
-            label="Cancel"
-            class="p-button-secondary"
-            (click)="hideCustomer()"
-          ></button>
-        </p-inputGroupAddon>
+        <button
+          pButton
+          label="Save"
+          (click)="saveCustomerDetails()"
+          [disabled]="!customerForm.form.valid"
+          class="p-button-success"
+        ></button>
+        <button
+          pButton
+          label="Cancel"
+          class="p-button-secondary"
+          (click)="hideCustomer()"
+        ></button>
       </div>
     </form>
   </div>
@@ -138,10 +233,14 @@
   [(selection)]="selectedCustomerDetails"
   (onRowSelect)="showCustomer($event.data)"
   (onRowUnselect)="hideCustomer()"
+  (onSort)="onSort($event)"
 >
   <ng-template pTemplate="header">
     <tr>
-      <th>Customer ID</th>
+      <th pSortableColumn="id">
+        Customer ID
+        <p-sortIcon field="id"></p-sortIcon>
+      </th>
       <th>Customer</th>
       <th>Address</th>
     </tr>

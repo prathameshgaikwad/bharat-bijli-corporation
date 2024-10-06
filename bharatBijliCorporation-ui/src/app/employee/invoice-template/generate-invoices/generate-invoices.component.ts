@@ -21,6 +21,31 @@ import { InvoiceResponse } from '../../../shared/types/consumables.types';
 import { InvoiceStatus } from '../../../shared/types/enums.types';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
+export function dateRangeValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: boolean } | null => {
+    const startDate = control.get('periodStartDate')?.value;
+    const endDate = control.get('periodEndDate')?.value;
+    const dueDate = control.get('dueDate')?.value;
+
+    if (startDate && endDate && dueDate) {
+      const isEndDateGreaterThanStartDate = new Date(endDate) > new Date(startDate);
+      const isDueDateGreaterThanEndDate = new Date(dueDate) > new Date(endDate);
+
+      if (!isEndDateGreaterThanStartDate) {
+        return { endDateBeforeStartDate: true };
+      }
+
+      if (!isDueDateGreaterThanEndDate) {
+        return { dueDateBeforeEndDate: true };
+      }
+    }
+
+    return null; // No errors
+  };
+}
 
 export interface InvoiceCustResp {
   customer: Customer;
@@ -41,6 +66,7 @@ export interface InvoiceCustResp {
     RouterLink,
     RouterLinkActive,
     ButtonModule,
+    CommonModule
   ],
   templateUrl: './generate-invoices.component.html',
   styleUrl: './generate-invoices.component.css',
@@ -62,7 +88,7 @@ export class GenerateInvoicesComponent implements OnInit {
       Validators.required,
       Validators.pattern('^[a-zA-Z0-9]{5,}$'),
     ]),
-  });
+  },{ validators: dateRangeValidator() });
 
   constructor(
     private authService: AuthService,

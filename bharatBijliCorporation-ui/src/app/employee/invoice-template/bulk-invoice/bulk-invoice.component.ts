@@ -6,6 +6,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MessagesModule } from 'primeng/messages';
 import { ToastModule } from 'primeng/toast';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-bulk-invoice',
@@ -16,7 +17,8 @@ import { TableModule } from 'primeng/table';
     MessagesModule,
     ToastModule,
     TableModule,
-    DatePipe
+    DatePipe,
+    DialogModule
   ],
   templateUrl: './bulk-invoice.component.html',
   styleUrl: './bulk-invoice.component.css',
@@ -37,6 +39,8 @@ export class BulkInvoiceComponent {
     'customerId',
   ];
   message: any = [];
+  errorBox = false;
+  errorLogs: any[] = [];
 
   constructor(
     private messageService: MessageService,
@@ -118,7 +122,6 @@ export class BulkInvoiceComponent {
   addToDB() {
     const file = this.fileInput.nativeElement.files?.[0];
 
-    // Check if the file exists and is valid
     if (!file) {
       this.messageService.add({
         severity: 'error',
@@ -130,33 +133,22 @@ export class BulkInvoiceComponent {
 
     this.bulkAddService.postBulkCsvInv(file).subscribe({
       next: (response) => {
-        if (
-          response.startsWith('Unexpected') ||
-          response.startsWith('Duplicate') ||
-          response.startsWith('Validation')
-        ) {
-          this.message = [
-            { severity: 'error', summary: 'Unknown error', detail: response },
-          ];
-        } else {
-          this.message = [
-            {
-              severity: 'success',
-              summary: 'Customers Added',
-              detail: response,
-            },
-          ];
+        if(response.data.length > 0)
+        {
+        this.errorBox = true;
+        this.errorLogs = response.data;
         }
+        this.message = [
+          {
+            severity: 'success',
+            summary: response.message,
+          },
+        ];
         this.resetFileInput();
       },
       error: (err) => {
-        console.error('Full error object: ', err);
-        this.message = [
-          {
-            severity: 'error',
-            detail: err.message || err.error || 'Unknown error',
-          },
-        ];
+        this.errorBox = true;
+        this.errorLogs = err.error.data;
         this.resetFileInput();
       },
     });

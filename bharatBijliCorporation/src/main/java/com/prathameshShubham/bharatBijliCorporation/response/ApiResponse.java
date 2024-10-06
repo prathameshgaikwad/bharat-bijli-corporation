@@ -15,6 +15,12 @@ public class ApiResponse<T> {
     private T data;
     private int status;
 
+
+    public ApiResponse(int status, String message) {
+        this.status = status;
+        this.message = message;
+    }
+
     public static <T> ApiResponse<T> success(T data, String message, int status) {
         return new ApiResponse<>(false, message, data, status);
     }

@@ -1,17 +1,12 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.opencsv.CSVReader;
-import com.prathameshShubham.bharatBijliCorporation.dto.InvoicesByStatusResponse;
-import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceDTO;
-import com.prathameshShubham.bharatBijliCorporation.dto.MonthlyUsageDTO;
+import com.opencsv.exceptions.CsvValidationException;
+import com.prathameshShubham.bharatBijliCorporation.dto.*;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.DuplicateEntryException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
-import com.prathameshShubham.bharatBijliCorporation.exceptions.MissingFieldException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
-import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +14,13 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -117,57 +115,67 @@ public class InvoiceService {
         return invoiceRepo.findByGeneratedByEmployeeId(employeeId, PageRequest.of(page, size));
     }
 
-    public String uploadCsv(MultipartFile file, String empId) throws InvalidFileFormatException, EmptyCsvFileException {
-        StringBuilder resultSummary = new StringBuilder();  // For capturing summary of success/failure
+    public CsvUploadResult uploadCsv(MultipartFile file, String empId) {
+        if (file.isEmpty()) {
+            throw new EmptyCsvFileException("CSV is Empty");
+        }
+
+        if (!file.getOriginalFilename().endsWith(".csv")) {
+            throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
+        }
+
+        StringBuilder resultSummary = new StringBuilder();
         int successCount = 0;
         int failureCount = 0;
+        int totalCount = 0;
+        List<String> errorMessages = new ArrayList<>();
 
         try {
-            if (!file.getOriginalFilename().endsWith(".csv")) {
-                throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
-            }
-
             CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()));
             String[] headers = csvReader.readNext();
-
             if (headers == null) {
                 throw new EmptyCsvFileException("CSV file is empty.");
             }
 
             String[] nextLine;
             while ((nextLine = csvReader.readNext()) != null) {
+
+                totalCount++;
                 Map<String, String> row = new HashMap<>();
                 row.put("employeeId", empId);
-                for (int i = 0; i < headers.length; i++) {
-                    row.put(headers[i], nextLine[i]);
+                try{
+                    for (int i = 0; i < headers.length; i++) {
+                        row.put(headers[i], nextLine[i]);
+                    }
+                }catch (Exception e){
+                    failureCount++;
+                    errorMessages.add("Row " + totalCount + ": value not found");
                 }
 
                 try {
-                    validateInvoiceRow(row);  // Validate the invoice row
-                    saveInvoiceToDatabase(row);  // Save the invoice data to the database
+                    validateInvoiceRow(row);
                     checkDuplicateEntry(row);
-                    successCount++;  // Increment on successful save
-                } catch (MissingFieldException e) {
-                    System.err.println("Validation failed for row: " + row + " - " + e.getMessage());
-                    resultSummary.append("Validation failed for row: ").append(row).append("\n");
-                    failureCount++;  // Increment on failure
-                } catch (DuplicateEntryException e) {
-                    System.err.println("Duplicate entry for row: " + row + " - " + e.getMessage());
-                    resultSummary.append("Duplicate entry for row: ").append(row).append("\n");
-                    failureCount++;  // Increment on failure
+                    saveInvoiceToDatabase(row);
+                    successCount++;
+                } catch (InvalidDataFormatException | DuplicateEntryException | MissingFieldException | InvalidFieldFormatException e) {
+                    failureCount++;
+                    errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 }
             }
-        } catch (InvalidFileFormatException | EmptyCsvFileException e) {
-            throw e;  // Rethrow exceptions that indicate an issue with the file itself
-        } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while processing the file: " + e.getMessage());
+        }
+        catch (IOException | CsvValidationException e) {
+            throw new InvalidFileFormatException("Error reading CSV file");
         }
 
-        // Add summary of results
-        resultSummary.append("Processing completed: ").append(successCount).append(" rows processed successfully, ")
-                .append(failureCount).append(" rows failed.");
+        if(totalCount == 0)
+            throw new EmptyCsvFileException("No records found");
 
-        return resultSummary.toString();  // Return the summary message
+        resultSummary.append(String.format("Processing completed: %d rows processed successfully, %d rows failed.",
+                successCount, failureCount));
+
+        CsvUploadResult result = new CsvUploadResult(successCount, failureCount, errorMessages);
+
+        return result;
     }
 
     private void checkDuplicateEntry(Map<String, String> rowData) throws DuplicateEntryException{
@@ -181,7 +189,7 @@ public class InvoiceService {
 
     }
 
-    private void validateInvoiceRow(Map<String, String> rowData) throws MissingFieldException {
+    private void validateInvoiceRow(Map<String, String> rowData) throws MissingFieldException, InvalidFieldFormatException {
         String dueDate = rowData.get("dueDate");
         String periodStartDate = rowData.get("periodStartDate");
         String periodEndDate = rowData.get("periodEndDate");
@@ -196,37 +204,54 @@ public class InvoiceService {
             throw new MissingFieldException("Missing required fields in row: " + rowData);
         }
 
-        // Validate date formats (assumed format: YYYY-MM-DD)
         if (!dueDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            throw new MissingFieldException("Invalid due date format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid due date format in row: " + rowData);
         }
         if (!periodStartDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            throw new MissingFieldException("Invalid period start date format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid period start date format in row: " + rowData);
         }
         if (!periodEndDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            throw new MissingFieldException("Invalid period end date format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid period end date format in row: " + rowData);
         }
 
-        // Validate numeric fields (tariff and unitsConsumed must be numeric)
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try {
+            // Parse the dates
+            LocalDate dueDateParsed = LocalDate.parse(dueDate, dateFormatter);
+            LocalDate periodStartDateParsed = LocalDate.parse(periodStartDate, dateFormatter);
+            LocalDate periodEndDateParsed = LocalDate.parse(periodEndDate, dateFormatter);
+
+            // Validate date relationships
+            if (!periodEndDateParsed.isAfter(periodStartDateParsed)) {
+                throw new InvalidFieldFormatException("Period end date must be after the period start date in row: " + rowData);
+            }
+            if (!dueDateParsed.isAfter(periodEndDateParsed)) {
+                throw new InvalidFieldFormatException("Due date must be after the period end date in row: " + rowData);
+            }
+
+        } catch (DateTimeParseException e) {
+            throw new InvalidFieldFormatException("Invalid date values in row: " + rowData + " - " + e.getMessage());
+        }
+
         if (!tariff.matches("^\\d+(\\.\\d{1,2})?$")) { // allows for up to two decimal places
-            throw new MissingFieldException("Invalid tariff format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid tariff format in row: " + rowData);
         }
         if (!unitsConsumed.matches("^\\d+(\\.\\d{1,2})?$")) { // allows for up to two decimal places
-            throw new MissingFieldException("Invalid units consumed format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid units consumed format in row: " + rowData);
         }
 
-        // Validate customerId and employeeId (numeric and non-negative integers)
         if (!customerId.startsWith("CUST") && customerId.length() < 6) {
-            throw new MissingFieldException("Invalid customer ID format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid customer ID format in row: " + rowData);
         }
         if (!employeeId.startsWith("EMP") && employeeId.length()  < 6) {
-            throw new MissingFieldException("Invalid employee ID format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid employee ID format in row: " + rowData);
         }
     }
 
     private void saveInvoiceToDatabase(Map<String, String> rowData) {
         InvoiceRequest invoiceRequest = new InvoiceRequest();
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         invoiceRequest.setDueDate(LocalDateTime.parse(rowData.get("dueDate")+ "T00:00:00"));  // Parsing date string to LocalDateTime
         invoiceRequest.setPeriodStartDate(LocalDateTime.parse(rowData.get("periodStartDate")+ "T00:00:00"));
         invoiceRequest.setPeriodEndDate(LocalDateTime.parse(rowData.get("periodEndDate") + "T00:00:00"));
@@ -247,21 +272,29 @@ public class InvoiceService {
         if ("customer".equals(sortField)) {
             sortField = "customer.personalDetails.firstName";
         }
+
         Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
-        Page<Invoice> page;
 
+        // Check if search is provided
         if (search != null && !search.isEmpty()) {
-            page =  invoiceRepo.searchByCustomerName(search, pageable);
-            if(page.isEmpty()){
-                page = invoiceRepo.findByCustomerId(search, pageable);
+            Page<Invoice> page = invoiceRepo.findByCustomerId(search, pageable);
+            if (page.isEmpty()) {
+                String[] names = search.trim().split(" ");
+                if (names.length == 2) {
+                    String firstName = names[0];
+                    String lastName = names[1];
+                    page = invoiceRepo.searchByFullName(firstName, lastName, pageable);
+                } else {
+                    page = invoiceRepo.searchByCustomerName(search, pageable);
+                }
             }
+            return page;
         } else {
-            page =  invoiceRepo.findAll(pageable);
+            return invoiceRepo.findAll(pageable);
         }
-
-        return page;
     }
+
 
     public List<MonthlyUsageDTO> getMonthlyUsageLastYear(String customerId) {
         LocalDateTime now = LocalDateTime.now();

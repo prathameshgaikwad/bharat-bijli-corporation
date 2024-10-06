@@ -1,5 +1,6 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.prathameshShubham.bharatBijliCorporation.dto.CsvUploadResult;
 import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
@@ -55,19 +56,17 @@ public class EmployeeController {
 
     // Endpoint to save a csv file of customers
     @PostMapping("customers/bulk-csv-upload")
-    public ResponseEntity<String> saveCustomers(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> saveCustomers(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "File is empty"));
         }
-        try {
-            String result = customerService.uploadCsv(file);
-            return ResponseEntity.status(HttpStatus.OK).body(result); // Return OK if processing was successful
-        } catch (InvalidFileFormatException | EmptyCsvFileException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }  catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error while processing the file: " + e.getMessage());
-        }
+
+        CsvUploadResult result = customerService.uploadCsv(file);
+        String message = "Succesfull entry : " + result.getSuccessCount() + ", failed " + result.getFailureCount();
+        if(result.getSuccessCount() == 0)
+            return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse<>(true,  message, result.getErrorMessages(), HttpStatus.NOT_ACCEPTABLE.value()));
+
+        return ResponseEntity.ok(ApiResponse.success(result.getErrorMessages(), message, 200));
     }
 
     @GetMapping("count/customers")
@@ -91,7 +90,7 @@ public class EmployeeController {
         Page<Customer> chunk = customerService.getPaginatedCustomer(page, size, sortField, sortOrder, search);
 
         if(chunk.isEmpty()){
-            return ResponseEntity.ok("No Invoices Found");
+            return ResponseEntity.ok("No Customer Found");
         }
 
         return ResponseEntity.ok(chunk);

@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { EmployeeService } from '../../services/employee.service';
 import { MessagesModule } from 'primeng/messages';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-bulk-cust',
@@ -16,6 +17,7 @@ import { MessagesModule } from 'primeng/messages';
     ToastModule,
     ButtonModule,
     MessagesModule,
+    DialogModule,
   ],
   templateUrl: './bulk-cust.component.html',
   styleUrl: './bulk-cust.component.css',
@@ -39,6 +41,8 @@ export class BulkCustComponent {
     'state',
   ];
   message: any = [];
+  errorBox = false;
+  errorLogs: any[] = [];
 
   constructor(
     private messageService: MessageService,
@@ -120,7 +124,6 @@ export class BulkCustComponent {
   addToDB() {
     const file = this.fileInput.nativeElement.files?.[0];
 
-    // Check if the file exists and is valid
     if (!file) {
       this.messageService.add({
         severity: 'error',
@@ -132,33 +135,24 @@ export class BulkCustComponent {
 
     this.bulkAddService.postBulkCsvCust(file).subscribe({
       next: (response) => {
-        if (
-          response.startsWith('Unexpected') ||
-          response.startsWith('Duplicate') ||
-          response.startsWith('Validation')
-        ) {
-          this.message = [
-            { severity: 'error', summary: 'Unknown error', detail: response },
-          ];
-        } else {
-          this.message = [
-            {
-              severity: 'success',
-              summary: 'Customers Added',
-              detail: response,
-            },
-          ];
+        if(response.data.length > 0)
+        {
+        this.errorBox = true;
+        this.errorLogs = response.data;
         }
+        this.message = [
+          {
+            severity: 'success',
+            summary: response.message,
+          },
+        ];
         this.resetFileInput();
       },
       error: (err) => {
-        console.error('Full error object: ', err);
-        this.message = [
-          {
-            severity: 'error',
-            detail: err.message || err.error || 'Unknown error',
-          },
-        ];
+        this.errorBox = true;
+
+        this.errorLogs = err.error.data;
+        console.log(this.errorLogs);
         this.resetFileInput();
       },
     });

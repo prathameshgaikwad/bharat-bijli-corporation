@@ -1,6 +1,8 @@
 package com.prathameshShubham.bharatBijliCorporation.services;
 
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+import com.prathameshShubham.bharatBijliCorporation.dto.CsvUploadResult;
 import com.prathameshShubham.bharatBijliCorporation.enums.ServiceConnectionStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -78,57 +81,62 @@ public class CustomerService {
         return String.format("CUST%06d", count);
     }
 
-    public String uploadCsv(MultipartFile file) throws InvalidFileFormatException, EmptyCsvFileException {
-        StringBuilder resultSummary = new StringBuilder();  // For capturing summary of success/failure
+    public CsvUploadResult uploadCsv(MultipartFile file) {
+        if (!file.getOriginalFilename().endsWith(".csv")) {
+            throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
+        }
+
+        StringBuilder resultSummary = new StringBuilder();
         int successCount = 0;
         int failureCount = 0;
+        int totalCount = 0;
+        List<String> errorMessages = new ArrayList<>();
 
         try {
-            if (!file.getOriginalFilename().endsWith(".csv")) {
-                throw new InvalidFileFormatException("Invalid file format. Please upload a CSV file.");
-            }
-
             CSVReader csvReader = new CSVReader(new InputStreamReader(file.getInputStream()));
             String[] headers = csvReader.readNext();
-
             if (headers == null) {
                 throw new EmptyCsvFileException("CSV file is empty.");
             }
 
             String[] nextLine;
             while ((nextLine = csvReader.readNext()) != null) {
+
+                totalCount++;
                 Map<String, String> row = new HashMap<>();
-                for (int i = 0; i < headers.length; i++) {
-                    row.put(headers[i], nextLine[i]);
+                try{
+                    for (int i = 0; i < headers.length; i++) {
+                        row.put(headers[i], nextLine[i]);
+                    }
+                }catch (Exception e){
+                    failureCount++;
+                    errorMessages.add("Row " + totalCount + ": value not found");
                 }
 
                 try {
                     validateRow(row);
                     isDuplicate(row);
                     saveToDatabase(row);
-                    successCount++;  // Increment on successful save
+                    successCount++;
                 } catch (MissingFieldException e) {
-                    System.err.println("Validation failed for row: " + row + " - " + e.getMessage());
-                    resultSummary.append("Validation failed for row: ").append(row).append("\n");
-                    failureCount++;  // Increment on failure
+                    failureCount++;
+                    errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 } catch (DuplicateEntryException e) {
-                    System.err.println("Duplicate entry for row: " + row + " - " + e.getMessage());
-                    resultSummary.append("Duplicate entry for row: ").append(row).append("\n");
-                    failureCount++;  // Increment on failure
+                    failureCount++;
+                    errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 }
             }
-        } catch (InvalidFileFormatException | EmptyCsvFileException e) {
-            throw e;  // Rethrow exceptions that indicate an issue with the file itself
-        } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while processing the file: " + e.getMessage());
+        } catch (IOException | CsvValidationException e) {
+            throw new InvalidFileFormatException("Error reading CSV file");
         }
 
-        // Add summary of results
-        resultSummary.append("Processing completed: ").append(successCount).append(" rows processed successfully, ")
-                .append(failureCount).append(" rows failed.");
-
-        return resultSummary.toString();  // Return the summary message
+        if (totalCount == 0) {
+            throw new EmptyCsvFileException("No records found");
+        }
+        CsvUploadResult result = new CsvUploadResult(successCount, failureCount, errorMessages);
+        return result;
     }
+
 
     private void validateRow(Map<String, String> rowData) throws MissingFieldException {
         String firstName = rowData.get("firstName");
@@ -203,23 +211,30 @@ public class CustomerService {
     }
 
     public Page<Customer> getPaginatedCustomer(int pageNo, int size, String sortField, String sortOrder, String search) {
-        if ("customer".equals(sortField)) {
-            sortField = "customer.personalDetails.firstName";
-        }
+
         Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
-        Page<Customer> page;
 
+        // Check if search is provided
         if (search != null && !search.isEmpty()) {
-            page =  customerRepo.searchByCustomerName(search, pageable);
-
-            if(page.isEmpty()){
-                page = customerRepo.findByIdContainingIgnoreCase(search, pageable);
+            // Try to find by Customer ID first
+            Page<Customer> page = customerRepo.findByIdContainingIgnoreCase(search, pageable);
+            if (page.isEmpty()) {
+                // If no result by customer ID, check for full name or partial name match
+                String[] names = search.trim().split(" ");
+                if (names.length == 2) {
+                    String firstName = names[0];
+                    String lastName = names[1];
+                    page = customerRepo.searchByFullName(firstName, lastName, pageable);
+                } else {
+                    page = customerRepo.searchByCustomerName(search, pageable);
+                }
             }
+            return page;
         } else {
-            page =  customerRepo.findAll(pageable);
+            // If no search, return all paginated customers
+            return customerRepo.findAll(pageable);
         }
-        return  page;
     }
 
     public PersonalDetails updateCustomer(Customer updatedCustomerDetails) {

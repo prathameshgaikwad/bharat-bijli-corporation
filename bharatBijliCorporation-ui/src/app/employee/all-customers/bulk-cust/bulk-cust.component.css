@@ -1,8 +1,19 @@
+.title {
+  text-align: center; 
+  margin-bottom: 20px; 
+}
+
+.card {
+  display: grid;
+  justify-items: center;
+  padding: 20px; 
+}
+
 .csv-upload {
-  background: #f9f9f9; /* Light background color */
+  background: #f9f9f9; 
   border-radius: 8px;
   padding: 30px;
-  width: 400px;
+  width: 400px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
@@ -20,7 +31,7 @@ input[type="file"] {
 label {
   display: block;
   padding: 12px 20px;
-  background: #5b8dc3; /* Primary color */
+  background: #5b8dc3; 
   color: white;
   text-align: center;
   cursor: pointer;
@@ -32,33 +43,33 @@ label {
 }
 
 label:hover {
-  background: #0056b3; /* Darker shade on hover */
+  background: #0056b3; 
   transform: translateY(-1px);
   box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
 }
 
 .file-name {
-  background: #e9ecef; /* Light gray for file name area */
+  background: #e9ecef; 
   padding: 10px;
   border-radius: 4px;
   word-break: break-all;
   min-height: 20px;
   margin-bottom: 20px;
-  border: 1px solid #dee2e6; /* Slightly darker border */
-  color: #495057; /* Dark gray text */
+  border: 1px solid #dee2e6; 
+  color: #495057; 
 }
 
 .p-button {
-  background: #17a2b8; /* Light blue button */
-  color: white; /* White text */
-  border: none; /* Remove default border */
-  padding: 10px 20px; /* Padding for button */
-  border-radius: 4px; /* Rounded corners */
-  transition: background 0.3s ease; /* Transition for background color */
+  background: #17a2b8; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; 
+  border-radius: 4px; 
+  transition: background 0.3s ease; 
 }
 
 .p-button:hover {
-  background: #138496; /* Darker shade on hover */
+  background: #138496; 
 }
 
 @keyframes pulse {
@@ -75,4 +86,75 @@ label:hover {
 
 .pulse {
   animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+  .csv-upload {
+    width: 90%; 
+    padding: 20px; 
+  }
+
+  .card {
+    padding: 10px; 
+  }
+
+  label {
+    padding: 10px 15px; 
+    font-size: 16px; 
+  }
+
+  .p-button {
+    width: 100%; 
+  }
+}
+
+@media (max-width: 480px) {
+  label {
+    padding: 8px 12px; 
+    font-size: 14px; 
+  }
+
+  .file-name {
+    font-size: 14px; 
+  }
+
+  .p-button {
+    padding: 8px 16px; 
+    font-size: 14px; 
+  }
+}
+
+.error-container {
+  background-color: #f8d7da;
+  border: 1px solid #f5c2c7;
+  padding: 10px 15px;
+  border-radius: 5px;
+  max-width: 500px;
+  margin: 10px auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-container h3 {
+  color: #b71c1c; /* Slight redness */
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.error-container ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.error-container li {
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-bottom: 1px solid #f5c2c7;
+}
+
+.error-container li:last-child {
+  border-bottom: none;
 }

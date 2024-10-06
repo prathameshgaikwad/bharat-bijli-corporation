@@ -47,7 +47,9 @@ export class ViewCustomersComponent {
   first = 0;
   sortField: string = '';
   sortOrder: string = '';
-  searchQuery: string = '';
+  previousSortField: string = ''; // Track previous sort field
+  previousSortOrder: string = 'asc'; // Track previous sort order
+  searchQuery = '';
 
   constructor(private empService: EmployeeService) {}
 
@@ -75,11 +77,12 @@ export class ViewCustomersComponent {
       .subscribe({
         next: (response) => {
           this.customers = response.content;
-          this.totalRecords = response.totalElements; // Set the total number of records
-          console.log('Total Records:', this.totalRecords);
+          this.totalRecords = response.totalElements; 
         },
         error: (error) => {
           console.error('Error fetching customers :', error);
+          this.error = [{ severity: 'error', detail: 'Invalid Req' }];
+          this.searchQuery = "";
         },
       });
   }
@@ -91,9 +94,19 @@ export class ViewCustomersComponent {
   }
 
   onSort(event: SortEvent) {
-    this.sortField = event.field ?? '';
-    this.sortOrder = event.order === 1 ? 'asc' : 'desc';
-    this.loadCustomers();
+    const newSortField = event.field ?? '';
+    const newSortOrder = event.order === 1 ? 'asc' : 'desc';
+
+    if (
+      newSortField !== this.previousSortField ||
+      newSortOrder !== this.previousSortOrder
+    ) {
+      this.sortField = newSortField;
+      this.sortOrder = newSortOrder;
+      this.previousSortField = this.sortField;
+      this.previousSortOrder = this.sortOrder;
+      this.loadCustomers();
+    }
   }
 
   onSearch() {
@@ -107,9 +120,7 @@ export class ViewCustomersComponent {
 
   showBox = false;
   selectedCustomerDetails: Customer = defaultCustomer;
-  stableDetails: Customer = defaultCustomer;
   showCustomer(customer: Customer) {
-    this.stableDetails = JSON.parse(JSON.stringify(customer));
     this.selectedCustomerDetails = customer;
     this.showBox = true;
   }

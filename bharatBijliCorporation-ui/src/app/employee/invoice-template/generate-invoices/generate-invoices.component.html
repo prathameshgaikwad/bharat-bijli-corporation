@@ -1,11 +1,10 @@
 <div class="container">
-  <div style="text-align: center; margin-bottom: 30px;">
+  <div style="text-align: center; margin-bottom: 30px">
     <h1 class="heading part-title">Generate an Invoice</h1>
     <p class="subtitle small-subtitle">Please enter the details below</p>
   </div>
   <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <!-- Period Start Date Field -->
       <p-floatLabel>
         <p-calendar
           name="periodStartDate"
@@ -15,7 +14,6 @@
         <label for="periodStartDate">Period Start Date</label>
       </p-floatLabel>
 
-      <!-- Period End Date Field -->
       <p-floatLabel>
         <p-calendar
           name="periodEndDate"
@@ -25,9 +23,6 @@
         ></p-calendar>
         <label for="periodEndDate">Period End Date</label>
       </p-floatLabel>
-
-
-      <!-- Due Date Field -->
       <p-floatLabel>
         <p-calendar
           name="dueDate"
@@ -37,8 +32,6 @@
         <label for="dueDate">Due Date</label>
       </p-floatLabel>
 
-
-      <!-- Tariff Field -->
       <p-floatLabel>
         <input
           id="tariff"
@@ -50,7 +43,6 @@
         <label for="tariff">Tariff</label>
       </p-floatLabel>
 
-      <!-- Units Consumed Field -->
       <p-floatLabel>
         <input
           id="unitsConsumed"
@@ -62,7 +54,6 @@
         <label for="unitsConsumed">Units Consumed</label>
       </p-floatLabel>
 
-      <!-- Customer ID Field -->
       <p-floatLabel>
         <input
           id="customerId"
@@ -73,6 +64,18 @@
         />
         <label for="customerId">Customer ID</label>
       </p-floatLabel>
+      <div
+        *ngIf="registrationForm.errors?.['endDateBeforeStartDate']"
+        class="error-message"
+      >
+        End Date must be greater than Start Date.
+      </div>
+      <div
+        *ngIf="registrationForm.errors?.['dueDateBeforeEndDate']"
+        class="error-message"
+      >
+        Due Date must be greater than End Date.
+      </div>
     </div>
     <div style="display: flex">
       <p-button

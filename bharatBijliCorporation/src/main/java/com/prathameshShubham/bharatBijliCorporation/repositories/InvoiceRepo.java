@@ -30,6 +30,11 @@ public interface InvoiceRepo extends JpaRepository<Invoice, Long> {
             "OR LOWER(p.lastName) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Invoice> searchByCustomerName(String search, Pageable pageable);
 
+    @Query("SELECT i FROM Invoice i JOIN i.customer c JOIN c.personalDetails p " +
+            "WHERE LOWER(p.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) " +
+            "AND LOWER(p.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))")
+    Page<Invoice> searchByFullName(String firstName, String lastName, Pageable pageable);
+
     Page<Invoice> findByCustomerId(String customerId, Pageable pageable);
 
     boolean existsByCustomerIdAndPeriodStartDateAndPeriodEndDate(String customerId, LocalDateTime periodStartDate, LocalDateTime periodEndDate);

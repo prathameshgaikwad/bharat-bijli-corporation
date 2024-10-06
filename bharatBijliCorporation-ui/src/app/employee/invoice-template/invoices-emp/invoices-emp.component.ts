@@ -3,7 +3,6 @@ import { EmployeeService } from '../../services/employee.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -26,7 +25,6 @@ import {
   Invoice,
   Page,
   RecordPaymentRequest,
-  Transaction,
 } from '../../../shared/types/consumables.types';
 import {
   DEFAULT_BILLING_DETAILS,
@@ -160,11 +158,14 @@ export class EmpInvoicesComponent {
         this.searchQuery
       )
       .subscribe({
-        next: (response: Page<Invoice>) => {
+        next: (response) => {
           this.invoices = response.content;
+          this.totalRecords = response.totalElements
         },
         error: (error) => {
+          console.log(error);
           this.error = [{ severity: 'error', detail: 'Invalid Req' }];
+          this.searchQuery = "";
         },
       });
   }
@@ -180,6 +181,8 @@ export class EmpInvoicesComponent {
   invoiceToPay: InvoiceForPayment = DEFAULT_INVOICE_PAY_RESPONSE;
 
   showInvoice(invoice: any) {
+    console.log(invoice);
+    
     this.invoiceToPay = invoice;
     this.selectedInvoiceDetails = invoice;
     this.selectedInvoiceDetails.customerId = this.invoiceToPay.customer.id;

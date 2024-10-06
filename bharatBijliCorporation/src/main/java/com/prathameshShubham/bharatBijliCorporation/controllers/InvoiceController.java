@@ -1,10 +1,12 @@
 package com.prathameshShubham.bharatBijliCorporation.controllers;
 
+import com.prathameshShubham.bharatBijliCorporation.dto.CsvUploadResult;
 import com.prathameshShubham.bharatBijliCorporation.enums.InvoiceStatus;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceRequest;
+import com.prathameshShubham.bharatBijliCorporation.response.ApiResponse;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.PDFService;
 import jakarta.validation.Valid;
@@ -75,21 +77,19 @@ public class InvoiceController {
     }
 
     @PostMapping("{employeeId}/bulk-csv-upload")
-    public ResponseEntity<String> saveInvoices(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<?> saveInvoices(@RequestParam("file") MultipartFile file,
                                                @PathVariable String employeeId) {
         if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error("File is empty", HttpStatus.BAD_REQUEST.value()
+            ));
         }
 
-        try {
-            String result = invoiceService.uploadCsv(file, employeeId);
-            return ResponseEntity.status(HttpStatus.OK).body(result); // Return OK if processing was successful
-        } catch (InvalidFileFormatException | EmptyCsvFileException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }  catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error while processing the file: " + e.getMessage());
-        }
+        CsvUploadResult result = invoiceService.uploadCsv(file, employeeId);
+        String message = "Succesfull entry : " + result.getSuccessCount() + ", failed " + result.getFailureCount();
+        if(result.getSuccessCount() == 0)
+            return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse<>(true,  message, result.getErrorMessages(), HttpStatus.NOT_ACCEPTABLE.value()));
+
+        return ResponseEntity.ok(ApiResponse.success(result.getErrorMessages(), message, 200));
     }
 
     @GetMapping("/count")

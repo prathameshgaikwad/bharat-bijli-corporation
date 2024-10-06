@@ -98,14 +98,14 @@ export class EmployeeService {
     sortField: string,
     sortOrder: string = 'asc',
     searchQuery: string
-  ): Observable<Page<Invoice>> {
+  ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortField', sortField)
       .set('sortOrder', sortOrder)
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Invoice>>(`${this.baseInvoicesUrl}`, {
+    return this.httpClient.get<any>(`${this.baseInvoicesUrl}`, {
       params,
     });
   }
@@ -116,36 +116,36 @@ export class EmployeeService {
     sortField: string,
     sortOrder: string = 'asc',
     searchQuery: string
-  ): Observable<Page<Customer>> {
+  ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortField', 'id')
       .set('sortOrder', sortOrder)  
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Customer>>(`${this.baseUrl}/getAll/Customers`, {
+    return this.httpClient.get<any>(`${this.baseUrl}/getAll/Customers`, {
       params,
     });
   }
 
-  postBulkCsvCust(file : File) : Observable<string>{
+  postBulkCsvCust(file : File) : Observable<any>{
     const formData: FormData = new FormData();
     formData.append('file', file);
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
 
-    return this.httpClient.post<string>(`${this.baseUrl}/customers/bulk-csv-upload`, formData, { responseType: 'text' as 'json' })
+    return this.httpClient.post<any>(`${this.baseUrl}/customers/bulk-csv-upload`, formData)
   }
 
-  postBulkCsvInv(file : File) : Observable<string>{
+  postBulkCsvInv(file : File) : Observable<any>{
     const formData: FormData = new FormData();
     formData.append('file', file);
 
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
      const empId = "EMP000001"
-    return this.httpClient.post<string>(`${this.baseInvoicesUrl}/${empId}/bulk-csv-upload`, formData, { responseType: 'text' as 'json' })
+    return this.httpClient.post<any>(`${this.baseInvoicesUrl}/${empId}/bulk-csv-upload`, formData)
   }
 
   updateCustomer(updatedDetails : Customer) : Observable<PersonalDetails>{
