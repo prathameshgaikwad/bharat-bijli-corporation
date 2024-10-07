@@ -27,4 +27,34 @@ public class GlobalExceptionHandler {
         ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(EmptyCsvFileException.class)
+    public ResponseEntity<ApiResponse<?>> handleEmptyCsvFileException(EmptyCsvFileException ex) {
+        ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(InvalidDataFormatException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidDataFormatException(InvalidDataFormatException ex) {
+        ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(InvalidFieldFormatException.class)
+    public ResponseEntity<ApiResponse<?>> handleInvalidFieldFormatException(InvalidFieldFormatException ex) {
+        ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MissingFieldException.class)
+    public ResponseEntity<ApiResponse<?>> handleMissingFieldException(MissingFieldException ex) {
+        ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(RecordNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleRecordNotFoundException(RecordNotFoundException ex) {
+        ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 }
