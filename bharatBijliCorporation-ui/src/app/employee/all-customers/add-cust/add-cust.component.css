@@ -16,24 +16,35 @@
   width: 100%;
 }
 
+
 .form-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
+  gap: 1.83rem;
+  padding: 0 3rem;
 
-p-floatLabel {
-  font-size: 0.85rem;
-}
+  p-floatLabel {
+    font-size: 0.85rem;
+  }
 
-.phone-number-input {
-  border-radius: 0 2rem 2rem 0;
-}
+  .phone-number-input {
+    border-radius: 0 2rem 2rem 0;
+  }
 
-.address {
-  grid-column: span 2;
-}
+  .address {
+    grid-column: span 2;
+  }
 
+  p-inputgroupaddon {
+    border-radius: 2rem 0 0 2rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  #address {
+    grid-column: span 2;
+  }
+}
 .date-input-group {
   display: flex;
   align-items: center;

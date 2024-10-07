@@ -23,6 +23,7 @@ import { DialogModule } from 'primeng/dialog';
   styleUrl: './bulk-cust.component.css',
   providers: [MessageService],
 })
+
 export class BulkCustComponent {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
@@ -137,8 +138,8 @@ export class BulkCustComponent {
       next: (response) => {
         if(response.data.length > 0)
         {
-        this.errorBox = true;
-        this.errorLogs = response.data;
+          this.errorBox = true;
+          this.errorLogs = response.data;
         }
         this.message = [
           {
@@ -152,7 +153,6 @@ export class BulkCustComponent {
         this.errorBox = true;
 
         this.errorLogs = err.error.data;
-        console.log(this.errorLogs);
         this.resetFileInput();
       },
     });

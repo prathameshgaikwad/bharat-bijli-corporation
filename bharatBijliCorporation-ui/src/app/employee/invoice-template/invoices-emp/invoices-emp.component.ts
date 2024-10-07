@@ -163,7 +163,6 @@ export class EmpInvoicesComponent {
           this.totalRecords = response.totalElements
         },
         error: (error) => {
-          console.log(error);
           this.error = [{ severity: 'error', detail: 'Invalid Req' }];
           this.searchQuery = "";
         },
@@ -181,8 +180,6 @@ export class EmpInvoicesComponent {
   invoiceToPay: InvoiceForPayment = DEFAULT_INVOICE_PAY_RESPONSE;
 
   showInvoice(invoice: any) {
-    console.log(invoice);
-    
     this.invoiceToPay = invoice;
     this.selectedInvoiceDetails = invoice;
     this.selectedInvoiceDetails.customerId = this.invoiceToPay.customer.id;
@@ -231,11 +228,8 @@ export class EmpInvoicesComponent {
       discountByOnlinePayment: 0,
       paymentDescription: `Paid by Cash`,
     };
-    console.log(this.selectedInvoiceDetails);
-
     this.invoiceService.addCashPayment(paymentRequest).subscribe({
       next: (response) => {
-        console.log('Success');
         this.loadInvoices();
         this.showBox = false;
       },

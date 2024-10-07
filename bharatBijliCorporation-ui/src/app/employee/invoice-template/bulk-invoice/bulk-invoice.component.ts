@@ -83,11 +83,9 @@ export class BulkInvoiceComponent {
         this.validationMessage = 'Invalid CSV headers. ';
         if (missingHeaders.length > 0) {
           this.validationMessage += `Missing: ${missingHeaders.join(', ')}. `;
-          console.log('one');
         }
         if (extraHeaders.length > 0) {
           this.validationMessage += `Extra: ${extraHeaders.join(', ')}. `;
-          console.log('two');
         }
         this.resetFileInput();
         this.showToastMessage(
