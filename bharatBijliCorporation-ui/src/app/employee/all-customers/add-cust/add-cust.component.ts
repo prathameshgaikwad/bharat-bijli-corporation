@@ -102,16 +102,18 @@ export class AddCustComponent {
       };
       this.authService.register(personalDetails).subscribe({
         next: (response) => {
+          console.log(response);
           this.messageService.add({
             severity: 'success',
             summary: 'Registration Successful',
           });
-
           setTimeout(() => {
-            this.router.navigate(['customer']);
+            this.router.navigate(['/employee/customer']);
           }, 3000);
         },
         error: (error) => {
+          console.log(error);
+
           this.messageService.add({
             severity: 'error',
             summary: 'Error creating an account',

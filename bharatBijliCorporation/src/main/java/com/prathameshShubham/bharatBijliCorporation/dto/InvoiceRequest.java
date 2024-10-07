@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 public class InvoiceRequest {
     @NotNull(message = "Due date cannot be null")
-    @FutureOrPresent(message = "Due date must be today or in the future")
+//    @FutureOrPresent(message = "Due date must be today or in the future")
     private LocalDateTime dueDate;
 
     @NotNull(message = "Period start date cannot be null")
@@ -18,7 +18,7 @@ public class InvoiceRequest {
     private LocalDateTime periodStartDate;
 
     @NotNull(message = "Period end date cannot be null")
-    @FutureOrPresent(message = "Period end date cannot be in the future")
+//    @FutureOrPresent(message = "Period end date cannot be in the future")
     private LocalDateTime periodEndDate;
 
     @Positive(message = "Tariff must be a positive value")

@@ -163,7 +163,7 @@ export class EmpInvoicesComponent {
           this.totalRecords = response.totalElements
         },
         error: (error) => {
-          this.error = [{ severity: 'error', detail: 'Invalid Req' }];
+          this.error = [{ severity: 'warn', detail: 'No Search Found' }];
           this.searchQuery = "";
         },
       });

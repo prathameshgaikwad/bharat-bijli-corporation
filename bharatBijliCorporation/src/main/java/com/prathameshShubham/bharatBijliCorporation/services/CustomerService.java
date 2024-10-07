@@ -118,10 +118,7 @@ public class CustomerService {
                     isDuplicate(row);
                     saveToDatabase(row);
                     successCount++;
-                } catch (MissingFieldException e) {
-                    failureCount++;
-                    errorMessages.add("Row " + totalCount + ": " + e.getMessage());
-                } catch (DuplicateEntryException e) {
+                } catch (MissingFieldException | DuplicateEntryException e) {
                     failureCount++;
                     errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 }
@@ -269,5 +266,9 @@ public class CustomerService {
         customer.setWalletBalance(newBalance);
         customerRepo.save(customer);
 
+    }
+
+    public  boolean checkUserExists(String customerId){
+        return customerRepo.existsById(customerId);
     }
 }
