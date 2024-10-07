@@ -1,35 +1,47 @@
 <div class="container">
   <div class="all-cards" *ngIf="isUp">
-    <p-button
-      label="Add Customers"
-      icon="pi pi-user-plus"
-      [text]="true"
-      [raised]="true"
-      [routerLink]="['add']"
-      severity="secondary"
-      [style]="{ 'height': '45px', 'margin-right' : '20px' }"
-    >
-    </p-button>
-    <p-button
-      label="View Customers"
-      icon="pi pi-user"
-      [text]="true"
-      [raised]="true"
-      severity="secondary"
-      [routerLink]="['/employee/customer']"
-      [style]="{ 'height': '45px', 'margin-right' : '20px' }"
-    >
-    </p-button>
-    <p-button
-      label="Customer Bulk Entry"
-      icon="pi pi-upload"
-      [text]="true"
-      [raised]="true"
-      severity="secondary"
-      [routerLink]="['bulk-add']"
-      [style]="{ height: '45px' }"
-    >
-    </p-button>
+    <div class="button-class">
+      <p-button
+        label="Add Customers"
+        icon="pi pi-user-plus"
+        [text]="true"
+        [raised]="true"
+        [routerLink]="['add']"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        severity="secondary"
+        [style]="{ height: '45px' }"
+      >
+      </p-button>
+    </div>
+    <div class="button-class">
+      <p-button
+        label="View Customers"
+        icon="pi pi-user"
+        [text]="true"
+        [raised]="true"
+        severity="secondary"
+        [routerLink]="['/employee/customer']"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [style]="{ height: '45px' }"
+      >
+      </p-button>
+    </div>
+    <div class="button-class">
+      <p-button
+        label="Customer Bulk Entry"
+        icon="pi pi-upload"
+        [text]="true"
+        [raised]="true"
+        severity="secondary"
+        [routerLink]="['bulk-add']"
+        routerLinkActive="active-link"
+        [style]="{ height: '45px' }"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+      </p-button>
+    </div>
   </div>
   <p-button
     *ngIf="isUp"

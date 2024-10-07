@@ -11,14 +11,33 @@ import { MessageService } from 'primeng/api';
 import { PersonalDetails } from '../../../shared/types/user.types';
 import { ToastModule } from 'primeng/toast';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+
+export function dobValidator(control: AbstractControl): ValidationErrors | null {
+  const dob = control.value;
+  if (!dob) return null; // If no DOB is provided, return null
+
+  const currentDate = new Date();
+  const birthDate = new Date(dob);
+  const age = currentDate.getFullYear() - birthDate.getFullYear();
+  const month = currentDate.getMonth() - birthDate.getMonth();
+
+  // Check if the user is under 18
+  if (age < 18 || (age === 18 && month < 0)) {
+    return { invalidDOB: true }; // Return an error if under 18
+  }
+
+  return null; // Valid date, return null
+}
 
 @Component({
   selector: 'app-add-cust',
@@ -40,6 +59,7 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './add-cust.component.css',
   providers: [MessageService],
 })
+
 export class AddCustComponent {
   protected registrationForm = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
@@ -56,7 +76,7 @@ export class AddCustComponent {
       Validators.minLength(6),
       Validators.maxLength(6),
     ]),
-    dateOfBirth: new FormControl(null, [Validators.required]),
+    dateOfBirth: new FormControl(null, [Validators.required, dobValidator]),
   });
 
   constructor(

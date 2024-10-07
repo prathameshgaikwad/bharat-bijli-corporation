@@ -14,9 +14,10 @@ import { ChipModule } from 'primeng/chip';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { EmployeeService } from '../../services/employee.service';
-import { SortEvent } from 'primeng/api';
+import { MessageService, SortEvent } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { NgForm } from '@angular/forms';
+import { MessagesModule } from 'primeng/messages';
 
 @Component({
   selector: 'app-view-customers',
@@ -31,9 +32,11 @@ import { NgForm } from '@angular/forms';
     InputTextModule,
     InputGroupAddonModule,
     DialogModule,
+    MessagesModule
   ],
   templateUrl: './view-customers.component.html',
   styleUrl: './view-customers.component.css',
+  providers : [MessageService]
 })
 export class ViewCustomersComponent {
   customers: Customer[] = [];
@@ -80,9 +83,9 @@ export class ViewCustomersComponent {
           this.totalRecords = response.totalElements; 
         },
         error: (error) => {
-          console.error('Error fetching customers :', error);
           this.error = [{ severity: 'error', detail: 'Invalid Req' }];
           this.searchQuery = "";
+          this.loadCustomers()
         },
       });
   }
