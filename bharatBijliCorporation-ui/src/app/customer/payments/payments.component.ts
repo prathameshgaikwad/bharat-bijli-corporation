@@ -36,6 +36,8 @@ export class PaymentsComponent {
   currentPage: number = 0;
   pageSize: number = 10;
   totalRecords: number = 0;
+  isFallbackVisible: boolean = false;
+  isTableLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -51,15 +53,19 @@ export class PaymentsComponent {
     size: number = this.pageSize
   ): void {
     if (this.customerId) {
+      this.isTableLoading = true;
       this.customerService
         .getTransactions(this.customerId, page, size)
         .subscribe({
           next: (response: Page<Transaction>) => {
+            if (response.totalElements === 0) this.isFallbackVisible = true;
             this.transactions = response.content;
             this.totalPages = response.totalPages;
             this.totalRecords = response.totalElements;
+            this.isTableLoading = false;
           },
           error: (error) => {
+            this.isTableLoading = false;
             console.error('Error fetching invoices:', error);
           },
         });

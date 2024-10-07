@@ -51,6 +51,8 @@ export class InvoicesComponent implements OnInit {
   pendingInvoiceStatus: InvoiceStatus = InvoiceStatus.PENDING;
   isInvoiceSummaryVisible: boolean = false;
   selectedInvoiceDetails: Invoice = DEFAULT_INVOICE;
+  isFallbackVisible: boolean = false;
+  isTableLoading: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -63,14 +65,18 @@ export class InvoicesComponent implements OnInit {
   }
 
   loadInvoices(page: number = 0, size: number = 10): void {
+    this.isTableLoading = true;
     if (this.customerId) {
       this.customerService.getInvoices(this.customerId, page, size).subscribe({
         next: (response: Page<Invoice>) => {
+          this.isTableLoading = false;
+          if (response.totalElements === 0) this.isFallbackVisible = true;
           this.invoices = response.content;
           this.totalPages = response.totalPages;
           this.totalElements = response.totalElements;
         },
         error: (error) => {
+          this.isTableLoading = false;
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

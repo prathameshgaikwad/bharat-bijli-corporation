@@ -8,12 +8,13 @@
     </p>
   </div>
   <app-fallback
-    *ngIf="transactions.length === 0; else content"
+    *ngIf="isFallbackVisible; else content"
     message="Your payments will appear here"
   ></app-fallback>
   <ng-template #content>
     <p-table
       [value]="transactions"
+      [loading]="isTableLoading"
       selectionMode="single"
       [(selection)]="selectedTransaction"
       (onRowSelect)="showTransaction($event.data)"
@@ -53,7 +54,8 @@
           </td>
           <td>
             {{
-              transaction.transactionFee | currency : "INR" : "symbol" : "1.2-2"
+              transaction.transactionFee ?? 0
+                | currency : "INR" : "symbol" : "1.2-2"
             }}
           </td>
           <td>
