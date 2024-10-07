@@ -92,11 +92,13 @@ export class LoginComponent implements OnDestroy {
 
   submitOtpRequest() {
     this.isLoading = true;
+    this.loginForm.disable();
     const userId = this.loginForm.get('userId')?.value || '';
     this.authService.getOtp(userId).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.setOtpComponentVisible();
+        this.loginForm.enable();
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -108,6 +110,7 @@ export class LoginComponent implements OnDestroy {
       },
       error: (error) => {
         this.isLoading = false;
+        this.loginForm.enable();
         if (error.status === 403) {
           this.messageService.add({
             severity: 'error',
