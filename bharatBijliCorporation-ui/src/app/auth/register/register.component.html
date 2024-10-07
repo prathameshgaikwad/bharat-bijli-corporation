@@ -93,16 +93,6 @@
           />
           <label for="pincode">Pincode</label>
         </p-floatLabel>
-        <!-- <p-inputGroup class="date-input-group">
-          <p-inputGroupAddon>DOB</p-inputGroupAddon>
-          <input
-            id="dateOfBirth"
-            type="date"
-            pInputText
-            name="dateOfBirth"
-            formControlName="dateOfBirth"
-          />
-        </p-inputGroup> -->
         <p-inputGroup class="date-input-group">
           <p-inputGroupAddon>DOB</p-inputGroupAddon>
           <p-floatLabel>
@@ -124,6 +114,7 @@
           [rounded]="true"
           type="submit"
           [disabled]="registrationForm.invalid"
+          [loading]="isSubmitting"
         />
       </div>
     </form>
