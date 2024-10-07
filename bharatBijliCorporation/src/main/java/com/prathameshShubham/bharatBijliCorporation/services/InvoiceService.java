@@ -10,6 +10,7 @@ import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +49,20 @@ public class InvoiceService {
         invoice.setPeriodEndDate(invoiceRequest.getPeriodEndDate());
         invoice.setDueDate(invoiceRequest.getDueDate());
         invoice.setInvoiceStatus(InvoiceStatus.PENDING);
+
+
+        String customerId = invoice.getCustomer().getId();
+        LocalDateTime periodStartDate = invoice.getPeriodStartDate();
+        LocalDateTime periodEndDate = invoice.getPeriodEndDate();
+
+        //If User not found
+        if(!customerService.checkUserExists(customerId))
+            throw new RecordNotFoundException(("Customer Id not found for : " + customerId));
+
+        //check duplicates
+        if(invoiceRepo.existsByCustomerIdAndPeriodStartDateAndPeriodEndDate(customerId, periodStartDate, periodEndDate)){
+            throw new DuplicateEntryException("Duplicate entry found for: " + customerId + " " + periodStartDate + " - " + periodEndDate);
+        }
 
         return invoiceRepo.save(invoice);
     }

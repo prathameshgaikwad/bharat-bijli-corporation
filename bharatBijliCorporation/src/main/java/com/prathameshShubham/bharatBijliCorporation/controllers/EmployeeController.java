@@ -89,8 +89,8 @@ public class EmployeeController {
             @RequestParam(required = false) String search) {
         Page<Customer> chunk = customerService.getPaginatedCustomer(page, size, sortField, sortOrder, search);
 
-        if(chunk.isEmpty()){
-            return ResponseEntity.ok("No Customer Found");
+        if (chunk.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.error("No records found", HttpStatus.NOT_FOUND.value()));
         }
 
         return ResponseEntity.ok(chunk);

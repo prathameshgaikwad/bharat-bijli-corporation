@@ -1,6 +1,6 @@
-.search-bar{
-    display: flex;
-    /* flex-direction: row; */
+.search-bar {
+  display: flex;
+  /* flex-direction: row; */
 }
 
 .table-cont p {
@@ -11,36 +11,48 @@
   color: #333;
 }
 
-
-input{
-    width: 500px;
+input {
+  width: 500px;
 }
 
-.add-invoices{
-    margin-left: 10px;
+.add-invoices {
+  margin-left: 10px;
 
-
-    .button-btn-1 {
-      margin-right: 15px;
-    }
+  .button-btn-1 {
+    margin-right: 15px;
+  }
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+
+  p {
+    display: inline-flex;
+    margin: 0.4rem 0;
+  }
+}
+
+:host ::ng-deep .p-divider.p-divider-horizontal:before {
+  border-top: 2px dashed #979797;
+}
+
+:host ::ng-deep .p-dialog {
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  
+  .container {
     display: flex;
     flex-direction: column;
     width: 100%;
-
+    justify-content: space-between;
+  
     p {
       display: inline-flex;
       margin: 0.4rem 0;
     }
   }
 
-  :host ::ng-deep .p-divider.p-divider-horizontal:before {
-    border-top: 2px dashed #979797;
-  }
-
-  :host ::ng-deep .p-dialog {
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
