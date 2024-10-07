@@ -58,15 +58,20 @@ export class RegisterComponent {
     ]),
     dateOfBirth: new FormControl(null, [Validators.required]),
   });
+  isSubmitting: boolean;
 
   constructor(
     private authService: AuthService,
     private messageService: MessageService,
     private router: Router
-  ) {}
+  ) {
+    this.isSubmitting = false;
+  }
 
   onSubmit() {
     if (this.registrationForm.valid) {
+      this.isSubmitting = true;
+      this.registrationForm.disable();
       const personalDetails: PersonalDetails = {
         firstName: this.registrationForm.value.firstName!,
         lastName: this.registrationForm.value.lastName!,
@@ -82,6 +87,8 @@ export class RegisterComponent {
       };
       this.authService.register(personalDetails).subscribe({
         next: (response) => {
+          this.isSubmitting = false;
+          this.registrationForm.enable();
           this.messageService.add({
             severity: 'success',
             summary: `${response.customer.id}`,
@@ -93,6 +100,8 @@ export class RegisterComponent {
           }, 10000);
         },
         error: (error) => {
+          this.isSubmitting = false;
+          this.registrationForm.enable();
           this.messageService.add({
             severity: 'error',
             summary: 'Error creating an account',

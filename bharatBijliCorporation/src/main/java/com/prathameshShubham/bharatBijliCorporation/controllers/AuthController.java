@@ -64,7 +64,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", e.getMessage()));  // Return error message
         }
 
-        //TODO: sendEmail(email, generatedOtp);
+        sendEmail(email, generatedOtp);
         return ResponseEntity.ok(
                 Map.of(
                         "message", "OTP sent to email: " + email,

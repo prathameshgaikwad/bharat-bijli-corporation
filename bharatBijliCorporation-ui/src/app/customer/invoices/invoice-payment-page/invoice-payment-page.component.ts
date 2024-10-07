@@ -1,3 +1,4 @@
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   BillingDetails,
   Invoice,
@@ -25,9 +26,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import {
+  InvoiceStatus,
+  TransactionMethod,
+} from '../../../shared/types/enums.types';
 
 import { AccordionModule } from 'primeng/accordion';
-import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -38,9 +42,9 @@ import { DividerModule } from 'primeng/divider';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 import { PanelModule } from 'primeng/panel';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TooltipModule } from 'primeng/tooltip';
-import { TransactionMethod } from '../../../shared/types/enums.types';
 import { WalletPaymentComponent } from './wallet-payment/wallet-payment.component';
 import { WalletService } from '../../services/wallet.service';
 import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
@@ -65,6 +69,7 @@ import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
     CardPaymentComponent,
     CashPaymentComponent,
     WalletPaymentComponent,
+    ProgressSpinnerModule,
   ],
   templateUrl: './invoice-payment-page.component.html',
   styleUrl: './invoice-payment-page.component.css',
@@ -74,6 +79,7 @@ export class InvoicePaymentPageComponent implements OnInit {
   paymentMethodForm: FormGroup;
   customerId!: string;
   paymentOptions: any[] = CUSTOMER_PAYMENT_OPTIONS;
+  isLoading: boolean;
 
   walletBalance: number;
   customerDetails: PersonalDetails;
@@ -87,8 +93,10 @@ export class InvoicePaymentPageComponent implements OnInit {
     private authService: AuthService,
     private customerService: CustomerService,
     private walletService: WalletService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
+    this.isLoading = true;
     this.invoiceDetails = DEFAULT_INVOICE;
     this.customerDetails = defaultCustomer.personalDetails;
     this.paymentDetails = DEFAULT_PAYMENT_DETAILS;
@@ -107,12 +115,12 @@ export class InvoicePaymentPageComponent implements OnInit {
     this.getCustomerId();
     this.activatedRoute.params.subscribe((params) => {
       this.invoiceId = params['invoiceId'];
+      if (this.invoiceId) {
+        this.fetchInvoiceDetails(this.customerId, this.invoiceId);
+      }
       if (this.customerId) {
         this.fetchCustomerDetails(this.customerId);
         this.fetchWalletBalance(this.customerId);
-      }
-      if (this.invoiceId) {
-        this.fetchInvoiceDetails(this.customerId, this.invoiceId);
       }
     });
 
@@ -160,8 +168,12 @@ export class InvoicePaymentPageComponent implements OnInit {
             this.invoiceDetails,
             this.billingDetails.isOnlinePayment
           );
+          if (this.invoiceDetails.invoiceStatus === InvoiceStatus.PAID)
+            this.router.navigate(['/customer/invoices']);
+          this.isLoading = false;
         },
         error: (error) => {
+          this.isLoading = false;
           console.error('Error fetching invoice details:', error);
         },
       });

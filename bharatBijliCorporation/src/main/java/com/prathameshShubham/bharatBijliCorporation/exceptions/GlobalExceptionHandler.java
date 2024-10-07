@@ -57,4 +57,9 @@ public class GlobalExceptionHandler {
         ApiResponse<?> response = ApiResponse.error(ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
+
+    @ExceptionHandler(InvoiceAlreadyPaidException.class)
+    public ResponseEntity<String> invoiceAlreadyPaidException(InvoiceAlreadyPaidException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
