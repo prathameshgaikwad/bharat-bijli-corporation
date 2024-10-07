@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { CustomerService } from '../services/customer.service';
 import { DEFAULT_TRANSACTION } from '../../core/helpers/constants';
+import { FallbackComponent } from '../../shared/components/fallback/fallback.component';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 import { PaymentSummaryComponent } from './payment-summary/payment-summary.component';
 import { TableModule } from 'primeng/table';
@@ -21,6 +22,7 @@ import { TagModule } from 'primeng/tag';
     CommonModule,
     ButtonModule,
     PaymentSummaryComponent,
+    FallbackComponent,
   ],
   templateUrl: './payments.component.html',
   styleUrl: './payments.component.css',

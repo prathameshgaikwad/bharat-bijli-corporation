@@ -7,63 +7,69 @@
       history.
     </p>
   </div>
-  <p-table
-    [value]="transactions"
-    selectionMode="single"
-    [(selection)]="selectedTransaction"
-    (onRowSelect)="showTransaction($event.data)"
-    (onRowUnselect)="hideTransaction()"
-    [paginator]="true"
-    [rows]="this.pageSize"
-    [totalRecords]="totalRecords"
-    [lazy]="true"
-    [paginator]="totalRecords > pageSize"
-    (onLazyLoad)="onLazyLoad($event)"
-    [tableStyle]="{ 'min-width': '50rem' }"
-    styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
-    sortMode="multiple"
-  >
-    <ng-template pTemplate="header">
-      <tr>
-        <th>#</th>
-        <th>Date</th>
-        <th>Associated Bill</th>
-        <th>Amount</th>
-        <th>Fee</th>
-        <th>Method</th>
-        <th>Status</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-transaction let-i="rowIndex">
-      <tr [pSelectableRow]="transaction">
-        <td>{{ i + 1 }}</td>
-        <td>
-          {{ transaction.transactionDate | date : "EEE, d MMM yyyy" }}
-        </td>
-        <td>
-          {{ transaction.invoice.id }}
-        </td>
-        <td>
-          {{ transaction.amount | currency : "INR" : "symbol" : "1.2-2" }}
-        </td>
-        <td>
-          {{
-            transaction.transactionFee | currency : "INR" : "symbol" : "1.2-2"
-          }}
-        </td>
-        <td>
-          {{ transaction.transactionMethod }}
-        </td>
-        <td>
-          <p-tag
-            [icon]="getIcon(transaction.transactionStatus)"
-            [severity]="getSeverity(transaction.transactionStatus)"
-            [value]="transaction.transactionStatus"
-          ></p-tag>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+  <app-fallback
+    *ngIf="transactions.length === 0; else content"
+    message="Your payments will appear here"
+  ></app-fallback>
+  <ng-template #content>
+    <p-table
+      [value]="transactions"
+      selectionMode="single"
+      [(selection)]="selectedTransaction"
+      (onRowSelect)="showTransaction($event.data)"
+      (onRowUnselect)="hideTransaction()"
+      [paginator]="true"
+      [rows]="this.pageSize"
+      [totalRecords]="totalRecords"
+      [lazy]="true"
+      [paginator]="totalRecords > pageSize"
+      (onLazyLoad)="onLazyLoad($event)"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
+      sortMode="multiple"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Associated Bill</th>
+          <th>Amount</th>
+          <th>Fee</th>
+          <th>Method</th>
+          <th>Status</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-transaction let-i="rowIndex">
+        <tr [pSelectableRow]="transaction">
+          <td>{{ i + 1 }}</td>
+          <td>
+            {{ transaction.transactionDate | date : "EEE, d MMM yyyy" }}
+          </td>
+          <td>
+            {{ transaction.invoice.id }}
+          </td>
+          <td>
+            {{ transaction.amount | currency : "INR" : "symbol" : "1.2-2" }}
+          </td>
+          <td>
+            {{
+              transaction.transactionFee | currency : "INR" : "symbol" : "1.2-2"
+            }}
+          </td>
+          <td>
+            {{ transaction.transactionMethod }}
+          </td>
+          <td>
+            <p-tag
+              [icon]="getIcon(transaction.transactionStatus)"
+              [severity]="getSeverity(transaction.transactionStatus)"
+              [value]="transaction.transactionStatus"
+            ></p-tag>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
   <app-payment-summary
     [transactionDetails]="selectedTransaction"
     [isVisible]="isTransactionSummaryVisible"

@@ -8,6 +8,7 @@ import { CustomerService } from '../services/customer.service';
 import { DEFAULT_INVOICE } from '../../core/helpers/constants';
 import { DialogModule } from 'primeng/dialog';
 import { DynamicInvoiceMessage } from '../dynamic-invoice-message/dynamic-invoice-message.component';
+import { FallbackComponent } from '../../shared/components/fallback/fallback.component';
 import { InvoiceStatus } from '../../shared/types/enums.types';
 import { InvoiceSummaryComponent } from './invoice-summary/invoice-summary.component';
 import { MessageService } from 'primeng/api';
@@ -31,6 +32,7 @@ import { ToastModule } from 'primeng/toast';
     DialogModule,
     InvoiceSummaryComponent,
     ToastModule,
+    FallbackComponent,
   ],
   templateUrl: './invoices.component.html',
   styleUrl: './invoices.component.css',
