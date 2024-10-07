@@ -1,151 +1,166 @@
 <app-navbar></app-navbar>
 <div class="page">
   <p-panel header="Make a payment">
-    <div class="container">
-      <div class="section">
-        <p-accordion expandIcon="none" collapseIcon="none">
-          <p-accordionTab>
-            <ng-template pTemplate="header">
-              <i class="pi pi-user" style="margin-right: 0.8rem"></i>
-              {{ customerDetails.firstName }} {{ customerDetails.lastName }}
-            </ng-template>
-            <p class="details-paragraph">
-              <span class="detailsItem">Address:</span>
-              {{ customerDetails.address }}, {{ customerDetails.city }},
-              {{ customerDetails.state }}
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Pincode:</span>
-              {{ customerDetails.pincode }}
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Phone Number:</span>
-              {{ customerDetails.phoneNumber }}
-            </p>
-          </p-accordionTab>
-          <p-accordionTab>
-            <ng-template pTemplate="header">
-              <i class="pi pi-receipt" style="margin-right: 0.8rem"></i>
-              Bill Details
-            </ng-template>
-            <p class="details-paragraph">
-              <span class="detailsItem">Id:</span>
-              {{ invoiceDetails.id }}
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Period:</span>
-              {{ invoiceDetails.periodStartDate | date : "d MMM yy" }} -
-              {{ invoiceDetails.periodEndDate | date : "d MMM yy" }}
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Due on:</span>
-              {{ invoiceDetails.dueDate | date : "EEE, d MMM yy" }}
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Consumption:</span>
-              {{ invoiceDetails.unitsConsumed }} units
-            </p>
-            <p class="details-paragraph">
-              <span class="detailsItem">Tariff: </span>
-              {{
-                invoiceDetails.tariff | currency : "INR" : "symbol" : "1.2-2"
-              }}
-            </p>
-          </p-accordionTab>
-        </p-accordion>
-        <h3 class="subtitle paymentMethodTitle" style="margin-top: 2rem">
-          Payment Method
-          <i
-            class="pi pi-info-circle infoIcon"
-            pTooltip="Pay online to get 5% discount"
-          ></i>
-        </h3>
-        <form [formGroup]="paymentMethodForm">
-          <div>
-            <p-selectButton
-              [options]="paymentOptions"
-              formControlName="paymentMethod"
-            ></p-selectButton>
-          </div>
-          <app-cash-payment
-            [isVisible]="paymentMethodSelectionDetails.isCashSelected"
-          ></app-cash-payment>
-          <app-card-payment
-            *ngIf="paymentMethodSelectionDetails.isCardSelected"
-            [customerId]="customerId"
-            [invoiceId]="invoiceId"
-            [billingDetails]="billingDetails"
-            [paymentDetails]="paymentDetails"
-          ></app-card-payment>
-          <app-wallet-payment
-            *ngIf="paymentMethodSelectionDetails.isWalletSelected"
-            [customerId]="customerId"
-            [invoiceId]="invoiceId"
-            [billingDetails]="billingDetails"
-            [paymentDetails]="paymentDetails"
-            [walletBalance]="walletBalance"
-          ></app-wallet-payment>
-        </form>
-      </div>
-      <div class="checkout section">
-        <div class="totalAmountContainer">
-          <p>You pay</p>
-          <h1 class="heading">
-            {{
-              billingDetails.totalAmount | currency : "INR" : "symbol" : "1.2-2"
-            }}
-          </h1>
-        </div>
-        <p-divider type="dashed" align="center"></p-divider>
-        <div class="invoice-summary">
-          <p>
-            Billing Amount:
-            <span class="value">{{
-              billingDetails.billingAmount
-                | currency : "INR" : "symbol" : "1.2-2"
-            }}</span>
-          </p>
-          <p-divider
-            type="dashed"
-            align="center"
-            *ngIf="
-              billingDetails.payBeforeDueDateDiscount > 0 ||
-              billingDetails.payByOnlineDiscount > 0
-            "
-          >
-            <p>{{ "Discount" }}</p>
-          </p-divider>
-          <p *ngIf="billingDetails.isPaymentBeforeDueDate">
-            Paying before due date (5%):
-            <span class="value discount"
-              >-
-              {{
-                billingDetails.payBeforeDueDateDiscount
-                  | currency : "INR" : "symbol" : "1.2-2"
-              }}</span
-            >
-          </p>
-          <p *ngIf="billingDetails.isOnlinePayment">
-            Paying online (5%):
-            <span class="value discount"
-              >-
-              {{
-                billingDetails.payByOnlineDiscount
-                  | currency : "INR" : "symbol" : "1.2-2"
-              }}</span
-            >
-          </p>
-          <p-divider type="dashed" align="center">
-            <p>Total</p>
-          </p-divider>
-          <p class="subtitle bold">
-            Total Amount:
-            <span class="value">{{
-              billingDetails.totalAmount | currency : "INR" : "symbol" : "1.2-2"
-            }}</span>
-          </p>
-        </div>
-      </div>
+    <div
+      *ngIf="isLoading; else content"
+      style="
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      "
+    >
+      <p-progressSpinner></p-progressSpinner>
     </div>
+    <ng-template #content>
+      <div class="container">
+        <div class="section">
+          <p-accordion expandIcon="none" collapseIcon="none">
+            <p-accordionTab>
+              <ng-template pTemplate="header">
+                <i class="pi pi-user" style="margin-right: 0.8rem"></i>
+                {{ customerDetails.firstName }} {{ customerDetails.lastName }}
+              </ng-template>
+              <p class="details-paragraph">
+                <span class="detailsItem">Address:</span>
+                {{ customerDetails.address }}, {{ customerDetails.city }},
+                {{ customerDetails.state }}
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Pincode:</span>
+                {{ customerDetails.pincode }}
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Phone Number:</span>
+                {{ customerDetails.phoneNumber }}
+              </p>
+            </p-accordionTab>
+            <p-accordionTab>
+              <ng-template pTemplate="header">
+                <i class="pi pi-receipt" style="margin-right: 0.8rem"></i>
+                Bill Details
+              </ng-template>
+              <p class="details-paragraph">
+                <span class="detailsItem">Id:</span>
+                {{ invoiceDetails.id }}
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Period:</span>
+                {{ invoiceDetails.periodStartDate | date : "d MMM yy" }} -
+                {{ invoiceDetails.periodEndDate | date : "d MMM yy" }}
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Due on:</span>
+                {{ invoiceDetails.dueDate | date : "EEE, d MMM yy" }}
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Consumption:</span>
+                {{ invoiceDetails.unitsConsumed }} units
+              </p>
+              <p class="details-paragraph">
+                <span class="detailsItem">Tariff: </span>
+                {{
+                  invoiceDetails.tariff | currency : "INR" : "symbol" : "1.2-2"
+                }}
+              </p>
+            </p-accordionTab>
+          </p-accordion>
+          <h3 class="subtitle paymentMethodTitle" style="margin-top: 2rem">
+            Payment Method
+            <i
+              class="pi pi-info-circle infoIcon"
+              pTooltip="Pay online to get 5% discount"
+            ></i>
+          </h3>
+          <form [formGroup]="paymentMethodForm">
+            <div>
+              <p-selectButton
+                [options]="paymentOptions"
+                formControlName="paymentMethod"
+              ></p-selectButton>
+            </div>
+            <app-cash-payment
+              [isVisible]="paymentMethodSelectionDetails.isCashSelected"
+            ></app-cash-payment>
+            <app-card-payment
+              *ngIf="paymentMethodSelectionDetails.isCardSelected"
+              [customerId]="customerId"
+              [invoiceId]="invoiceId"
+              [billingDetails]="billingDetails"
+              [paymentDetails]="paymentDetails"
+            ></app-card-payment>
+            <app-wallet-payment
+              *ngIf="paymentMethodSelectionDetails.isWalletSelected"
+              [customerId]="customerId"
+              [invoiceId]="invoiceId"
+              [billingDetails]="billingDetails"
+              [paymentDetails]="paymentDetails"
+              [walletBalance]="walletBalance"
+            ></app-wallet-payment>
+          </form>
+        </div>
+        <div class="checkout section">
+          <div class="totalAmountContainer">
+            <p>You pay</p>
+            <h1 class="heading">
+              {{
+                billingDetails.totalAmount
+                  | currency : "INR" : "symbol" : "1.2-2"
+              }}
+            </h1>
+          </div>
+          <p-divider type="dashed" align="center"></p-divider>
+          <div class="invoice-summary">
+            <p>
+              Billing Amount:
+              <span class="value">{{
+                billingDetails.billingAmount
+                  | currency : "INR" : "symbol" : "1.2-2"
+              }}</span>
+            </p>
+            <p-divider
+              type="dashed"
+              align="center"
+              *ngIf="
+                billingDetails.payBeforeDueDateDiscount > 0 ||
+                billingDetails.payByOnlineDiscount > 0
+              "
+            >
+              <p>{{ "Discount" }}</p>
+            </p-divider>
+            <p *ngIf="billingDetails.isPaymentBeforeDueDate">
+              Paying before due date (5%):
+              <span class="value discount"
+                >-
+                {{
+                  billingDetails.payBeforeDueDateDiscount
+                    | currency : "INR" : "symbol" : "1.2-2"
+                }}</span
+              >
+            </p>
+            <p *ngIf="billingDetails.isOnlinePayment">
+              Paying online (5%):
+              <span class="value discount"
+                >-
+                {{
+                  billingDetails.payByOnlineDiscount
+                    | currency : "INR" : "symbol" : "1.2-2"
+                }}</span
+              >
+            </p>
+            <p-divider type="dashed" align="center">
+              <p>Total</p>
+            </p-divider>
+            <p class="subtitle bold">
+              Total Amount:
+              <span class="value">{{
+                billingDetails.totalAmount
+                  | currency : "INR" : "symbol" : "1.2-2"
+              }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   </p-panel>
 </div>
