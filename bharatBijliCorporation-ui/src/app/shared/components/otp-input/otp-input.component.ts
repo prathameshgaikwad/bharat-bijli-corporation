@@ -38,6 +38,7 @@ export class OtpInputComponent {
     otp: new FormControl(null, [
       Validators.required,
       Validators.minLength(this.length),
+      Validators.pattern(/^\d+$/),
     ]),
   });
 
@@ -50,12 +51,14 @@ export class OtpInputComponent {
   onSubmit() {
     if (this.otpForm.valid) {
       this.isLoading = true;
+      this.otpForm.disable();
       const loginRequest: LoginRequest = {
         userId: this.userId,
         otp: this.otpForm.value.otp || '',
       };
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
+          this.otpForm.enable();
           this.isLoading = false;
           const role = this.authService.getCurrentUserRole();
 
@@ -67,8 +70,7 @@ export class OtpInputComponent {
         },
         error: (err) => {
           this.isLoading = false;
-          console.log(err);
-
+          this.otpForm.enable();
           if (err.status === 401) {
             this.messageService.add({
               severity: 'error',
