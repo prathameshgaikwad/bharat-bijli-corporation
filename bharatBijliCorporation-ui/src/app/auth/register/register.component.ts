@@ -71,6 +71,7 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registrationForm.valid) {
       this.isSubmitting = true;
+      this.registrationForm.disable();
       const personalDetails: PersonalDetails = {
         firstName: this.registrationForm.value.firstName!,
         lastName: this.registrationForm.value.lastName!,
@@ -87,6 +88,7 @@ export class RegisterComponent {
       this.authService.register(personalDetails).subscribe({
         next: (response) => {
           this.isSubmitting = false;
+          this.registrationForm.enable();
           this.messageService.add({
             severity: 'success',
             summary: `${response.customer.id}`,
@@ -99,6 +101,7 @@ export class RegisterComponent {
         },
         error: (error) => {
           this.isSubmitting = false;
+          this.registrationForm.enable();
           this.messageService.add({
             severity: 'error',
             summary: 'Error creating an account',
