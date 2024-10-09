@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,6 +33,9 @@ public class CustomerService {
 
     @Autowired
     private PersonalDetailsService personalDetailsService;
+
+    @Autowired
+    private  MailService mailService;
 
     public Customer saveCustomer(PersonalDetails personalDetails) {
         try {
@@ -119,7 +124,7 @@ public class CustomerService {
                     isDuplicate(row);
                     saveToDatabase(row);
                     successCount++;
-                } catch (MissingFieldException | DuplicateEntryException e) {
+                } catch (MissingFieldException | DuplicateEntryException | InvalidFieldFormatException e) {
                     failureCount++;
                     errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 }
@@ -147,35 +152,29 @@ public class CustomerService {
         String dateOfBirth = rowData.get("dateOfBirth");
         String state = rowData.get("state");
 
-        // Check for missing fields
         if (firstName == null || lastName == null || emailId == null || phoneNumber == null ||
                 address == null || city == null || pincode == null || dateOfBirth == null || state == null) {
             throw new MissingFieldException("Missing required fields in row: " + rowData);
         }
 
-        // Validate first and last name (non-empty and alphabetical)
         if (!firstName.matches("[A-Za-z]+") || !lastName.matches("[A-Za-z]+")) {
             throw new MissingFieldException("Invalid name format in row: " + rowData);
         }
 
-        // Validate email format
         if (!emailId.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
-            throw new MissingFieldException("Invalid email format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid email format in row: " + rowData);
         }
 
-        // Validate phone number format (Indian 10-digit phone number)
         if (!phoneNumber.matches("^\\d{10}$")) {
-            throw new MissingFieldException("Invalid phone number format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid phone number format in row: " + rowData);
         }
 
-        // Validate pincode format (Indian 6-digit pincode)
         if (!pincode.matches("^\\d{6}$")) {
-            throw new MissingFieldException("Invalid pincode format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid pincode format in row: " + rowData);
         }
 
-        // Validate date of birth format (YYYY-MM-DD format assumed here)
         if (!dateOfBirth.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            throw new MissingFieldException("Invalid date of birth format in row: " + rowData);
+            throw new InvalidFieldFormatException("Invalid date of birth format in row: " + rowData);
         }
     }
 
@@ -209,31 +208,29 @@ public class CustomerService {
     }
 
     public Page<Customer> getPaginatedCustomer(int pageNo, int size, String sortField, String sortOrder, String search) {
-
         Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
 
-        // Check if search is provided
         if (search != null && !search.isEmpty()) {
-            // Try to find by Customer ID first
-            Page<Customer> page = customerRepo.findByIdContainingIgnoreCase(search, pageable);
+            String searchTerm = search.trim().toLowerCase();
+            Page<Customer> page = customerRepo.findByIdContainingIgnoreCaseOrPersonalDetailsEmailIdContainingIgnoreCase(searchTerm, searchTerm, pageable);
+
             if (page.isEmpty()) {
-                // If no result by customer ID, check for full name or partial name match
-                String[] names = search.trim().split(" ");
+                String[] names = searchTerm.split(" ");
                 if (names.length == 2) {
                     String firstName = names[0];
                     String lastName = names[1];
                     page = customerRepo.searchByFullName(firstName, lastName, pageable);
                 } else {
-                    page = customerRepo.searchByCustomerName(search, pageable);
+                    page = customerRepo.searchByCustomerName(searchTerm, pageable);
                 }
             }
             return page;
-        } else {
-            // If no search, return all paginated customers
-            return customerRepo.findAll(pageable);
         }
+
+        return customerRepo.findAll(pageable);
     }
+
 
     public PersonalDetails updateCustomer(Customer updatedCustomerDetails) {
         Optional<Customer> customerOptional = customerRepo.findById(updatedCustomerDetails.getId());
@@ -272,4 +269,5 @@ public class CustomerService {
     public  boolean checkUserExists(String customerId){
         return customerRepo.existsById(customerId);
     }
+
 }
