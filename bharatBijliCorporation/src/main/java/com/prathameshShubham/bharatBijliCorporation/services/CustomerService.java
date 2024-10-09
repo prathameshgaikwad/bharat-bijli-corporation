@@ -41,8 +41,9 @@ public class CustomerService {
             newCustomer.setId(customerId);
             newCustomer.setPersonalDetails(savedPersonalDetails);
             newCustomer.setServiceConnectionStatus(ServiceConnectionStatus.ACTIVE);
-
-            return customerRepo.save(newCustomer);
+            Customer customer = customerRepo.save(newCustomer);
+            mailService.sendUserIdWithEmail(personalDetails.getEmailId(), customerId);
+            return customer;
         } catch (DataIntegrityViolationException exception) {
             throw new DataIntegrityViolationException(exception.getMessage());
         }
