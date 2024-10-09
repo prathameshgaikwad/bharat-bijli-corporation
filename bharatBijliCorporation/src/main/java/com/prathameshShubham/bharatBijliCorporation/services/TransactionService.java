@@ -105,18 +105,25 @@ public class TransactionService {
         }
         Sort sort = sortOrder.equalsIgnoreCase("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
         Pageable pageable = PageRequest.of(pageNo, size, sort);
-        Page<Transaction> page;
 
         if (search != null && !search.isEmpty()) {
-            page =  transactionRepo.searchByCustomerName(search, pageable);
-            if(page.isEmpty()){
-                page = transactionRepo.findByCustomerId(search, pageable);
-            }
-        } else {
-            page =  transactionRepo.findAll(pageable);
-        }
+            String searchTerm = search.trim().toLowerCase();
+            Page<Transaction> page = transactionRepo.findByCustomerIdContainingIgnoreCaseOrCustomerPersonalDetailsEmailIdContainingIgnoreCase(searchTerm, searchTerm, pageable);
 
-        return page;
+            if (page.isEmpty()) {
+                String[] names = search.trim().split(" ");
+                if (names.length == 2) {
+                    String firstName = names[0];
+                    String lastName = names[1];
+                    page = transactionRepo.searchByFullName(firstName, lastName, pageable);
+                } else {
+                    page = transactionRepo.searchByCustomerName(search, pageable);
+                }
+            }
+            return  page;
+        } else {
+            return transactionRepo.findAll(pageable);
+        }
     }
 
     //Recent Transaction
