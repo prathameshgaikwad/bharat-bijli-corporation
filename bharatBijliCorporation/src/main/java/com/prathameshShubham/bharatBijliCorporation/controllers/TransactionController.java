@@ -3,9 +3,11 @@ package com.prathameshShubham.bharatBijliCorporation.controllers;
 import com.itextpdf.layout.element.Tab;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.models.Transaction;
+import com.prathameshShubham.bharatBijliCorporation.response.ApiResponse;
 import com.prathameshShubham.bharatBijliCorporation.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +29,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getTransactions(
+    public ResponseEntity<ApiResponse<Page<Transaction>>> getTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortField,
@@ -37,10 +39,10 @@ public class TransactionController {
         Page<Transaction> chunk = transactionService.getPaginatedTransactions(page, size, sortField, sortOrder, search);
 
         if(chunk.isEmpty()){
-            return ResponseEntity.ok("No Invoices Found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("Transaction not found.... !", 404));
         }
 
-        return ResponseEntity.ok(chunk);
+        return ResponseEntity.ok(ApiResponse.success(chunk, "Transactions fetched successfully.", 200));
     }
 
     @GetMapping("/recents")

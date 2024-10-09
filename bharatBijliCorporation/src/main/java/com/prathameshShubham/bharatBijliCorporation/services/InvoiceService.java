@@ -8,10 +8,14 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.*;
 import com.prathameshShubham.bharatBijliCorporation.models.Customer;
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.repositories.InvoiceRepo;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,8 +42,17 @@ public class InvoiceService {
     @Autowired
     private CustomerService customerService;
 
-    public Invoice saveInvoice(InvoiceRequest invoiceRequest) {
+    @Autowired
+    private MailService mailService;
+
+    public Invoice saveInvoice(InvoiceRequest invoiceRequest) throws RecordNotFoundException{
         Invoice invoice = new Invoice();
+
+        String customerId = invoiceRequest.getCustomerId();
+        //If User not found
+        if(!customerService.checkUserExists(customerId)) {
+            throw new RecordNotFoundException(("Customer Id not found for : " + customerId));
+        }
 
         invoice.setCustomer(customerService.getCustomer(invoiceRequest.getCustomerId()));
         invoice.setGeneratedByEmployee(employeeService.getEmployee(invoiceRequest.getEmployeeId()));
@@ -51,17 +64,19 @@ public class InvoiceService {
         invoice.setInvoiceStatus(InvoiceStatus.PENDING);
 
 
-        String customerId = invoice.getCustomer().getId();
         LocalDateTime periodStartDate = invoice.getPeriodStartDate();
         LocalDateTime periodEndDate = invoice.getPeriodEndDate();
 
-        //If User not found
-        if(!customerService.checkUserExists(customerId))
-            throw new RecordNotFoundException(("Customer Id not found for : " + customerId));
 
         //check duplicates
-        if(invoiceRepo.existsByCustomerIdAndPeriodStartDateAndPeriodEndDate(customerId, periodStartDate, periodEndDate)){
-            throw new DuplicateEntryException("Duplicate entry found for: " + customerId + " " + periodStartDate + " - " + periodEndDate);
+        if(!invoiceRepo.findByCustomerIdAndPeriodStartDateBetween(customerId, periodStartDate, periodEndDate).isEmpty()){
+            throw new DuplicateEntryException("Already Exists for: " + customerId + " " + periodStartDate + " - " + periodEndDate);
+        }
+
+        try {
+            mailService.sendInvoiceEmail(invoice);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
 
         return invoiceRepo.save(invoice);
@@ -172,7 +187,7 @@ public class InvoiceService {
                     checkDuplicateEntry(row);
                     saveInvoiceToDatabase(row);
                     successCount++;
-                } catch (InvalidDataFormatException | DuplicateEntryException | MissingFieldException | InvalidFieldFormatException e) {
+                } catch (InvalidDataFormatException | DuplicateEntryException | MissingFieldException | InvalidFieldFormatException | RecordNotFoundException e) {
                     failureCount++;
                     errorMessages.add("Row " + totalCount + ": " + e.getMessage());
                 }
@@ -264,7 +279,7 @@ public class InvoiceService {
         }
     }
 
-    private void saveInvoiceToDatabase(Map<String, String> rowData) {
+    private void saveInvoiceToDatabase(Map<String, String> rowData) throws RecordNotFoundException{
         InvoiceRequest invoiceRequest = new InvoiceRequest();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         invoiceRequest.setDueDate(LocalDateTime.parse(rowData.get("dueDate")+ "T00:00:00"));  // Parsing date string to LocalDateTime
@@ -293,7 +308,9 @@ public class InvoiceService {
 
         // Check if search is provided
         if (search != null && !search.isEmpty()) {
-            Page<Invoice> page = invoiceRepo.findByCustomerId(search, pageable);
+            String searchTerm = search.trim().toLowerCase();
+            Page<Invoice> page = invoiceRepo.findByCustomerIdContainingIgnoreCaseOrCustomerPersonalDetailsEmailIdContainingIgnoreCase(searchTerm, searchTerm, pageable);
+
             if (page.isEmpty()) {
                 String[] names = search.trim().split(" ");
                 if (names.length == 2) {

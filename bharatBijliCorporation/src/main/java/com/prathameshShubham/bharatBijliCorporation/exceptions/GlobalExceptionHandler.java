@@ -1,6 +1,7 @@
 package com.prathameshShubham.bharatBijliCorporation.exceptions;
 
 import com.prathameshShubham.bharatBijliCorporation.response.ApiResponse;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<String> duplicateEntryException(DuplicateEntryException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -61,5 +62,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvoiceAlreadyPaidException.class)
     public ResponseEntity<String> invoiceAlreadyPaidException(InvoiceAlreadyPaidException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<String> handleMessagingException(MessagingException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DetailsNotUpdatedExceptions.class)
+    public ResponseEntity<?> handleDetailsNotUpdatedException(DetailsNotUpdatedExceptions ex) {
+        return ResponseEntity.ok(ApiResponse.error(ex.getMessage(), 409));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest webRequest) {
+        ApiResponse errorResponse = ApiResponse.error(ex.getMessage(), 404);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

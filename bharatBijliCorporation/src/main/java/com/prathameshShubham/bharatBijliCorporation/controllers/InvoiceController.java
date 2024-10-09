@@ -7,6 +7,7 @@ import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormat
 import com.prathameshShubham.bharatBijliCorporation.models.Invoice;
 import com.prathameshShubham.bharatBijliCorporation.dto.InvoiceRequest;
 import com.prathameshShubham.bharatBijliCorporation.response.ApiResponse;
+import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
 import com.prathameshShubham.bharatBijliCorporation.services.InvoiceService;
 import com.prathameshShubham.bharatBijliCorporation.services.PDFService;
 import jakarta.validation.Valid;
@@ -85,7 +86,7 @@ public class InvoiceController {
         }
 
         CsvUploadResult result = invoiceService.uploadCsv(file, employeeId);
-        String message = "Succesfull entry : " + result.getSuccessCount() + ", failed " + result.getFailureCount();
+        String message = "Successful entry : " + result.getSuccessCount() + ", failed " + result.getFailureCount();
         if(result.getSuccessCount() == 0)
             return  ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new ApiResponse<>(true,  message, result.getErrorMessages(), HttpStatus.NOT_ACCEPTABLE.value()));
 
@@ -98,19 +99,19 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getInvoices(
+    public ResponseEntity<ApiResponse<Page<Invoice>>> getInvoices(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "dueDate") String sortField,
+            @RequestParam(defaultValue = "customer.personalDetails.firstName") String sortField,
             @RequestParam(defaultValue = "asc") String sortOrder,
             @RequestParam(required = false) String search) {
         Page<Invoice> chunk = invoiceService.getPaginatedInvoices(page, size, sortField, sortOrder, search);
 
         if(chunk.isEmpty()){
-            return ResponseEntity.ok("No Invoices Found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.error("No Invoice found...... !", 404));
         }
 
-        return ResponseEntity.ok(chunk);
+        return ResponseEntity.ok(ApiResponse.success(chunk, "Invoices Fetched Successfully.", 200));
     }
 
 }
