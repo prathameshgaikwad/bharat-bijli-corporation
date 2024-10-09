@@ -25,4 +25,5 @@ public interface CustomerRepo extends JpaRepository<Customer, String> {
     @Query("SELECT c FROM Customer c WHERE c.personalDetails.firstName LIKE %?1% AND c.personalDetails.lastName LIKE %?2%")
     Page<Customer> searchByFullName(String firstName, String lastName, Pageable pageable);
 
+    Page<Customer> findByIdContainingIgnoreCaseOrPersonalDetailsEmailIdContainingIgnoreCase(String searchTerm, String searchTerm1, Pageable pageable);
 }
