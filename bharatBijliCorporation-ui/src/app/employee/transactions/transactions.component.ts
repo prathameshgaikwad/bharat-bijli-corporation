@@ -5,7 +5,7 @@ import { EmployeeService } from '../services/employee.service';
 import { HttpClient } from '@angular/common/http';
 import { Page, Transaction } from '../../shared/types/consumables.types';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { SortEvent } from 'primeng/api';
+import { MessageService, SortEvent } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { ChipModule } from 'primeng/chip';
@@ -15,6 +15,9 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { MessagesModule } from 'primeng/messages';
+import { PaymentSummaryComponent } from '../../customer/payments/payment-summary/payment-summary.component';
+import { DEFAULT_TRANSACTION } from '../../core/helpers/constants';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-transactions',
@@ -29,9 +32,12 @@ import { MessagesModule } from 'primeng/messages';
     InputTextModule,
     InputGroupAddonModule,
     MessagesModule,
+    PaymentSummaryComponent,
+    ToastModule
   ],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.css',
+  providers: [MessageService],
 })
 export class TransactionsComponent {
   transactions: Transaction[] = [];
@@ -49,7 +55,12 @@ export class TransactionsComponent {
   previousSortOrder: string = 'asc'; // Track previous sort order
   searchQuery = '';
 
-  constructor(private empService: EmployeeService) {}
+  
+  selectedTransaction : Transaction = DEFAULT_TRANSACTION;
+  isTransactionSummaryVisible: boolean = false;
+
+  constructor(private empService: EmployeeService,
+    private messageService : MessageService) {}
 
   ngOnInit(): void {
     this.empService.getCountOfTransaction().subscribe({
@@ -73,12 +84,19 @@ export class TransactionsComponent {
         this.searchQuery
       )
       .subscribe({
-        next: (response: Page<Transaction>) => {
-          this.transactions = response.content;
-          this.totalRecords = response.totalElements;
+        next: (response) => {
+          this.messageService.add({
+            severity:'success',
+            summary:response.message
+          })
+          this.transactions = response.data.content;
+          this.totalRecords = response.data.totalElements;
         },
         error: (error) => {
-          console.error('Error fetching transactions:', error);
+          this.messageService.add({
+            severity:'error',
+            summary:error.message
+          })
         },
       });
   }
@@ -112,6 +130,16 @@ export class TransactionsComponent {
     if(this.searchQuery==''){
       this.messages = [{ severity: 'warn', detail: 'Enter' }];
     }
+  }
+
+  showTransaction(transaction: any) {
+    this.isTransactionSummaryVisible = true;
+    this.selectedTransaction = transaction;
+  }
+
+  hideTransaction() {
+    this.selectedTransaction = DEFAULT_TRANSACTION;
+    this.isTransactionSummaryVisible = false;
   }
 
   getStatusColor(status: string): string {

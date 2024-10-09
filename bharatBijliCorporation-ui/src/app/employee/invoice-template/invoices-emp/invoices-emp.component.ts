@@ -9,7 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { ChipModule } from 'primeng/chip';
 import { PaginatorModule } from 'primeng/paginator';
-import { SortEvent } from 'primeng/api';
+import { MessageService, SortEvent } from 'primeng/api';
 
 import { MessagesModule } from 'primeng/messages';
 import { DynamicInvoiceMessage } from '../../../customer/dynamic-invoice-message/dynamic-invoice-message.component';
@@ -32,6 +32,7 @@ import {
 } from '../../../core/helpers/constants';
 import { calculateInvoiceDetails } from '../../../core/helpers/invoice';
 import { Customer, defaultCustomer } from '../../../shared/types/user.types';
+import { ToastModule } from 'primeng/toast';
 
 export interface InvoiceForPayment {
   customer: Customer;
@@ -72,9 +73,11 @@ export const DEFAULT_INVOICE_PAY_RESPONSE: InvoiceForPayment = {
     DialogModule,
     InvoiceSummaryComponent,
     DividerModule,
+    ToastModule
   ],
   templateUrl: './invoices-emp.component.html',
   styleUrl: './invoices-emp.component.css',
+  providers:[MessageService]
 })
 export class EmpInvoicesComponent {
   invoices: any[] = [];
@@ -98,7 +101,8 @@ export class EmpInvoicesComponent {
 
   constructor(
     private invoiceService: EmployeeService,
-    private router: Router
+    private router: Router,
+    private messageService : MessageService
   ) {}
 
   navigateToAddInvoice() {
@@ -159,12 +163,19 @@ export class EmpInvoicesComponent {
       )
       .subscribe({
         next: (response) => {
-          this.invoices = response.content;
+          this.messageService.add({
+            severity:'success',
+            summary:response.message
+          })
+          this.invoices = response.data.content;
+          this.markOverDue(this.invoices)
           this.totalRecords = response.totalElements
         },
         error: (error) => {
-          this.error = [{ severity: 'warn', detail: 'No Search Found' }];
-          this.searchQuery = "";
+          this.messageService.add({
+            severity:'error',
+            summary:error.message
+          })
         },
       });
   }
@@ -213,7 +224,6 @@ export class EmpInvoicesComponent {
     this.selectedInvoiceDetails = DEFAULT_INVOICE;
     this.isPaid = false;
     this.showBox = false;
-    console.log(this.isPaid);
   }
 
   onPayClick() {
@@ -234,6 +244,16 @@ export class EmpInvoicesComponent {
         this.showBox = false;
       },
     });
+  }
+
+  markOverDue(invoices: any[]) {
+    const currentDate = new Date();    
+    for (let invoice of invoices) {
+      if (new Date(invoice.dueDate) < currentDate) {
+        invoice.invoiceStatus = InvoiceStatus.OVERDUE; 
+      }
+    }
+    this.invoices = invoices;
   }
 
   getStatusColor(status: string): string {

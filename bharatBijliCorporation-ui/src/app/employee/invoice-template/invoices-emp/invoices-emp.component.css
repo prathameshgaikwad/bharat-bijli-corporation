@@ -27,11 +27,10 @@ input {
   display: flex;
   flex-direction: column;
   width: 100%;
-  justify-content: space-between;
-
   p {
     display: inline-flex;
     margin: 0.4rem 0;
+    justify-content: space-between;
   }
 }
 
@@ -56,3 +55,8 @@ input {
   }
 
 }
+
+/* :host ::ng-deep .p-button{
+  display: flex;
+  justify-content: center;
+} */

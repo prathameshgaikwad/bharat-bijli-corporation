@@ -131,10 +131,12 @@ export class BulkInvoiceComponent {
 
     this.bulkAddService.postBulkCsvInv(file).subscribe({
       next: (response) => {
+        console.log(response);
+    
         if(response.data.length > 0)
         {
-        this.errorBox = true;
-        this.errorLogs = response.data;
+          this.errorBox = true;
+          this.errorLogs = response.data;
         }
         this.message = [
           {

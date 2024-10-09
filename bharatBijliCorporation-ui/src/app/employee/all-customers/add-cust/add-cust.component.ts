@@ -67,18 +67,19 @@ export class AddCustComponent {
     emailId: new FormControl('', [Validators.required, Validators.email]),
     phoneNumber: new FormControl(null, [
       Validators.required,
-      Validators.minLength(10),
+      Validators.pattern(/^\d{10}$/)
     ]),
     address: new FormControl(''),
     city: new FormControl(''),
     state: new FormControl(''),
     pincode: new FormControl(null, [
-      Validators.minLength(6),
-      Validators.maxLength(6),
+      Validators.required,
+      Validators.pattern(/^\d{6}$/)
     ]),
     dateOfBirth: new FormControl(null, [Validators.required, dobValidator]),
   });
-
+  isloading = false;
+  
   constructor(
     private authService: AuthService,
     private messageService: MessageService,
@@ -86,12 +87,13 @@ export class AddCustComponent {
   ) {}
 
   onSubmit() {
+    this.isloading = true
     if (this.registrationForm.valid) {
       const personalDetails: PersonalDetails = {
         firstName: this.registrationForm.value.firstName!,
         lastName: this.registrationForm.value.lastName!,
         emailId: this.registrationForm.value.emailId!,
-        phoneNumber: '+91' + this.registrationForm.value.phoneNumber!,
+        phoneNumber: this.registrationForm.value.phoneNumber!,
         address: this.registrationForm.value.address || '',
         city: this.registrationForm.value.city || '',
         state: this.registrationForm.value.state || '',
@@ -100,27 +102,30 @@ export class AddCustComponent {
           : 0,
         dateOfBirth: this.registrationForm.value.dateOfBirth!,
       };
-      this.authService.register(personalDetails).subscribe({
-        next: (response) => {
-          console.log(response);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Registration Successful',
-          });
-          setTimeout(() => {
-            this.router.navigate(['/employee/customer']);
-          }, 3000);
-        },
-        error: (error) => {
-          console.log(error);
-
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error creating an account',
-            detail: error.error.message,
-          });
-        },
-      });
+      this.registerUser(personalDetails);
+      
     }
+  }
+
+  registerUser(personalDetails : PersonalDetails){
+    this.authService.register(personalDetails).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Registration Successful',
+        });
+        setTimeout(() => {
+          this.router.navigate(['/employee/customer']);
+        }, 3000);
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error creating an account',
+          detail: error.error.message,
+        });
+      },
+    });
   }
 }

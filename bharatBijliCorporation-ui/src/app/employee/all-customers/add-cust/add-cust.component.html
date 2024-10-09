@@ -1,5 +1,4 @@
 <p-toast></p-toast>
-
 <div class="card">
   <h1 class="title">Customer Registration</h1>
 <div class="form-container">
@@ -45,6 +44,7 @@
                 name="phoneNumber"
                 formControlName="phoneNumber"
                 class="phone-number-input"
+                step="any"
               />
               <label for="phoneNumber">Phone Number</label>
             </p-floatLabel>
@@ -111,6 +111,7 @@
             [rounded]="true"
             type="submit"
             [disabled]="registrationForm.invalid"
+            [loading]="isloading" 
           />
         </div>
       </form>

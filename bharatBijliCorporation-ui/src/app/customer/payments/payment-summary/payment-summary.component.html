@@ -6,6 +6,7 @@
   [(visible)]="isVisible"
   [style]="{ width: isPaymentPageReferrer ? '35rem' : '28rem' }"
   [closable]="!isPaymentPageReferrer"
+  (onHide) ="hideBox()"
 >
   <div class="confirmation-container" *ngIf="isPaymentPageReferrer">
     <button

@@ -16,8 +16,8 @@ import { TableModule } from 'primeng/table';
 import { EmployeeService } from '../../services/employee.service';
 import { MessageService, SortEvent } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
-import { NgForm } from '@angular/forms';
 import { MessagesModule } from 'primeng/messages';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-view-customers',
@@ -32,11 +32,12 @@ import { MessagesModule } from 'primeng/messages';
     InputTextModule,
     InputGroupAddonModule,
     DialogModule,
-    MessagesModule
+    MessagesModule,
+    ToastModule
   ],
   templateUrl: './view-customers.component.html',
   styleUrl: './view-customers.component.css',
-  providers : [MessageService]
+  providers: [MessageService],
 })
 export class ViewCustomersComponent {
   customers: Customer[] = [];
@@ -54,7 +55,12 @@ export class ViewCustomersComponent {
   previousSortOrder: string = 'asc'; // Track previous sort order
   searchQuery = '';
 
-  constructor(private empService: EmployeeService) {}
+  showConfirmBox = false
+
+  constructor(
+    private empService: EmployeeService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.empService.getCountOfCustomers().subscribe({
@@ -80,12 +86,16 @@ export class ViewCustomersComponent {
       .subscribe({
         next: (response) => {
           this.customers = response.content;
-          this.totalRecords = response.totalElements; 
+          this.totalRecords = response.totalElements;
         },
         error: (error) => {
-          this.error = [{ severity: 'error', detail: 'Invalid Req' }];
-          this.searchQuery = "";
-          this.loadCustomers()
+          this.searchQuery = '';
+          this.error = [
+            {
+              severity: 'error',
+              summary: error.error.message,
+            },
+          ];
         },
       });
   }
@@ -114,36 +124,64 @@ export class ViewCustomersComponent {
 
   onSearch() {
     this.first = 0;
-    const prevrec = this.customers;
     this.loadCustomers();
     if (this.searchQuery == '') {
-      this.messages = [{ severity: 'warn', detail: 'Enter' }];
+      this.messages = [{ severity: 'warn', detail: 'Search field empty' }];
     }
+    return;
   }
 
   showBox = false;
   selectedCustomerDetails: Customer = defaultCustomer;
-  showCustomer(customer: Customer) {
-    this.selectedCustomerDetails = customer;
+  showCustomer() {
     this.showBox = true;
   }
 
   hideCustomer() {
     this.showBox = false;
-    this.selectedCustomerDetails = defaultCustomer;
+    if(!this.showConfirmBox)
+        this.selectedCustomerDetails = defaultCustomer;
     this.loadCustomers();
   }
 
   saveCustomerDetails() {
+    this.showConfirmBox = true;
+    this.showBox = false; 
+  }
+
+  updateCustomerDetails(){
     if (this.selectedCustomerDetails) {
       this.empService.updateCustomer(this.selectedCustomerDetails).subscribe({
         next: (response) => {
-          console.log('Customer updated successfully', response);
-          this.showBox = false; // Close the dialog after saving
-          this.loadCustomers(); // Reload the customer list to reflect the changes
+          if(response.error){
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'Updation Failed',
+              detail:
+                `Identical details were submitted` +
+                ` for ` +
+                this.selectedCustomerDetails.id
+            });
+            this.showConfirmBox = false
+            return
+          }
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Updation Failed',
+            detail:
+              `Updation Succesful` +
+              ` for ` +
+              this.selectedCustomerDetails.id
+          });
+          this.showConfirmBox = false;
         },
         error: (error) => {
           console.error('Error updating customer:', error);
+          this.messageService.add({
+            severity:'error',
+            summary:error
+          })
+          this.showConfirmBox = false;
         },
       });
     }

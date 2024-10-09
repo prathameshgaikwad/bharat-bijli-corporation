@@ -29,10 +29,27 @@ export function dateRangeValidator(): ValidatorFn {
     const startDate = control.get('periodStartDate')?.value;
     const endDate = control.get('periodEndDate')?.value;
     const dueDate = control.get('dueDate')?.value;
+    const currentDate = new Date();
+
+    if(endDate){
+      const isEndDateLessThanCurrent = new Date(endDate) <= currentDate;
+      if(!isEndDateLessThanCurrent){
+        return {endDateNotBeforeCurrent : true}
+      }
+    }
+
+    if(endDate && startDate){
+      const isEndDateGreaterThanStartDate = new Date(endDate) > new Date(startDate);
+      if (!isEndDateGreaterThanStartDate) {
+        return { endDateBeforeStartDate: true };
+      }
+
+    }
 
     if (startDate && endDate && dueDate) {
       const isEndDateGreaterThanStartDate = new Date(endDate) > new Date(startDate);
       const isDueDateGreaterThanEndDate = new Date(dueDate) > new Date(endDate);
+      const isEndDateLessThanCurrent = new Date(endDate) <= currentDate;
 
       if (!isEndDateGreaterThanStartDate) {
         return { endDateBeforeStartDate: true };
@@ -41,9 +58,13 @@ export function dateRangeValidator(): ValidatorFn {
       if (!isDueDateGreaterThanEndDate) {
         return { dueDateBeforeEndDate: true };
       }
+      
+      if (!isEndDateLessThanCurrent) {
+        return { endDateNotBeforeCurrent: true };
+      }
     }
 
-    return null; // No errors
+    return null; 
   };
 }
 
@@ -118,20 +139,6 @@ export class GenerateInvoicesComponent implements OnInit {
       };
 
       this.isloading = true;
-      if (billingDetails.periodEndDate < billingDetails.periodStartDate) {
-        this.isloading = false;
-        this.registrationForm
-          .get('periodEndDate')
-          ?.setErrors({ notGreater: true });
-        this.registrationForm.get('periodEndDate')?.markAsTouched();
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'End Date must be greater than start',
-          detail: `Check End Date.`,
-        });
-        return;
-      }
-
       this.invoiceGen.generateInvoice(billingDetails).subscribe({
         next: (response) => {
           this.invoice = response;
@@ -154,12 +161,12 @@ export class GenerateInvoicesComponent implements OnInit {
           }, 2000);
         },
         error: (error) => {
-          this.isloading = false;
           this.messageService.add({
             severity: 'error',
             summary: 'Error creating an invoice',
-            detail: error.error.message || 'Failed to submit billing details',
+            detail: error.error || 'Failed to submit billing details',
           });
+          this.isloading = false;
         },
       });
     } else {

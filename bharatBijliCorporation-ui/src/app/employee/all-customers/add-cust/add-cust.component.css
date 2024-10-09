@@ -75,6 +75,12 @@ p-button {
   margin-top: 2rem;
 }
 
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 @media screen and (min-width: 769px) and (max-width: 1000px) {
   .form-group {
       display: flex;
@@ -99,3 +105,4 @@ p-button {
       margin-top: 3rem;
   }
 }
+

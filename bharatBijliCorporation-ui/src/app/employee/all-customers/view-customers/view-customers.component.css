@@ -63,3 +63,7 @@ button {
 .p-button:hover {
   background-color: #0056b3; /* Darker blue on hover */
 }
+
+:host ::ng-deep .p-button{
+  width: 100%;
+}

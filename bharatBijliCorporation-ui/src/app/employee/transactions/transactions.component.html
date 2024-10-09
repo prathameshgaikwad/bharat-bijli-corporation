@@ -1,3 +1,4 @@
+<p-toast [life]="500 "/>
 <div class="table-cont">
   <div class="header">
     <p>All Transactions</p>
@@ -24,6 +25,10 @@
         responsiveLayout="scroll"
         (onSort)="onSort($event)"
         styleClass="p-datatable-striped"
+        selectionMode="single"
+        [(selection)]="selectedTransaction"
+        (onRowSelect)="showTransaction($event.data)"
+        (onRowUnselect)="hideTransaction()"
         [tableStyle]="{ 'min-width': '50rem' }"
       >
         >
@@ -52,7 +57,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData>
-          <tr>
+          <tr [pSelectableRow]="rowData">
             <td>
               {{ rowData.customer.personalDetails.firstName }}
               {{ rowData.customer.personalDetails.lastName }}
@@ -85,3 +90,7 @@
     </p-paginator>
   </div>
 </div>
+<app-payment-summary
+[transactionDetails]="selectedTransaction"
+[isVisible]="isTransactionSummaryVisible"
+/>

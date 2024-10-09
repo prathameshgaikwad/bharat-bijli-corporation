@@ -36,6 +36,10 @@ export class PaymentSummaryComponent {
     this.router.navigate(['/customer/invoices']);
   }
 
+  hideBox(){
+    this.isVisible = false;
+  }
+
   getSeverity(status: string) {
     switch (status) {
       case 'SUCCESS':

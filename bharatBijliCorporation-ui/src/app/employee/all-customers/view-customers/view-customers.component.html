@@ -1,4 +1,18 @@
-<p-messages [(value)]="error" [enableService]="true" />
+<p-toast></p-toast>
+<p-dialog
+[(visible)]="showConfirmBox"
+header = "Confirm Update"
+[modal] = "true"
+(onHide) = "hideCustomer()"
+>
+<div class="container">
+  <p-button
+  label="Confirm"
+  (click)="updateCustomerDetails()">
+  </p-button>
+</div>
+</p-dialog>
+
 <p-dialog
   [(visible)]="showBox"
   header="Edit Customer Profile"
@@ -219,7 +233,6 @@
           pButton
           type="button"
           icon="pi pi-search"
-          (click)="onSearch()"
           severity="info"
         ></button>
       </p-inputGroupAddon>
@@ -232,7 +245,6 @@
   styleClass="p-datatable-striped p-datatable-lg p-datatable-gridlines"
   selectionMode="single"
   [(selection)]="selectedCustomerDetails"
-  (onRowSelect)="showCustomer($event.data)"
   (onRowUnselect)="hideCustomer()"
   (onSort)="onSort($event)"
 >
@@ -243,7 +255,9 @@
         <p-sortIcon field="id"></p-sortIcon>
       </th>
       <th>Customer</th>
+      <th>Email Id</th>
       <th>Address</th>
+      <th></th>
     </tr>
   </ng-template>
 
@@ -257,9 +271,15 @@
         {{ rowData.personalDetails.lastName }}
       </td>
       <td>
+        {{rowData.personalDetails.emailId}}
+      </td>
+      <td>
         {{ rowData.personalDetails.address }}
         {{ rowData.personalDetails.city }}
         {{ rowData.personalDetails.state }}
+      </td>
+      <td>
+        <i (click)="showCustomer()" class="pi pi-user-edit" style="font-size: 1.5rem"></i>
       </td>
     </tr>
   </ng-template>

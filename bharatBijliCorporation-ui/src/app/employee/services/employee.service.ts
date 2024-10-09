@@ -73,14 +73,14 @@ export class EmployeeService {
     sortField: string = 'createdAt',
     sortOrder: string = 'asc',
     searchQuery: string
-  ): Observable<Page<Transaction>> {
+  ): Observable<any> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString())
       .set('sortField', sortField)
       .set('sortOrder', sortOrder)
       .set('search', searchQuery);
-    return this.httpClient.get<Page<Transaction>>(
+    return this.httpClient.get<any>(
       `${this.baseTransactionsUrl}`,
       { params }
     );
@@ -148,10 +148,8 @@ export class EmployeeService {
     return this.httpClient.post<any>(`${this.baseInvoicesUrl}/${empId}/bulk-csv-upload`, formData)
   }
 
-  updateCustomer(updatedDetails : Customer) : Observable<PersonalDetails>{
-    console.log(updatedDetails);
-    
-    return this.httpClient.put<PersonalDetails>(`${this.baseUrl}/update/customer`, updatedDetails);
+  updateCustomer(updatedDetails : Customer) : Observable<any>{
+    return this.httpClient.put<any>(`${this.baseUrl}/update/customer`, updatedDetails);
   }
 
   addCashPayment(paymentRequest: RecordPaymentRequest): Observable<Transaction> {
