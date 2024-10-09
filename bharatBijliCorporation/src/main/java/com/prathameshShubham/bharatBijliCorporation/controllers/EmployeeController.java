@@ -4,6 +4,7 @@ import com.prathameshShubham.bharatBijliCorporation.dto.CsvUploadResult;
 import com.prathameshShubham.bharatBijliCorporation.dto.RecordPaymentRequest;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.EmptyCsvFileException;
 import com.prathameshShubham.bharatBijliCorporation.exceptions.InvalidFileFormatException;
+import com.prathameshShubham.bharatBijliCorporation.exceptions.UserNotFoundException;
 import com.prathameshShubham.bharatBijliCorporation.models.*;
 import com.prathameshShubham.bharatBijliCorporation.response.ApiResponse;
 import com.prathameshShubham.bharatBijliCorporation.services.CustomerService;
@@ -90,7 +91,7 @@ public class EmployeeController {
         Page<Customer> chunk = customerService.getPaginatedCustomer(page, size, sortField, sortOrder, search);
 
         if (chunk.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.error("No records found", HttpStatus.NOT_FOUND.value()));
+            throw new UserNotFoundException("Not found for respective search query");
         }
 
         return ResponseEntity.ok(chunk);
